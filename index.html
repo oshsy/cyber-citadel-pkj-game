@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PKJ Cyber Citadel - DDoS & Malware Defense</title>
+    <!-- Favicon Tab Browser -->
     <link rel="icon" type="image/png" sizes="32x32" href="icon.png">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -111,7 +112,7 @@ const overlay = document.getElementById('overlay');
 const bossBarContainer = document.getElementById('bossBarContainer');
 const bossBar = document.getElementById('bossBar');
 
-// Load Gambar Utama & Power-up Icons
+// Load Aset Gambar Icon
 const imgs = {
     player: new Image(),
     ddos: new Image(),
@@ -160,7 +161,8 @@ let keys = {}, bullets = [], enemies = [], particles = [], powerups = [], boss =
 let score = 0, combo = 0, hp = 100, highScore = localStorage.getItem('pkj_high') || 0;
 let shakeTimer = 0, tripleShotTimer = 0, shieldActive = false, gameLoop;
 
-let player = { x: 215, y: 510, w: 50, h: 50, speed: 7 };
+// Player Router Size (52x52 px - Presisi)
+let player = { x: 214, y: 510, w: 52, h: 52, speed: 7 };
 
 document.addEventListener('keydown', e => { 
     keys[e.code] = true; 
@@ -180,9 +182,9 @@ function shoot() {
     if(!overlay.classList.contains('hidden')) return;
     playSound('shoot');
     if(tripleShotTimer > 0) {
-        bullets.push({x: player.x + 5, y: player.y, w: 6, h: 14, vx: -2, vy: -10});
+        bullets.push({x: player.x + 4, y: player.y, w: 6, h: 14, vx: -2, vy: -10});
         bullets.push({x: player.x + player.w/2 - 3, y: player.y - 5, w: 6, h: 14, vx: 0, vy: -10});
-        bullets.push({x: player.x + player.w - 11, y: player.y, w: 6, h: 14, vx: 2, vy: -10});
+        bullets.push({x: player.x + player.w - 10, y: player.y, w: 6, h: 14, vx: 2, vy: -10});
     } else {
         bullets.push({x: player.x + player.w/2 - 3, y: player.y - 5, w: 6, h: 14, vx: 0, vy: -10});
     }
@@ -201,10 +203,11 @@ function createExplosion(x, y, color, count=12) {
 
 function spawnEnemy() {
     if(boss) return;
+    // Rasio Dimensi Diatur Khusus Biar Nggak Gepeng
     const types = [
-        { type: 'ddos', color: '#00f3ff', hp: 1, speed: 3.5, points: 10, w: 40, h: 40, imgKey: 'ddos' },
-        { type: 'trojan', color: '#ff0055', hp: 2, speed: 2.5, points: 25, w: 45, h: 45, imgKey: 'trojan' },
-        { type: 'ransom', color: '#ffd700', hp: 4, speed: 1.5, points: 50, w: 48, h: 48, imgKey: 'ransom' }
+        { type: 'ddos', color: '#00f3ff', hp: 1, speed: 3.8, points: 10, w: 32, h: 54, imgKey: 'ddos', label: 'DDoS' },
+        { type: 'trojan', color: '#ff0055', hp: 2, speed: 2.5, points: 25, w: 44, h: 44, imgKey: 'trojan', label: 'TROJAN' },
+        { type: 'ransom', color: '#ffd700', hp: 4, speed: 1.6, points: 50, w: 46, h: 46, imgKey: 'ransom', label: 'VIRUS' }
     ];
     let r = Math.random();
     let selected = types[0];
@@ -213,12 +216,12 @@ function spawnEnemy() {
 
     enemies.push({
         x: Math.random() * (canvas.width - selected.w),
-        y: -50, ...selected
+        y: -60, ...selected
     });
 
+    // Boss Malware Size 96x96 px (Tengkorak Raksasa Pas & Proporsional)
     if(score >= 400 && !boss && Math.random() < 0.08) {
-        // Boss size 110x110 (Proporsional untuk 128x128px icon)
-        boss = { x: 185, y: -110, w: 110, h: 110, hp: 50, maxHp: 50, vx: 3, imgKey: 'boss' };
+        boss = { x: 192, y: -100, w: 96, h: 96, hp: 50, maxHp: 50, vx: 3, imgKey: 'boss' };
         bossBarContainer.style.display = 'block';
     }
 }
@@ -230,7 +233,7 @@ function spawnPowerup(x, y) {
         let imgKey = 'p_shield';
         if(type === 'TRIPLE') imgKey = 'p_triple';
         if(type === 'NUKE') imgKey = 'p_nuke';
-        powerups.push({ x: x - 15, y, type, imgKey, vy: 2, w: 30, h: 30 });
+        powerups.push({ x: x - 16, y, type, imgKey, vy: 2, w: 32, h: 32 });
     }
 }
 
@@ -275,21 +278,20 @@ function update() {
     if(keys['ArrowRight'] || keys['KeyD']) if(player.x < canvas.width - player.w) player.x += player.speed;
     if(tripleShotTimer > 0) tripleShotTimer--;
 
-    // Render Player
+    // Render Player Router
     ctx.shadowBlur = 15; ctx.shadowColor = '#00f3ff';
     if(imgs.player.complete && imgs.player.naturalWidth !== 0) {
         ctx.drawImage(imgs.player, player.x, player.y, player.w, player.h);
     } else {
         ctx.fillStyle = '#00f3ff';
-        ctx.fillRect(player.x + 10, player.y + 15, 30, 25);
+        ctx.fillRect(player.x + 10, player.y + 15, 32, 25);
         ctx.fillRect(player.x + 5, player.y + 5, 4, 15);
-        ctx.fillRect(player.x + 41, player.y + 5, 4, 15);
-        ctx.fillStyle = '#05050a'; ctx.fillRect(player.x + 15, player.y + 25, 20, 5);
+        ctx.fillRect(player.x + 43, player.y + 5, 4, 15);
     }
 
     if(shieldActive) {
         ctx.strokeStyle = '#00ff66'; ctx.lineWidth = 3;
-        ctx.beginPath(); ctx.arc(player.x+player.w/2, player.y+player.h/2, 35, 0, Math.PI*2); ctx.stroke();
+        ctx.beginPath(); ctx.arc(player.x+player.w/2, player.y+player.h/2, 36, 0, Math.PI*2); ctx.stroke();
     }
 
     // Bullets
@@ -303,6 +305,9 @@ function update() {
 
     if(Math.random() < 0.035) spawnEnemy();
 
+    // Timer Kedip Text
+    const isBlink = Math.floor(Date.now() / 250) % 2 === 0;
+
     // Enemies
     for(let i=enemies.length-1; i>=0; i--) {
         let e = enemies[i];
@@ -315,6 +320,17 @@ function update() {
         } else {
             ctx.fillStyle = e.color;
             ctx.fillRect(e.x, e.y, e.w, e.h);
+        }
+
+        // Title VIRUS / DDoS Kedip Merah Neon Di Atas Icon
+        if(isBlink) {
+            ctx.fillStyle = '#ff0055';
+            ctx.font = 'bold 10px monospace';
+            ctx.textAlign = 'center';
+            ctx.shadowBlur = 8;
+            ctx.shadowColor = '#ff0055';
+            ctx.fillText(e.label, e.x + e.w/2, e.y - 6);
+            ctx.textAlign = 'left';
         }
 
         // Bullet vs Enemy
@@ -364,9 +380,17 @@ function update() {
         } else {
             ctx.fillStyle = '#ff0055';
             ctx.fillRect(boss.x, boss.y, boss.w, boss.h);
-            ctx.fillStyle = '#ffffff';
-            ctx.font = '12px monospace';
-            ctx.fillText("MAINFRAME_VIRUS", boss.x + 10, boss.y + 50);
+        }
+
+        // Title MEGA VIRUS BOSS Kedip-Kedip Merah Neon
+        if(isBlink) {
+            ctx.fillStyle = '#ff0000';
+            ctx.font = 'bold 12px monospace';
+            ctx.textAlign = 'center';
+            ctx.shadowBlur = 12;
+            ctx.shadowColor = '#ff0000';
+            ctx.fillText("⚠️ MEGA VIRUS BOSS ⚠️", boss.x + boss.w/2, boss.y - 8);
+            ctx.textAlign = 'left';
         }
 
         for(let j=bullets.length-1; j>=0; j--) {
@@ -388,7 +412,7 @@ function update() {
         }
     }
 
-    // Power-ups Render (Icon Support)
+    // Power-ups Render
     for(let i=powerups.length-1; i>=0; i--) {
         let p = powerups[i];
         p.y += p.vy;
