@@ -9,9 +9,9 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            background: #05050a;
-            color: #00f3ff;
-            font-family: 'Consolas', 'Courier New', monospace;
+            background: #0b0f19;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -20,8 +20,20 @@
             overflow: hidden;
             padding: 10px;
         }
-        h1 { font-size: 1.4rem; text-shadow: 0 0 12px #00f3ff; margin-bottom: 2px; text-align: center; }
-        p { color: #a0a5c0; font-size: 0.8rem; margin-bottom: 8px; text-align: center; }
+        
+        h1 { 
+            font-size: 1.3rem; 
+            color: #38bdf8; 
+            letter-spacing: 1px;
+            margin-bottom: 3px; 
+            text-align: center; 
+        }
+        .subtitle { 
+            color: #64748b; 
+            font-size: 0.78rem; 
+            margin-bottom: 10px; 
+            text-align: center; 
+        }
         
         #gameWrapper { 
             position: relative; 
@@ -29,127 +41,154 @@
             justify-content: center;
             align-items: center;
             width: 100%;
-            max-width: 520px;
+            max-width: 480px;
         }
         
         /* RESPONSIVE AUTO-SCALE CANVAS */
         canvas {
-            border: 2px solid #00f3ff;
-            border-radius: 10px;
-            background: #0a0a14;
-            box-shadow: 0 0 25px rgba(0, 243, 255, 0.3);
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            background: #0f172a;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             display: block;
             width: 100%;
             height: auto;
-            max-height: 76vh;
+            max-height: 75vh;
             aspect-ratio: 480 / 600;
             touch-action: none;
         }
 
         .hud {
             position: absolute;
-            top: 10px; left: 15px; right: 15px;
+            top: 12px; left: 16px; right: 16px;
             display: flex;
             justify-content: space-between;
-            font-size: 0.95rem;
-            font-weight: bold;
+            font-size: 0.9rem;
+            font-weight: 600;
             pointer-events: none;
-            text-shadow: 0 0 8px #000;
+            color: #f1f5f9;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
         }
+        
         #bossBarContainer {
             position: absolute;
-            top: 38px; left: 50%;
+            top: 40px; left: 50%;
             transform: translateX(-50%);
             width: 70%;
-            height: 12px;
-            background: rgba(255,0,0,0.2);
-            border: 1px solid #ff0055;
-            border-radius: 6px;
+            height: 10px;
+            background: rgba(244, 63, 94, 0.2);
+            border: 1px solid #f43f5e;
+            border-radius: 5px;
             overflow: hidden;
             display: none;
         }
-        #bossBar { width: 100%; height: 100%; background: #ff0055; transition: width 0.1s; }
+        #bossBar { width: 100%; height: 100%; background: #f43f5e; transition: width 0.1s; }
         
-        /* OVERLAY / START SCREEN */
+        /* OVERLAY / START SCREEN MODERN DARK UI */
         .overlay-screen {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(5, 5, 12, 0.95);
+            background: rgba(15, 23, 42, 0.96);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            border-radius: 10px;
+            border-radius: 12px;
             padding: 20px;
             text-align: center;
             z-index: 10;
+            backdrop-filter: blur(4px);
         }
 
         .author-box {
-            background: rgba(0, 243, 255, 0.1);
-            border: 1px solid #00f3ff;
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(56, 189, 248, 0.2);
             border-radius: 8px;
-            padding: 8px 14px;
-            margin: 10px 0 15px 0;
-            font-size: 0.85rem;
-            color: #ffffff;
-            box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+            padding: 10px 16px;
+            margin: 12px 0 14px 0;
+            width: 100%;
+            max-width: 360px;
         }
 
+        .author-name {
+            color: #fbbf24; 
+            font-weight: 700; 
+            font-size: 0.95rem;
+            margin-top: 2px;
+        }
+
+        .author-sub {
+            font-size: 0.75rem; 
+            color: #94a3b8; 
+            margin-top: 2px;
+        }
+
+        /* LEGENDA GRID YANG RAPI & MATAK NYAMAN */
         .icon-legend-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
+            gap: 8px;
             width: 100%;
-            max-width: 380px;
-            margin-bottom: 15px;
-            background: rgba(255, 255, 255, 0.03);
+            max-width: 360px;
+            margin-bottom: 16px;
+            background: rgba(30, 41, 59, 0.4);
             border-radius: 8px;
-            padding: 10px;
-            border: 1px solid rgba(255,255,255,0.1);
+            padding: 12px 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .legend-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            font-size: 0.7rem;
-            color: #a0a5c0;
+            justify-content: center;
         }
 
         .legend-item img {
-            width: 28px;
-            height: 28px;
+            width: 30px;
+            height: 30px;
             object-fit: contain;
             margin-bottom: 4px;
         }
 
-        button {
-            padding: 12px 30px;
-            background: #00f3ff;
-            color: #05050a;
-            border: none;
-            border-radius: 6px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 0 15px #00f3ff;
-            transition: 0.2s;
+        .legend-item span {
+            font-size: 0.68rem;
+            color: #cbd5e1;
+            white-space: nowrap;
         }
-        button:hover { background: #ff0055; color: white; box-shadow: 0 0 20px #ff0055; }
+
+        /* BUTTON DESIGN ELEGAN (TIDAK FULL BIRU NEON) */
+        button {
+            padding: 12px 32px;
+            background: linear-gradient(135deg, #0284c7, #2563eb);
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
+            transition: all 0.2s ease;
+        }
+        button:hover { 
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(2, 132, 199, 0.45);
+            background: linear-gradient(135deg, #0369a1, #1d4ed8);
+        }
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-    <h1>CYBER CITADEL: MALWARE STRIKE</h1>
-    <p>[A/D] / [Panah] Gerak | [SPASI] Tembak | Touch HP</p>
+    <h1>CYBER CITADEL</h1>
+    <div class="subtitle">[A/D / Panah] Gerak | [SPASI] Tembak | Touch HP</div>
 
     <div id="gameWrapper">
         <canvas id="canvas" width="480" height="600"></canvas>
         <div class="hud">
-            <div>SCORE: <span id="score">0</span> <span id="combo" style="color:#ffd700; font-size:0.8rem"></span></div>
-            <div>SHIELD: <span id="hp" style="color:#00ff66">100%</span></div>
+            <div>SCORE: <span id="score" style="color:#38bdf8;">0</span> <span id="combo" style="color:#fbbf24; font-size:0.8rem"></span></div>
+            <div>SHIELD: <span id="hp" style="color:#34d399">100%</span></div>
         </div>
         <div id="bossBarContainer">
             <div id="bossBar"></div>
@@ -157,39 +196,39 @@
 
         <!-- START SCREEN HASIL KARYA -->
         <div id="startScreen" class="overlay-screen">
-            <h2 style="color: #00f3ff; font-size: 1.6rem; text-shadow: 0 0 15px #00f3ff;">CYBER CITADEL v1.0</h2>
+            <h2 style="color: #38bdf8; font-size: 1.4rem; font-weight: 700;">MALWARE STRIKE</h2>
             
             <div class="author-box">
-                <div><strong>Karya Mandiri PKJ</strong></div>
-                <div style="color: #ffd700; font-weight: bold; margin-top:2px;">Razid Rahmanto</div>
-                <div style="font-size: 0.75rem; color: #a0a5c0; margin-top: 2px;">D2 Pemeliharaan Komputer & Jaringan</div>
-                <div style="font-size: 0.7rem; color: #58a6ff;">AKN Pacitan</div>
+                <div style="font-size: 0.72rem; color: #38bdf8; letter-spacing: 1px;">KARYA MANDIRI PKJ</div>
+                <div class="author-name">Razid Rahmanto</div>
+                <div class="author-sub">D2 Pemeliharaan Komputer & Jaringan</div>
+                <div style="font-size: 0.7rem; color: #64748b; margin-top: 1px;">AKN Pacitan</div>
             </div>
 
             <!-- LEGENDA ICON PANDUAN DOSEN -->
             <div class="icon-legend-grid">
                 <div class="legend-item">
-                    <img src="player.png" alt="Router">
-                    <span>Router (Player)</span>
+                    <img src="player.png" alt="Router" onerror="this.style.display='none'">
+                    <span>Router</span>
                 </div>
                 <div class="legend-item">
-                    <img src="enemy_ddos.png" alt="DDoS">
+                    <img src="enemy_ddos.png" alt="DDoS" onerror="this.style.display='none'">
                     <span>DDoS Missile</span>
                 </div>
                 <div class="legend-item">
-                    <img src="enemy_trojan.png" alt="Trojan">
+                    <img src="enemy_trojan.png" alt="Trojan" onerror="this.style.display='none'">
                     <span>Trojan Virus</span>
                 </div>
                 <div class="legend-item">
-                    <img src="enemy_ransom.png" alt="Malware">
+                    <img src="enemy_ransom.png" alt="Malware" onerror="this.style.display='none'">
                     <span>Ransomware</span>
                 </div>
                 <div class="legend-item">
-                    <img src="boss.png" alt="Boss">
+                    <img src="boss.png" alt="Boss" onerror="this.style.display='none'">
                     <span>Mega Boss</span>
                 </div>
                 <div class="legend-item">
-                    <img src="power_shield.png" alt="Shield">
+                    <img src="power_shield.png" alt="Shield" onerror="this.style.display='none'">
                     <span>Shield Power</span>
                 </div>
             </div>
@@ -199,9 +238,9 @@
 
         <!-- GAME OVER SCREEN -->
         <div id="gameOverScreen" class="overlay-screen hidden">
-            <h2 id="ovTitle" style="color: #ff0055; font-size: 1.8rem; text-shadow: 0 0 15px #ff0055; margin-bottom: 10px;">SYSTEM BREACHED</h2>
-            <p style="color: #ffffff;">Skor Akhir: <span id="ovScore">0</span></p>
-            <p style="color: #ffd700; margin-top:5px; margin-bottom: 15px;">High Score: <span id="ovHigh">0</span></p>
+            <h2 id="ovTitle" style="color: #f43f5e; font-size: 1.6rem; font-weight:700; margin-bottom: 8px;">SYSTEM BREACHED</h2>
+            <p style="color: #94a3b8; font-size: 0.9rem;">Skor Akhir: <span id="ovScore" style="color:#ffffff; font-weight:bold;">0</span></p>
+            <p style="color: #fbbf24; font-size: 0.85rem; margin-top:4px; margin-bottom: 16px;">High Score: <span id="ovHigh">0</span></p>
             <button onclick="startGame()">REBOOT SYSTEM</button>
         </div>
     </div>
@@ -247,17 +286,17 @@ function playSound(type) {
         osc.connect(gain); gain.connect(audio.destination);
         const now = audio.currentTime;
         if(type === 'shoot') {
-            osc.type = 'sawtooth'; osc.frequency.setValueAtTime(800, now);
-            osc.frequency.exponentialRampToValueAtTime(100, now + 0.08);
-            gain.gain.setValueAtTime(0.08, now); osc.start(now); osc.stop(now + 0.08);
+            osc.type = 'sawtooth'; osc.frequency.setValueAtTime(700, now);
+            osc.frequency.exponentialRampToValueAtTime(120, now + 0.07);
+            gain.gain.setValueAtTime(0.06, now); osc.start(now); osc.stop(now + 0.07);
         } else if(type === 'hit') {
-            osc.type = 'square'; osc.frequency.setValueAtTime(150, now);
-            osc.frequency.linearRampToValueAtTime(40, now + 0.15);
-            gain.gain.setValueAtTime(0.15, now); osc.start(now); osc.stop(now + 0.15);
+            osc.type = 'square'; osc.frequency.setValueAtTime(140, now);
+            osc.frequency.linearRampToValueAtTime(40, now + 0.12);
+            gain.gain.setValueAtTime(0.12, now); osc.start(now); osc.stop(now + 0.12);
         } else if(type === 'powerup') {
             osc.type = 'sine'; osc.frequency.setValueAtTime(300, now);
-            osc.frequency.exponentialRampToValueAtTime(1200, now + 0.2);
-            gain.gain.setValueAtTime(0.1, now); osc.start(now); osc.stop(now + 0.2);
+            osc.frequency.exponentialRampToValueAtTime(1000, now + 0.18);
+            gain.gain.setValueAtTime(0.08, now); osc.start(now); osc.stop(now + 0.18);
         }
     } catch(e){}
 }
@@ -306,7 +345,7 @@ function createExplosion(x, y, color, count=12) {
             x, y,
             vx: (Math.random() - 0.5) * 8,
             vy: (Math.random() - 0.5) * 8,
-            life: 1, color, size: Math.random()*4 + 2
+            life: 1, color, size: Math.random()*3 + 2
         });
     }
 }
@@ -314,9 +353,9 @@ function createExplosion(x, y, color, count=12) {
 function spawnEnemy() {
     if(boss) return;
     const types = [
-        { type: 'ddos', color: '#00f3ff', hp: 1, speed: 3.8, points: 10, w: 32, h: 54, imgKey: 'ddos', label: 'DDoS' },
-        { type: 'trojan', color: '#ff0055', hp: 2, speed: 2.5, points: 25, w: 44, h: 44, imgKey: 'trojan', label: 'TROJAN' },
-        { type: 'ransom', color: '#ffd700', hp: 4, speed: 1.6, points: 50, w: 46, h: 46, imgKey: 'ransom', label: 'VIRUS' }
+        { type: 'ddos', color: '#38bdf8', hp: 1, speed: 3.8, points: 10, w: 32, h: 54, imgKey: 'ddos', label: 'DDoS' },
+        { type: 'trojan', color: '#f43f5e', hp: 2, speed: 2.5, points: 25, w: 44, h: 44, imgKey: 'trojan', label: 'TROJAN' },
+        { type: 'ransom', color: '#fbbf24', hp: 4, speed: 1.6, points: 50, w: 46, h: 46, imgKey: 'ransom', label: 'VIRUS' }
     ];
     let r = Math.random();
     let selected = types[0];
@@ -358,7 +397,7 @@ function startGame() {
     gameLoop = setInterval(update, 1000/60);
 }
 
-// AABB Box Collision (Anti-Tembus)
+// AABB Box Collision
 function isColliding(a, b) {
     return a.x < b.x + b.w &&
            a.x + a.w > b.x &&
@@ -370,15 +409,15 @@ function update() {
     let sx = 0, sy = 0;
     if(shakeTimer > 0) {
         shakeTimer--;
-        sx = (Math.random()-0.5)*10; sy = (Math.random()-0.5)*10;
+        sx = (Math.random()-0.5)*8; sy = (Math.random()-0.5)*8;
     }
 
     ctx.save();
     ctx.translate(sx, sy);
     ctx.clearRect(-20, -20, canvas.width+40, canvas.height+40);
 
-    // Background Grid
-    ctx.strokeStyle = 'rgba(0, 243, 255, 0.05)';
+    // Subtle Background Grid
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
     ctx.lineWidth = 1;
     for(let i=0; i<canvas.width; i+=30) { ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,canvas.height); ctx.stroke(); }
     for(let j=0; j<canvas.height; j+=30) { ctx.beginPath(); ctx.moveTo(0,j); ctx.lineTo(canvas.width,j); ctx.stroke(); }
@@ -389,23 +428,23 @@ function update() {
     if(tripleShotTimer > 0) tripleShotTimer--;
 
     // Render Player Router
-    ctx.shadowBlur = 15; ctx.shadowColor = '#00f3ff';
+    ctx.shadowBlur = 8; ctx.shadowColor = 'rgba(56, 189, 248, 0.4)';
     if(imgs.player.complete && imgs.player.naturalWidth !== 0) {
         ctx.drawImage(imgs.player, player.x, player.y, player.w, player.h);
     } else {
-        ctx.fillStyle = '#00f3ff';
+        ctx.fillStyle = '#38bdf8';
         ctx.fillRect(player.x + 10, player.y + 15, 32, 25);
         ctx.fillRect(player.x + 5, player.y + 5, 4, 15);
         ctx.fillRect(player.x + 43, player.y + 5, 4, 15);
     }
 
     if(shieldActive) {
-        ctx.strokeStyle = '#00ff66'; ctx.lineWidth = 3;
-        ctx.beginPath(); ctx.arc(player.x+player.w/2, player.y+player.h/2, 36, 0, Math.PI*2); ctx.stroke();
+        ctx.strokeStyle = '#34d399'; ctx.lineWidth = 2.5;
+        ctx.beginPath(); ctx.arc(player.x+player.w/2, player.y+player.h/2, 35, 0, Math.PI*2); ctx.stroke();
     }
 
     // Bullets
-    ctx.fillStyle = '#00ff66'; ctx.shadowColor = '#00ff66';
+    ctx.fillStyle = '#34d399'; ctx.shadowBlur = 6; ctx.shadowColor = '#34d399';
     for(let i=bullets.length-1; i>=0; i--) {
         let b = bullets[i];
         b.x += b.vx; b.y += b.vy;
@@ -415,14 +454,14 @@ function update() {
 
     if(Math.random() < 0.035) spawnEnemy();
 
-    const isBlink = Math.floor(Date.now() / 250) % 2 === 0;
+    const isBlink = Math.floor(Date.now() / 300) % 2 === 0;
 
     // Enemies
     for(let i=enemies.length-1; i>=0; i--) {
         let e = enemies[i];
         e.y += e.speed;
 
-        ctx.shadowBlur = 12; ctx.shadowColor = e.color;
+        ctx.shadowBlur = 8; ctx.shadowColor = e.color;
         let img = imgs[e.imgKey];
         if(img.complete && img.naturalWidth !== 0) {
             ctx.drawImage(img, e.x, e.y, e.w, e.h);
@@ -431,13 +470,13 @@ function update() {
             ctx.fillRect(e.x, e.y, e.w, e.h);
         }
 
-        // Title VIRUS / DDoS Kedip Merah Neon
+        // Label Di Atas Icon
         if(isBlink) {
-            ctx.fillStyle = '#ff0055';
-            ctx.font = 'bold 10px monospace';
+            ctx.fillStyle = '#f43f5e';
+            ctx.font = '600 10px sans-serif';
             ctx.textAlign = 'center';
-            ctx.shadowBlur = 8;
-            ctx.shadowColor = '#ff0055';
+            ctx.shadowBlur = 4;
+            ctx.shadowColor = '#f43f5e';
             ctx.fillText(e.label, e.x + e.w/2, e.y - 6);
             ctx.textAlign = 'left';
         }
@@ -469,7 +508,7 @@ function update() {
         // Enemy vs Player
         if(isColliding(e, player)) {
             enemies.splice(i,1);
-            createExplosion(e.x + e.w/2, e.y + e.h/2, '#ff0055', 20);
+            createExplosion(e.x + e.w/2, e.y + e.h/2, '#f43f5e', 20);
             takeDamage(20);
         } else if(e.y > canvas.height + 40) {
             enemies.splice(i,1);
@@ -483,21 +522,20 @@ function update() {
         boss.x += boss.vx;
         if(boss.x < 10 || boss.x > canvas.width - boss.w - 10) boss.vx *= -1;
 
-        ctx.shadowBlur = 20; ctx.shadowColor = '#ff0055';
+        ctx.shadowBlur = 12; ctx.shadowColor = '#f43f5e';
         if(imgs.boss.complete && imgs.boss.naturalWidth !== 0) {
             ctx.drawImage(imgs.boss, boss.x, boss.y, boss.w, boss.h);
         } else {
-            ctx.fillStyle = '#ff0055';
+            ctx.fillStyle = '#f43f5e';
             ctx.fillRect(boss.x, boss.y, boss.w, boss.h);
         }
 
-        // Title MEGA VIRUS BOSS Kedip-Kedip
         if(isBlink) {
-            ctx.fillStyle = '#ff0000';
-            ctx.font = 'bold 12px monospace';
+            ctx.fillStyle = '#f43f5e';
+            ctx.font = '600 11px sans-serif';
             ctx.textAlign = 'center';
-            ctx.shadowBlur = 12;
-            ctx.shadowColor = '#ff0000';
+            ctx.shadowBlur = 6;
+            ctx.shadowColor = '#f43f5e';
             ctx.fillText("⚠️ MEGA VIRUS BOSS ⚠️", boss.x + boss.w/2, boss.y - 8);
             ctx.textAlign = 'left';
         }
@@ -507,12 +545,12 @@ function update() {
             if(isColliding(b, boss)) {
                 boss.hp--;
                 bullets.splice(j,1);
-                createExplosion(b.x, b.y, '#ff0055', 5);
+                createExplosion(b.x, b.y, '#f43f5e', 5);
                 bossBar.style.width = `${(boss.hp / boss.maxHp) * 100}%`;
                 if(boss.hp <= 0) {
                     score += 500;
                     scoreEl.innerText = score;
-                    createExplosion(boss.x+boss.w/2, boss.y+boss.h/2, '#ff0055', 50);
+                    createExplosion(boss.x+boss.w/2, boss.y+boss.h/2, '#f43f5e', 50);
                     boss = null;
                     bossBarContainer.style.display = 'none';
                     break;
@@ -525,14 +563,14 @@ function update() {
     for(let i=powerups.length-1; i>=0; i--) {
         let p = powerups[i];
         p.y += p.vy;
-        ctx.shadowBlur = 10; ctx.shadowColor = '#ffd700';
+        ctx.shadowBlur = 8; ctx.shadowColor = '#fbbf24';
 
         let pImg = imgs[p.imgKey];
         if(pImg.complete && pImg.naturalWidth !== 0) {
             ctx.drawImage(pImg, p.x, p.y, p.w, p.h);
         } else {
-            ctx.fillStyle = '#ffd700';
-            ctx.font = '12px monospace';
+            ctx.fillStyle = '#fbbf24';
+            ctx.font = '11px sans-serif';
             ctx.fillText(`[${p.type}]`, p.x, p.y);
         }
 
@@ -552,7 +590,7 @@ function update() {
     for(let i=particles.length-1; i>=0; i--) {
         let pt = particles[i];
         pt.x += pt.vx; pt.y += pt.vy; pt.life -= 0.03;
-        ctx.fillStyle = pt.color; ctx.shadowBlur = 5; ctx.shadowColor = pt.color;
+        ctx.fillStyle = pt.color; ctx.shadowBlur = 4; ctx.shadowColor = pt.color;
         ctx.fillRect(pt.x, pt.y, pt.size, pt.size);
         if(pt.life <= 0) particles.splice(i,1);
     }
