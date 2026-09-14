@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>PKJ Cyber Citadel - DDoS & Malware Defense</title>
     <!-- Favicon Tab Browser -->
     <link rel="icon" type="image/png" sizes="32x32" href="icon.png">
@@ -18,52 +18,113 @@
             justify-content: center;
             min-height: 100vh;
             overflow: hidden;
+            padding: 10px;
         }
-        h1 { font-size: 1.5rem; text-shadow: 0 0 12px #00f3ff; margin-bottom: 4px; text-align: center; }
-        p { color: #a0a5c0; font-size: 0.85rem; margin-bottom: 10px; text-align: center; }
-        #gameWrapper { position: relative; }
+        h1 { font-size: 1.4rem; text-shadow: 0 0 12px #00f3ff; margin-bottom: 2px; text-align: center; }
+        p { color: #a0a5c0; font-size: 0.8rem; margin-bottom: 8px; text-align: center; }
+        
+        #gameWrapper { 
+            position: relative; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 520px;
+        }
+        
+        /* RESPONSIVE AUTO-SCALE CANVAS */
         canvas {
             border: 2px solid #00f3ff;
             border-radius: 10px;
             background: #0a0a14;
             box-shadow: 0 0 25px rgba(0, 243, 255, 0.3);
             display: block;
+            width: 100%;
+            height: auto;
+            max-height: 76vh;
+            aspect-ratio: 480 / 600;
+            touch-action: none;
         }
+
         .hud {
             position: absolute;
-            top: 12px; left: 15px; right: 15px;
+            top: 10px; left: 15px; right: 15px;
             display: flex;
             justify-content: space-between;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: bold;
             pointer-events: none;
             text-shadow: 0 0 8px #000;
         }
         #bossBarContainer {
             position: absolute;
-            top: 42px; left: 50%;
+            top: 38px; left: 50%;
             transform: translateX(-50%);
             width: 70%;
-            height: 14px;
+            height: 12px;
             background: rgba(255,0,0,0.2);
             border: 1px solid #ff0055;
-            border-radius: 7px;
+            border-radius: 6px;
             overflow: hidden;
             display: none;
         }
         #bossBar { width: 100%; height: 100%; background: #ff0055; transition: width 0.1s; }
-        #overlay {
+        
+        /* OVERLAY / START SCREEN */
+        .overlay-screen {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(5, 5, 10, 0.92);
+            background: rgba(5, 5, 12, 0.95);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            z-index: 10;
         }
+
+        .author-box {
+            background: rgba(0, 243, 255, 0.1);
+            border: 1px solid #00f3ff;
+            border-radius: 8px;
+            padding: 8px 14px;
+            margin: 10px 0 15px 0;
+            font-size: 0.85rem;
+            color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.2);
+        }
+
+        .icon-legend-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            width: 100%;
+            max-width: 380px;
+            margin-bottom: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            padding: 10px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .legend-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.7rem;
+            color: #a0a5c0;
+        }
+
+        .legend-item img {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+            margin-bottom: 4px;
+        }
+
         button {
-            margin-top: 18px;
             padding: 12px 30px;
             background: #00f3ff;
             color: #05050a;
@@ -82,23 +143,66 @@
 <body>
 
     <h1>CYBER CITADEL: MALWARE STRIKE</h1>
-    <p>[A/D] / [Panah] Gerak | [SPASI] Tembak</p>
+    <p>[A/D] / [Panah] Gerak | [SPASI] Tembak | Touch HP</p>
 
     <div id="gameWrapper">
         <canvas id="canvas" width="480" height="600"></canvas>
         <div class="hud">
-            <div>SCORE: <span id="score">0</span> <span id="combo" style="color:#ffd700; font-size:0.85rem"></span></div>
+            <div>SCORE: <span id="score">0</span> <span id="combo" style="color:#ffd700; font-size:0.8rem"></span></div>
             <div>SHIELD: <span id="hp" style="color:#00ff66">100%</span></div>
         </div>
         <div id="bossBarContainer">
             <div id="bossBar"></div>
         </div>
 
-        <div id="overlay">
-            <h2 id="ovTitle" style="color: #ff0055; font-size: 2rem; text-shadow: 0 0 15px #ff0055; margin-bottom: 10px;">SYSTEM BREACHED</h2>
+        <!-- START SCREEN HASIL KARYA -->
+        <div id="startScreen" class="overlay-screen">
+            <h2 style="color: #00f3ff; font-size: 1.6rem; text-shadow: 0 0 15px #00f3ff;">CYBER CITADEL v1.0</h2>
+            
+            <div class="author-box">
+                <div><strong>Karya Mandiri PKJ</strong></div>
+                <div style="color: #ffd700; font-weight: bold; margin-top:2px;">Razid Rahmanto</div>
+                <div style="font-size: 0.75rem; color: #a0a5c0; margin-top: 2px;">D2 Pemeliharaan Komputer & Jaringan</div>
+                <div style="font-size: 0.7rem; color: #58a6ff;">AKN Pacitan</div>
+            </div>
+
+            <!-- LEGENDA ICON PANDUAN DOSEN -->
+            <div class="icon-legend-grid">
+                <div class="legend-item">
+                    <img src="player.png" alt="Router">
+                    <span>Router (Player)</span>
+                </div>
+                <div class="legend-item">
+                    <img src="enemy_ddos.png" alt="DDoS">
+                    <span>DDoS Missile</span>
+                </div>
+                <div class="legend-item">
+                    <img src="enemy_trojan.png" alt="Trojan">
+                    <span>Trojan Virus</span>
+                </div>
+                <div class="legend-item">
+                    <img src="enemy_ransom.png" alt="Malware">
+                    <span>Ransomware</span>
+                </div>
+                <div class="legend-item">
+                    <img src="boss.png" alt="Boss">
+                    <span>Mega Boss</span>
+                </div>
+                <div class="legend-item">
+                    <img src="power_shield.png" alt="Shield">
+                    <span>Shield Power</span>
+                </div>
+            </div>
+
+            <button onclick="startGame()">START SYSTEM</button>
+        </div>
+
+        <!-- GAME OVER SCREEN -->
+        <div id="gameOverScreen" class="overlay-screen hidden">
+            <h2 id="ovTitle" style="color: #ff0055; font-size: 1.8rem; text-shadow: 0 0 15px #ff0055; margin-bottom: 10px;">SYSTEM BREACHED</h2>
             <p style="color: #ffffff;">Skor Akhir: <span id="ovScore">0</span></p>
-            <p style="color: #ffd700; margin-top:5px;">High Score: <span id="ovHigh">0</span></p>
-            <button onclick="resetGame()">INITIALIZE SYSTEM</button>
+            <p style="color: #ffd700; margin-top:5px; margin-bottom: 15px;">High Score: <span id="ovHigh">0</span></p>
+            <button onclick="startGame()">REBOOT SYSTEM</button>
         </div>
     </div>
 
@@ -108,7 +212,8 @@ const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
 const comboEl = document.getElementById('combo');
 const hpEl = document.getElementById('hp');
-const overlay = document.getElementById('overlay');
+const startScreen = document.getElementById('startScreen');
+const gameOverScreen = document.getElementById('gameOverScreen');
 const bossBarContainer = document.getElementById('bossBarContainer');
 const bossBar = document.getElementById('bossBar');
 
@@ -160,8 +265,8 @@ function playSound(type) {
 let keys = {}, bullets = [], enemies = [], particles = [], powerups = [], boss = null;
 let score = 0, combo = 0, hp = 100, highScore = localStorage.getItem('pkj_high') || 0;
 let shakeTimer = 0, tripleShotTimer = 0, shieldActive = false, gameLoop;
+let isPlaying = false;
 
-// Player Router Size (52x52 px - Presisi)
 let player = { x: 214, y: 510, w: 52, h: 52, speed: 7 };
 
 document.addEventListener('keydown', e => { 
@@ -171,15 +276,20 @@ document.addEventListener('keydown', e => {
 document.addEventListener('keyup', e => keys[e.code] = false);
 
 // Touch Support HP
-canvas.addEventListener('touchmove', e => {
+function handleTouch(e) {
+    if(!isPlaying) return;
     let r = canvas.getBoundingClientRect();
-    player.x = Math.max(0, Math.min(canvas.width - player.w, e.touches[0].clientX - r.left - player.w/2));
+    let scaleX = canvas.width / r.width;
+    let touchX = (e.touches[0].clientX - r.left) * scaleX;
+    player.x = Math.max(0, Math.min(canvas.width - player.w, touchX - player.w / 2));
     shoot();
     e.preventDefault();
-}, {passive:false});
+}
+canvas.addEventListener('touchstart', handleTouch, {passive:false});
+canvas.addEventListener('touchmove', handleTouch, {passive:false});
 
 function shoot() {
-    if(!overlay.classList.contains('hidden')) return;
+    if(!isPlaying) return;
     playSound('shoot');
     if(tripleShotTimer > 0) {
         bullets.push({x: player.x + 4, y: player.y, w: 6, h: 14, vx: -2, vy: -10});
@@ -203,7 +313,6 @@ function createExplosion(x, y, color, count=12) {
 
 function spawnEnemy() {
     if(boss) return;
-    // Rasio Dimensi Diatur Khusus Biar Nggak Gepeng
     const types = [
         { type: 'ddos', color: '#00f3ff', hp: 1, speed: 3.8, points: 10, w: 32, h: 54, imgKey: 'ddos', label: 'DDoS' },
         { type: 'trojan', color: '#ff0055', hp: 2, speed: 2.5, points: 25, w: 44, h: 44, imgKey: 'trojan', label: 'TROJAN' },
@@ -219,7 +328,6 @@ function spawnEnemy() {
         y: -60, ...selected
     });
 
-    // Boss Malware Size 96x96 px (Tengkorak Raksasa Pas & Proporsional)
     if(score >= 400 && !boss && Math.random() < 0.08) {
         boss = { x: 192, y: -100, w: 96, h: 96, hp: 50, maxHp: 50, vx: 3, imgKey: 'boss' };
         bossBarContainer.style.display = 'block';
@@ -237,13 +345,15 @@ function spawnPowerup(x, y) {
     }
 }
 
-function resetGame() {
+function startGame() {
     score = 0; combo = 0; hp = 100;
     bullets = []; enemies = []; particles = []; powerups = []; boss = null;
-    tripleShotTimer = 0; shieldActive = false;
+    tripleShotTimer = 0; shieldActive = false; isPlaying = true;
+    player.x = 214;
     scoreEl.innerText = 0; comboEl.innerText = ''; hpEl.innerText = '100%';
     bossBarContainer.style.display = 'none';
-    overlay.classList.add('hidden');
+    startScreen.classList.add('hidden');
+    gameOverScreen.classList.add('hidden');
     clearInterval(gameLoop);
     gameLoop = setInterval(update, 1000/60);
 }
@@ -273,7 +383,7 @@ function update() {
     for(let i=0; i<canvas.width; i+=30) { ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,canvas.height); ctx.stroke(); }
     for(let j=0; j<canvas.height; j+=30) { ctx.beginPath(); ctx.moveTo(0,j); ctx.lineTo(canvas.width,j); ctx.stroke(); }
 
-    // Control Player
+    // Control Player Keyboard
     if(keys['ArrowLeft'] || keys['KeyA']) if(player.x > 0) player.x -= player.speed;
     if(keys['ArrowRight'] || keys['KeyD']) if(player.x < canvas.width - player.w) player.x += player.speed;
     if(tripleShotTimer > 0) tripleShotTimer--;
@@ -305,7 +415,6 @@ function update() {
 
     if(Math.random() < 0.035) spawnEnemy();
 
-    // Timer Kedip Text
     const isBlink = Math.floor(Date.now() / 250) % 2 === 0;
 
     // Enemies
@@ -322,7 +431,7 @@ function update() {
             ctx.fillRect(e.x, e.y, e.w, e.h);
         }
 
-        // Title VIRUS / DDoS Kedip Merah Neon Di Atas Icon
+        // Title VIRUS / DDoS Kedip Merah Neon
         if(isBlink) {
             ctx.fillStyle = '#ff0055';
             ctx.font = 'bold 10px monospace';
@@ -382,7 +491,7 @@ function update() {
             ctx.fillRect(boss.x, boss.y, boss.w, boss.h);
         }
 
-        // Title MEGA VIRUS BOSS Kedip-Kedip Merah Neon
+        // Title MEGA VIRUS BOSS Kedip-Kedip
         if(isBlink) {
             ctx.fillStyle = '#ff0000';
             ctx.font = 'bold 12px monospace';
@@ -458,15 +567,14 @@ function takeDamage(amt) {
     hp -= amt;
     hpEl.innerText = `${Math.max(0, hp)}%`;
     if(hp <= 0) {
+        isPlaying = false;
         clearInterval(gameLoop);
         if(score > highScore) { highScore = score; localStorage.setItem('pkj_high', highScore); }
         document.getElementById('ovScore').innerText = score;
         document.getElementById('ovHigh').innerText = highScore;
-        overlay.classList.remove('hidden');
+        gameOverScreen.classList.remove('hidden');
     }
 }
-
-resetGame();
 </script>
 </body>
 </html>
