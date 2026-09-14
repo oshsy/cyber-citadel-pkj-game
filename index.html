@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PKJ Cyber Citadel - DDoS & Malware Defense</title>
+    <!-- Favicon / Icon Tab Browser -->
+    <link rel="icon" type="image/png" sizes="32x32" href="icon.png">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -17,28 +19,29 @@
             min-height: 100vh;
             overflow: hidden;
         }
-        h1 { font-size: 1.6rem; text-shadow: 0 0 12px #00f3ff; margin-bottom: 4px; }
-        p { color: #a0a5c0; font-size: 0.85rem; margin-bottom: 12px; }
+        h1 { font-size: 1.5rem; text-shadow: 0 0 12px #00f3ff; margin-bottom: 4px; text-align: center; }
+        p { color: #a0a5c0; font-size: 0.85rem; margin-bottom: 10px; text-align: center; }
         #gameWrapper { position: relative; }
         canvas {
             border: 2px solid #00f3ff;
             border-radius: 10px;
             background: #0a0a14;
             box-shadow: 0 0 25px rgba(0, 243, 255, 0.3);
+            display: block;
         }
         .hud {
             position: absolute;
             top: 12px; left: 15px; right: 15px;
             display: flex;
             justify-content: space-between;
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: bold;
             pointer-events: none;
             text-shadow: 0 0 8px #000;
         }
         #bossBarContainer {
             position: absolute;
-            top: 45px; left: 50%;
+            top: 42px; left: 50%;
             transform: translateX(-50%);
             width: 70%;
             height: 14px;
@@ -79,12 +82,12 @@
 <body>
 
     <h1>CYBER CITADEL: MALWARE STRIKE</h1>
-    <p>[A/D] atau [Panah] Bergerak | [SPASI] Tembak | Tembak Power-Up Neon!</p>
+    <p>[A/D] / [Panah] Gerak | [SPASI] Tembak</p>
 
     <div id="gameWrapper">
         <canvas id="canvas" width="480" height="600"></canvas>
         <div class="hud">
-            <div>SCORE: <span id="score">0</span> <span id="combo" style="color:#ffd700; font-size:0.9rem"></span></div>
+            <div>SCORE: <span id="score">0</span> <span id="combo" style="color:#ffd700; font-size:0.85rem"></span></div>
             <div>SHIELD: <span id="hp" style="color:#00ff66">100%</span></div>
         </div>
         <div id="bossBarContainer">
@@ -109,7 +112,21 @@ const overlay = document.getElementById('overlay');
 const bossBarContainer = document.getElementById('bossBarContainer');
 const bossBar = document.getElementById('bossBar');
 
-// Audio Synthesizer Bawaan Browser
+// Load Gambar (Otomatis pakai fallback neon jika gambar belum ada)
+const imgs = {
+    player: new Image(),
+    ddos: new Image(),
+    trojan: new Image(),
+    ransom: new Image(),
+    boss: new Image()
+};
+imgs.player.src = 'player.png';
+imgs.ddos.src = 'enemy_ddos.png';
+imgs.trojan.src = 'enemy_trojan.png';
+imgs.ransom.src = 'enemy_ransom.png';
+imgs.boss.src = 'boss.png';
+
+// Audio Synthesizer Browser
 const audio = new (window.AudioContext || window.webkitAudioContext)();
 function playSound(type) {
     try {
@@ -138,9 +155,12 @@ let keys = {}, bullets = [], enemies = [], particles = [], powerups = [], boss =
 let score = 0, combo = 0, hp = 100, highScore = localStorage.getItem('pkj_high') || 0;
 let shakeTimer = 0, tripleShotTimer = 0, shieldActive = false, gameLoop;
 
-let player = { x: 215, y: 520, w: 50, h: 40, speed: 7 };
+let player = { x: 215, y: 510, w: 50, h: 50, speed: 7 };
 
-document.addEventListener('keydown', e => { keys[e.code] = true; if(e.code==='Space') shoot(); });
+document.addEventListener('keydown', e => { 
+    keys[e.code] = true; 
+    if(e.code==='Space') shoot(); 
+});
 document.addEventListener('keyup', e => keys[e.code] = false);
 
 // Touch Support HP
@@ -152,14 +172,14 @@ canvas.addEventListener('touchmove', e => {
 }, {passive:false});
 
 function shoot() {
-    if(overlay.classList.contains('hidden') == false) return;
+    if(!overlay.classList.contains('hidden')) return;
     playSound('shoot');
     if(tripleShotTimer > 0) {
-        bullets.push({x: player.x + 5, y: player.y, vx: -2, vy: -10});
-        bullets.push({x: player.x + 22, y: player.y - 5, vx: 0, vy: -10});
-        bullets.push({x: player.x + 40, y: player.y, vx: 2, vy: -10});
+        bullets.push({x: player.x + 5, y: player.y, w: 6, h: 14, vx: -2, vy: -10});
+        bullets.push({x: player.x + player.w/2 - 3, y: player.y - 5, w: 6, h: 14, vx: 0, vy: -10});
+        bullets.push({x: player.x + player.w - 11, y: player.y, w: 6, h: 14, vx: 2, vy: -10});
     } else {
-        bullets.push({x: player.x + 22, y: player.y - 5, vx: 0, vy: -10});
+        bullets.push({x: player.x + player.w/2 - 3, y: player.y - 5, w: 6, h: 14, vx: 0, vy: -10});
     }
 }
 
@@ -177,9 +197,9 @@ function createExplosion(x, y, color, count=12) {
 function spawnEnemy() {
     if(boss) return;
     const types = [
-        { type: 'ddos', color: '#00f3ff', hp: 1, speed: 4, points: 10, size: 24 },
-        { type: 'trojan', color: '#ff0055', hp: 2, speed: 2.5, points: 25, size: 30 },
-        { type: 'ransom', color: '#ffd700', hp: 4, speed: 1.5, points: 50, size: 34 }
+        { type: 'ddos', color: '#00f3ff', hp: 1, speed: 3.5, points: 10, w: 36, h: 36, imgKey: 'ddos' },
+        { type: 'trojan', color: '#ff0055', hp: 2, speed: 2.5, points: 25, w: 42, h: 42, imgKey: 'trojan' },
+        { type: 'ransom', color: '#ffd700', hp: 4, speed: 1.5, points: 50, w: 48, h: 48, imgKey: 'ransom' }
     ];
     let r = Math.random();
     let selected = types[0];
@@ -187,13 +207,12 @@ function spawnEnemy() {
     if(r > 0.8) selected = types[2];
 
     enemies.push({
-        x: Math.random() * (canvas.width - 40) + 20,
-        y: -40, angle: 0, ...selected
+        x: Math.random() * (canvas.width - selected.w),
+        y: -50, ...selected
     });
 
-    // Spawn Boss at 400 Score
-    if(score >= 400 && !boss && Math.random() < 0.1) {
-        boss = { x: 180, y: -80, w: 120, h: 70, hp: 50, maxHp: 50, vx: 3, attackTimer: 0 };
+    if(score >= 400 && !boss && Math.random() < 0.08) {
+        boss = { x: 180, y: -90, w: 120, h: 70, hp: 50, maxHp: 50, vx: 3, imgKey: 'boss' };
         bossBarContainer.style.display = 'block';
     }
 }
@@ -201,7 +220,7 @@ function spawnEnemy() {
 function spawnPowerup(x, y) {
     if(Math.random() < 0.25) {
         const kinds = ['SHIELD', 'TRIPLE', 'NUKE'];
-        powerups.push({ x, y, type: kinds[Math.floor(Math.random()*kinds.length)], vy: 2 });
+        powerups.push({ x, y, type: kinds[Math.floor(Math.random()*kinds.length)], vy: 2, w: 40, h: 20 });
     }
 }
 
@@ -216,8 +235,15 @@ function resetGame() {
     gameLoop = setInterval(update, 1000/60);
 }
 
+// Deteksi Tabrakan Anti-Tembus (AABB Box Collision)
+function isColliding(a, b) {
+    return a.x < b.x + b.w &&
+           a.x + a.w > b.x &&
+           a.y < b.y + b.h &&
+           a.y + a.h > b.y;
+}
+
 function update() {
-    // Screen Shake
     let sx = 0, sy = 0;
     if(shakeTimer > 0) {
         shakeTimer--;
@@ -228,115 +254,114 @@ function update() {
     ctx.translate(sx, sy);
     ctx.clearRect(-20, -20, canvas.width+40, canvas.height+40);
 
-    // Dynamic Background Grid
+    // Background Grid
     ctx.strokeStyle = 'rgba(0, 243, 255, 0.05)';
     ctx.lineWidth = 1;
     for(let i=0; i<canvas.width; i+=30) { ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,canvas.height); ctx.stroke(); }
     for(let j=0; j<canvas.height; j+=30) { ctx.beginPath(); ctx.moveTo(0,j); ctx.lineTo(canvas.width,j); ctx.stroke(); }
 
-    // Player Controls
+    // Control Player
     if(keys['ArrowLeft'] || keys['KeyA']) if(player.x > 0) player.x -= player.speed;
     if(keys['ArrowRight'] || keys['KeyD']) if(player.x < canvas.width - player.w) player.x += player.speed;
     if(tripleShotTimer > 0) tripleShotTimer--;
 
-    // Draw Player Router (Visual Vector Graphic)
+    // Render Player
     ctx.shadowBlur = 15; ctx.shadowColor = '#00f3ff';
-    ctx.fillStyle = '#00f3ff';
-    ctx.fillRect(player.x + 10, player.y + 15, 30, 20); // Main Body
-    ctx.fillRect(player.x + 5, player.y + 5, 4, 15);    // Left Antenna
-    ctx.fillRect(player.x + 41, player.y + 5, 4, 15);   // Right Antenna
-    ctx.fillStyle = '#05050a'; ctx.fillRect(player.x + 15, player.y + 20, 20, 5); // Port Indicator
+    if(imgs.player.complete && imgs.player.naturalWidth !== 0) {
+        ctx.drawImage(imgs.player, player.x, player.y, player.w, player.h);
+    } else {
+        ctx.fillStyle = '#00f3ff';
+        ctx.fillRect(player.x + 10, player.y + 15, 30, 25);
+        ctx.fillRect(player.x + 5, player.y + 5, 4, 15);
+        ctx.fillRect(player.x + 41, player.y + 5, 4, 15);
+        ctx.fillStyle = '#05050a'; ctx.fillRect(player.x + 15, player.y + 25, 20, 5);
+    }
 
     if(shieldActive) {
         ctx.strokeStyle = '#00ff66'; ctx.lineWidth = 3;
-        ctx.beginPath(); ctx.arc(player.x+25, player.y+20, 32, 0, Math.PI*2); ctx.stroke();
+        ctx.beginPath(); ctx.arc(player.x+player.w/2, player.y+player.h/2, 35, 0, Math.PI*2); ctx.stroke();
     }
 
-    // Bullets Update & Draw
+    // Bullets
     ctx.fillStyle = '#00ff66'; ctx.shadowColor = '#00ff66';
     for(let i=bullets.length-1; i>=0; i--) {
         let b = bullets[i];
         b.x += b.vx; b.y += b.vy;
-        ctx.fillRect(b.x, b.y, 5, 12);
-        if(b.y < -10 || b.x < 0 || b.x > canvas.width) bullets.splice(i,1);
+        ctx.fillRect(b.x, b.y, b.w, b.h);
+        if(b.y < -20 || b.x < -10 || b.x > canvas.width + 10) bullets.splice(i,1);
     }
 
-    // Spawning Enemies
-    if(Math.random() < 0.04) spawnEnemy();
+    if(Math.random() < 0.035) spawnEnemy();
 
-    // Enemies Update & Draw
+    // Enemies
     for(let i=enemies.length-1; i>=0; i--) {
         let e = enemies[i];
         e.y += e.speed;
-        e.angle += 0.05;
 
         ctx.shadowBlur = 12; ctx.shadowColor = e.color;
-        ctx.fillStyle = e.color;
-        ctx.save();
-        ctx.translate(e.x, e.y);
-        ctx.rotate(e.angle);
-
-        // Custom Graphics Enemy Type
-        if(e.type === 'ddos') {
-            // Triangle Spike
-            ctx.beginPath(); ctx.moveTo(0,-e.size/2); ctx.lineTo(e.size/2, e.size/2); ctx.lineTo(-e.size/2, e.size/2); ctx.closePath(); ctx.fill();
-        } else if(e.type === 'trojan') {
-            // Hexagon Virus
-            ctx.fillRect(-e.size/2, -e.size/2, e.size, e.size);
+        let img = imgs[e.imgKey];
+        if(img.complete && img.naturalWidth !== 0) {
+            ctx.drawImage(img, e.x, e.y, e.w, e.h);
         } else {
-            // Skull/Lock Octagon
-            ctx.beginPath(); ctx.arc(0,0, e.size/2, 0, Math.PI*2); ctx.fill();
+            ctx.fillStyle = e.color;
+            ctx.fillRect(e.x, e.y, e.w, e.h);
         }
-        ctx.restore();
 
-        // Collision with Bullets
+        // Hit Bullet vs Enemy
+        let enemyHit = false;
         for(let j=bullets.length-1; j>=0; j--) {
             let b = bullets[j];
-            if(Math.hypot(b.x - e.x, b.y - e.y) < e.size) {
+            if(isColliding(b, e)) {
                 e.hp--;
                 bullets.splice(j,1);
-                createExplosion(e.x, e.y, e.color, 6);
+                createExplosion(b.x + b.w/2, b.y, e.color, 6);
                 if(e.hp <= 0) {
                     playSound('hit');
                     score += e.points;
                     combo++;
                     comboEl.innerText = `x${combo} COMBO!`;
                     scoreEl.innerText = score;
-                    spawnPowerup(e.x, e.y);
-                    createExplosion(e.x, e.y, e.color, 15);
+                    spawnPowerup(e.x + e.w/2, e.y + e.h/2);
+                    createExplosion(e.x + e.w/2, e.y + e.h/2, e.color, 15);
                     enemies.splice(i,1);
+                    enemyHit = true;
                     break;
                 }
             }
         }
+        if(enemyHit) continue;
 
-        // Hit Player
-        if(e && Math.hypot(player.x+25 - e.x, player.y+20 - e.y) < e.size + 15) {
+        // Enemy vs Player
+        if(isColliding(e, player)) {
             enemies.splice(i,1);
+            createExplosion(e.x + e.w/2, e.y + e.h/2, '#ff0055', 20);
             takeDamage(20);
-        } else if(e && e.y > canvas.height + 30) {
+        } else if(e.y > canvas.height + 40) {
             enemies.splice(i,1);
             combo = 0; comboEl.innerText = '';
         }
     }
 
-    // BOSS MALWARE Logic
+    // Boss Malware
     if(boss) {
         if(boss.y < 60) boss.y += 2;
         boss.x += boss.vx;
-        if(boss.x < 20 || boss.x > canvas.width - boss.w - 20) boss.vx *= -1;
+        if(boss.x < 10 || boss.x > canvas.width - boss.w - 10) boss.vx *= -1;
 
-        // Draw Boss Graphic
         ctx.shadowBlur = 20; ctx.shadowColor = '#ff0055';
-        ctx.fillStyle = '#ff0055';
-        ctx.fillRect(boss.x, boss.y, boss.w, boss.h);
-        ctx.fillStyle = '#05050a';
-        ctx.fillText("MAINFRAME_VIRUS", boss.x + 10, boss.y + 40);
+        if(imgs.boss.complete && imgs.boss.naturalWidth !== 0) {
+            ctx.drawImage(imgs.boss, boss.x, boss.y, boss.w, boss.h);
+        } else {
+            ctx.fillStyle = '#ff0055';
+            ctx.fillRect(boss.x, boss.y, boss.w, boss.h);
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '12px monospace';
+            ctx.fillText("MAINFRAME_VIRUS", boss.x + 10, boss.y + 40);
+        }
 
-        // Boss Bullet Hits
         for(let j=bullets.length-1; j>=0; j--) {
             let b = bullets[j];
-            if(b.x > boss.x && b.x < boss.x+boss.w && b.y > boss.y && b.y < boss.y+boss.h) {
+            if(isColliding(b, boss)) {
                 boss.hp--;
                 bullets.splice(j,1);
                 createExplosion(b.x, b.y, '#ff0055', 5);
@@ -344,7 +369,7 @@ function update() {
                 if(boss.hp <= 0) {
                     score += 500;
                     scoreEl.innerText = score;
-                    createExplosion(boss.x+60, boss.y+35, '#ff0055', 50);
+                    createExplosion(boss.x+boss.w/2, boss.y+boss.h/2, '#ff0055', 50);
                     boss = null;
                     bossBarContainer.style.display = 'none';
                     break;
@@ -353,7 +378,7 @@ function update() {
         }
     }
 
-    // Power-ups Collect
+    // Power-ups
     for(let i=powerups.length-1; i>=0; i--) {
         let p = powerups[i];
         p.y += p.vy;
@@ -362,19 +387,19 @@ function update() {
         ctx.font = '12px monospace';
         ctx.fillText(`[${p.type}]`, p.x, p.y);
 
-        if(Math.hypot(player.x+25 - p.x, player.y+20 - p.y) < 30) {
+        if(isColliding(p, player)) {
             playSound('powerup');
             if(p.type === 'SHIELD') shieldActive = true;
             if(p.type === 'TRIPLE') tripleShotTimer = 300;
             if(p.type === 'NUKE') {
-                enemies.forEach(e => createExplosion(e.x, e.y, e.color, 12));
+                enemies.forEach(e => createExplosion(e.x+e.w/2, e.y+e.h/2, e.color, 12));
                 enemies = [];
             }
             powerups.splice(i,1);
         } else if(p.y > canvas.height) powerups.splice(i,1);
     }
 
-    // Particles Draw
+    // Particles
     for(let i=particles.length-1; i>=0; i--) {
         let pt = particles[i];
         pt.x += pt.vx; pt.y += pt.vy; pt.life -= 0.03;
