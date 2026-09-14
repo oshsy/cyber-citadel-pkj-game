@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PKJ Cyber Citadel - DDoS & Malware Defense</title>
-    <!-- Favicon / Icon Tab Browser -->
     <link rel="icon" type="image/png" sizes="32x32" href="icon.png">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -112,19 +111,25 @@ const overlay = document.getElementById('overlay');
 const bossBarContainer = document.getElementById('bossBarContainer');
 const bossBar = document.getElementById('bossBar');
 
-// Load Gambar (Otomatis pakai fallback neon jika gambar belum ada)
+// Load Gambar Utama & Power-up Icons
 const imgs = {
     player: new Image(),
     ddos: new Image(),
     trojan: new Image(),
     ransom: new Image(),
-    boss: new Image()
+    boss: new Image(),
+    p_shield: new Image(),
+    p_triple: new Image(),
+    p_nuke: new Image()
 };
 imgs.player.src = 'player.png';
 imgs.ddos.src = 'enemy_ddos.png';
 imgs.trojan.src = 'enemy_trojan.png';
 imgs.ransom.src = 'enemy_ransom.png';
 imgs.boss.src = 'boss.png';
+imgs.p_shield.src = 'power_shield.png';
+imgs.p_triple.src = 'power_triple.png';
+imgs.p_nuke.src = 'power_nuke.png';
 
 // Audio Synthesizer Browser
 const audio = new (window.AudioContext || window.webkitAudioContext)();
@@ -197,8 +202,8 @@ function createExplosion(x, y, color, count=12) {
 function spawnEnemy() {
     if(boss) return;
     const types = [
-        { type: 'ddos', color: '#00f3ff', hp: 1, speed: 3.5, points: 10, w: 36, h: 36, imgKey: 'ddos' },
-        { type: 'trojan', color: '#ff0055', hp: 2, speed: 2.5, points: 25, w: 42, h: 42, imgKey: 'trojan' },
+        { type: 'ddos', color: '#00f3ff', hp: 1, speed: 3.5, points: 10, w: 40, h: 40, imgKey: 'ddos' },
+        { type: 'trojan', color: '#ff0055', hp: 2, speed: 2.5, points: 25, w: 45, h: 45, imgKey: 'trojan' },
         { type: 'ransom', color: '#ffd700', hp: 4, speed: 1.5, points: 50, w: 48, h: 48, imgKey: 'ransom' }
     ];
     let r = Math.random();
@@ -212,7 +217,8 @@ function spawnEnemy() {
     });
 
     if(score >= 400 && !boss && Math.random() < 0.08) {
-        boss = { x: 180, y: -90, w: 120, h: 70, hp: 50, maxHp: 50, vx: 3, imgKey: 'boss' };
+        // Boss size 110x110 (Proporsional untuk 128x128px icon)
+        boss = { x: 185, y: -110, w: 110, h: 110, hp: 50, maxHp: 50, vx: 3, imgKey: 'boss' };
         bossBarContainer.style.display = 'block';
     }
 }
@@ -220,7 +226,11 @@ function spawnEnemy() {
 function spawnPowerup(x, y) {
     if(Math.random() < 0.25) {
         const kinds = ['SHIELD', 'TRIPLE', 'NUKE'];
-        powerups.push({ x, y, type: kinds[Math.floor(Math.random()*kinds.length)], vy: 2, w: 40, h: 20 });
+        const type = kinds[Math.floor(Math.random()*kinds.length)];
+        let imgKey = 'p_shield';
+        if(type === 'TRIPLE') imgKey = 'p_triple';
+        if(type === 'NUKE') imgKey = 'p_nuke';
+        powerups.push({ x: x - 15, y, type, imgKey, vy: 2, w: 30, h: 30 });
     }
 }
 
@@ -235,7 +245,7 @@ function resetGame() {
     gameLoop = setInterval(update, 1000/60);
 }
 
-// Deteksi Tabrakan Anti-Tembus (AABB Box Collision)
+// AABB Box Collision (Anti-Tembus)
 function isColliding(a, b) {
     return a.x < b.x + b.w &&
            a.x + a.w > b.x &&
@@ -307,7 +317,7 @@ function update() {
             ctx.fillRect(e.x, e.y, e.w, e.h);
         }
 
-        // Hit Bullet vs Enemy
+        // Bullet vs Enemy
         let enemyHit = false;
         for(let j=bullets.length-1; j>=0; j--) {
             let b = bullets[j];
@@ -344,7 +354,7 @@ function update() {
 
     // Boss Malware
     if(boss) {
-        if(boss.y < 60) boss.y += 2;
+        if(boss.y < 50) boss.y += 2;
         boss.x += boss.vx;
         if(boss.x < 10 || boss.x > canvas.width - boss.w - 10) boss.vx *= -1;
 
@@ -356,7 +366,7 @@ function update() {
             ctx.fillRect(boss.x, boss.y, boss.w, boss.h);
             ctx.fillStyle = '#ffffff';
             ctx.font = '12px monospace';
-            ctx.fillText("MAINFRAME_VIRUS", boss.x + 10, boss.y + 40);
+            ctx.fillText("MAINFRAME_VIRUS", boss.x + 10, boss.y + 50);
         }
 
         for(let j=bullets.length-1; j>=0; j--) {
@@ -378,14 +388,20 @@ function update() {
         }
     }
 
-    // Power-ups
+    // Power-ups Render (Icon Support)
     for(let i=powerups.length-1; i>=0; i--) {
         let p = powerups[i];
         p.y += p.vy;
         ctx.shadowBlur = 10; ctx.shadowColor = '#ffd700';
-        ctx.fillStyle = '#ffd700';
-        ctx.font = '12px monospace';
-        ctx.fillText(`[${p.type}]`, p.x, p.y);
+
+        let pImg = imgs[p.imgKey];
+        if(pImg.complete && pImg.naturalWidth !== 0) {
+            ctx.drawImage(pImg, p.x, p.y, p.w, p.h);
+        } else {
+            ctx.fillStyle = '#ffd700';
+            ctx.font = '12px monospace';
+            ctx.fillText(`[${p.type}]`, p.x, p.y);
+        }
 
         if(isColliding(p, player)) {
             playSound('powerup');
