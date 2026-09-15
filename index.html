@@ -48,6 +48,7 @@
             align-items: center;
             width: 100%;
             max-width: 480px;
+            aspect-ratio: 480 / 600;
         }
         
         canvas {
@@ -61,6 +62,42 @@
             max-height: 74vh;
             aspect-ratio: 480 / 600;
             touch-action: none;
+        }
+
+        /* LANDSCAPE ADAPTIVE DESIGN */
+        @media (orientation: landscape) {
+            body {
+                padding: 4px;
+            }
+            h1, .subtitle {
+                display: none; /* Sembunyikan header di mode landscape untuk memaksimalkan tinggi canvas */
+            }
+            #gameWrapper {
+                max-width: none;
+                height: 95vh;
+                width: auto;
+            }
+            canvas {
+                height: 100%;
+                width: auto;
+                max-height: 95vh;
+            }
+        }
+
+        /* FULLSCREEN STYLE SUPPORT */
+        #gameWrapper:fullscreen, #gameWrapper:-webkit-full-screen {
+            width: 100vw;
+            height: 100vh;
+            max-width: none;
+            background: #121318;
+            border-radius: 0;
+        }
+        #gameWrapper:fullscreen canvas, #gameWrapper:-webkit-full-screen canvas {
+            height: 100vh;
+            width: auto;
+            max-height: 100vh;
+            border-radius: 0;
+            border: none;
         }
 
         /* HUD PRESISI DAN RAPI */
@@ -131,7 +168,6 @@
             object-fit: contain;
         }
         
-        /* BOSS BAR DITATA AGAR TIDAK MENUTUPI CANVAS TEKS */
         #bossBarContainer {
             position: absolute;
             top: 44px; left: 50%;
@@ -159,14 +195,15 @@
             text-align: center;
             z-index: 10;
             backdrop-filter: blur(12px);
+            overflow-y: auto;
         }
 
         .author-box {
             background: #1e2027;
             border: 1px solid #2d313a;
             border-radius: 18px;
-            padding: 10px 18px;
-            margin: 8px 0 12px 0;
+            padding: 8px 16px;
+            margin: 6px 0 10px 0;
             width: 100%;
             max-width: 360px;
         }
@@ -175,21 +212,21 @@
             color: #a8c7fa; 
             font-weight: 700; 
             font-size: 0.95rem;
-            margin-top: 2px;
+            margin-top: 1px;
         }
 
         .author-sub {
-            font-size: 0.75rem; 
+            font-size: 0.72rem; 
             color: #c4c6d0; 
-            margin-top: 2px;
+            margin-top: 1px;
         }
 
         .diff-title {
-            font-size: 0.72rem;
+            font-size: 0.7rem;
             color: #a8c7fa;
             letter-spacing: 0.8px;
             font-weight: 700;
-            margin-bottom: 6px;
+            margin-bottom: 5px;
             text-transform: uppercase;
         }
 
@@ -198,17 +235,17 @@
             gap: 6px;
             width: 100%;
             max-width: 360px;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
         .diff-btn {
             flex: 1;
-            padding: 8px 0;
+            padding: 7px 0;
             background: #1e2027;
             color: #c4c6d0;
             border: 1px solid #2d313a;
             border-radius: 12px;
-            font-size: 0.72rem;
+            font-size: 0.7rem;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -229,13 +266,13 @@
         .icon-legend-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
+            gap: 6px;
             width: 100%;
             max-width: 360px;
-            margin-bottom: 14px;
+            margin-bottom: 12px;
             background: #1e2027;
             border-radius: 18px;
-            padding: 10px 8px;
+            padding: 8px 6px;
             border: 1px solid #2d313a;
         }
 
@@ -247,8 +284,8 @@
         }
 
         .legend-item img {
-            width: 28px;
-            height: 28px;
+            width: 26px;
+            height: 26px;
             max-width: 64px;
             max-height: 64px;
             object-fit: contain;
@@ -256,41 +293,40 @@
         }
 
         .legend-item span {
-            font-size: 0.65rem;
+            font-size: 0.62rem;
             color: #c4c6d0;
             white-space: nowrap;
         }
 
-        /* GRID TOMBOL ACTION MENU (RESTART, HOME, NYERAH) */
         .menu-action-grid {
             display: flex;
             flex-direction: column;
             gap: 8px;
             width: 100%;
             max-width: 280px;
-            margin-top: 10px;
+            margin-top: 8px;
         }
 
         .btn-action {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            padding: 10px 18px;
+            gap: 8px;
+            padding: 9px 16px;
             background: #1e2027;
             color: #e2e2e9;
             border: 1px solid #2d313a;
             border-radius: 100px;
             font-family: inherit;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s ease;
         }
 
         .btn-action img {
-            width: 22px;
-            height: 22px;
+            width: 20px;
+            height: 20px;
             max-width: 64px;
             max-height: 64px;
             object-fit: contain;
@@ -360,13 +396,13 @@
 
         <!-- START SCREEN -->
         <div id="startScreen" class="overlay-screen">
-            <h2 style="color: #d3e3fd; font-size: 1.35rem; font-weight: 700;">NETWORK DEFENSE</h2>
+            <h2 style="color: #d3e3fd; font-size: 1.25rem; font-weight: 700;">NETWORK DEFENSE</h2>
             
             <div class="author-box">
-                <div style="font-size: 0.68rem; color: #a8c7fa; letter-spacing: 1px; font-weight: 700;">KARYA MANDIRI PKJ</div>
+                <div style="font-size: 0.65rem; color: #a8c7fa; letter-spacing: 1px; font-weight: 700;">KARYA MANDIRI PKJ</div>
                 <div class="author-name">Razid Rahmanto</div>
                 <div class="author-sub">D2 Pemeliharaan Komputer & Jaringan</div>
-                <div style="font-size: 0.68rem; color: #8e9099; margin-top: 1px;">AKN Pacitan</div>
+                <div style="font-size: 0.65rem; color: #8e9099; margin-top: 1px;">AKN Pacitan</div>
             </div>
 
             <div class="diff-title">Pilih Tingkat Kesulitan</div>
@@ -404,13 +440,13 @@
                 </div>
             </div>
 
-            <button class="btn-action btn-primary-action" style="padding: 12px 40px;" onclick="startGame()">MULAI GAME</button>
+            <button class="btn-action btn-primary-action" style="padding: 10px 36px;" onclick="startGame()">MULAI GAME</button>
         </div>
 
         <!-- PAUSE MENU OVERLAY -->
         <div id="pauseScreen" class="overlay-screen hidden">
-            <h2 style="color: #d3e3fd; font-size: 1.5rem; font-weight:700; margin-bottom: 4px;">GAME DIHENTIKAN</h2>
-            <p style="color: #c4c6d0; font-size: 0.8rem; margin-bottom: 12px;">Pilih Tindakan Pertahanan</p>
+            <h2 style="color: #d3e3fd; font-size: 1.4rem; font-weight:700; margin-bottom: 2px;">GAME DIHENTIKAN</h2>
+            <p style="color: #c4c6d0; font-size: 0.78rem; margin-bottom: 8px;">Pilih Tindakan Pertahanan</p>
             
             <div class="menu-action-grid">
                 <button class="btn-action btn-primary-action" onclick="resumeGame()">
@@ -432,10 +468,10 @@
 
         <!-- GAME OVER SCREEN -->
         <div id="gameOverScreen" class="overlay-screen hidden">
-            <h2 id="ovTitle" style="color: #ff5449; font-size: 1.6rem; font-weight:700; margin-bottom: 4px;">KAMU KALAH!</h2>
-            <p style="color: #c4c6d0; font-size: 0.85rem; margin-bottom: 4px;">Sistem Router Jebol Ditembus Virus</p>
-            <p style="color: #e2e2e9; font-size: 0.95rem; margin-top: 4px;">Skor Akhir: <span id="ovScore" style="color:#a8c7fa; font-weight:bold;">0</span></p>
-            <p style="color: #f7d488; font-size: 0.85rem; margin-top:2px; margin-bottom: 14px;">Skor Tertinggi: <span id="ovHigh">0</span></p>
+            <h2 id="ovTitle" style="color: #ff5449; font-size: 1.5rem; font-weight:700; margin-bottom: 4px;">KAMU KALAH!</h2>
+            <p style="color: #c4c6d0; font-size: 0.82rem; margin-bottom: 4px;">Sistem Router Jebol Ditembus Virus</p>
+            <p style="color: #e2e2e9; font-size: 0.9rem; margin-top: 4px;">Skor Akhir: <span id="ovScore" style="color:#a8c7fa; font-weight:bold;">0</span></p>
+            <p style="color: #f7d488; font-size: 0.8rem; margin-top:2px; margin-bottom: 12px;">Skor Tertinggi: <span id="ovHigh">0</span></p>
             
             <div class="menu-action-grid">
                 <button class="btn-action btn-primary-action" onclick="startGame()">
@@ -549,11 +585,12 @@ document.addEventListener('keyup', e => keys[e.code] = false);
 
 function toggleFullscreen() {
     const elem = document.getElementById('gameWrapper');
-    if (!document.fullscreenElement) {
+    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
         if (elem.requestFullscreen) elem.requestFullscreen();
         else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
     } else {
         if (document.exitFullscreen) document.exitFullscreen();
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
     }
 }
 
@@ -625,7 +662,6 @@ function spawnEnemy() {
     });
 
     if(score >= 400 && !boss && Math.random() < 0.08) {
-        // Boss ditargetkan turun ke Y = 85 agar tidak menutupi HUD
         boss = { x: 192, y: -100, targetY: 85, w: 96, h: 96, hp: 60, maxHp: 60, vx: 3 * finalSpeedMult, imgKey: 'boss' };
         bossBarContainer.style.display = 'block';
     }
@@ -815,7 +851,6 @@ function update() {
         }
     }
 
-    // BOS MALWARE - POSISI TURUN DISESUAIKAN SULIT KETUTUP HUD
     if(boss) {
         if(boss.y < boss.targetY) boss.y += 2;
         boss.x += boss.vx;
