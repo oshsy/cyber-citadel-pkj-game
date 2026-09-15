@@ -13,7 +13,7 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background: #0f1015;
+            background: #090a0f;
             color: #e2e2e9;
             font-family: 'Google Sans', 'Roboto', system-ui, -apple-system, sans-serif;
             display: flex;
@@ -30,7 +30,7 @@
         }
 
         h1 { 
-            font-size: 1.25rem; 
+            font-size: 1.2rem; 
             font-weight: 700;
             color: #d3e3fd; 
             letter-spacing: 0.5px;
@@ -38,73 +38,80 @@
         }
         .subtitle { 
             color: #c4c6d0; 
-            font-size: 0.72rem; 
+            font-size: 0.7rem; 
             background: #1e2027;
-            padding: 3px 12px;
+            padding: 2px 10px;
             border-radius: 100px;
             border: 1px solid #2d313a;
             display: inline-block;
         }
         
-        /* FIX GAMEWRAPPER: KUNCI RASIO CANVAS 480x600 AGAR TIDAK GEPENG & HUD TIDAK LEPAS */
+        /* PEMBUNGKUS UTAMA LAYAR FULLSCREEN / WINDOW */
         #gameWrapper { 
             position: relative; 
             display: flex;
             justify-content: center;
             align-items: center;
-            /* Menyesuaikan layar HP/Tablet/Desktop tanpa merusak rasio 480:600 */
-            height: min(92vh - 30px, 94vw * (600 / 480));
-            width: calc(min(92vh - 30px, 94vw * (600 / 480)) * (480 / 600));
+            width: 100vw;
+            height: 100vh;
+            background: #090a0f;
+            overflow: hidden;
+        }
+        
+        /* FIX KUNCI RASIO 4:5 (480x600) UNTUK KANVAS & HUD - ANTI GEPENG */
+        #canvasArea {
+            position: relative;
+            /* Formula presisi responsif mengunci rasio 480:600 di HP/Tablet/PC */
+            width: min(94vw, calc(82vh * (480 / 600)));
+            height: min(82vh, calc(94vw * (600 / 480)));
             max-width: 480px;
             max-height: 600px;
             aspect-ratio: 480 / 600;
-            margin: auto;
-        }
-        
-        canvas {
-            border: 1px solid #2d313a;
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.7);
             border-radius: 20px;
+            overflow: hidden;
             background: #1a1c23;
-            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6);
+            border: 1px solid #2d313a;
+            flex-shrink: 0;
+        }
+
+        /* STYLING MODE LANDSCAPE & SCREEN PENDEK */
+        @media (orientation: landscape), (max-height: 540px) {
+            .header-title { display: none !important; }
+            #canvasArea {
+                width: min(98vw, calc(96vh * (480 / 600)));
+                height: min(96vh, calc(98vw * (600 / 480)));
+                max-width: none;
+                max-height: none;
+            }
+        }
+
+        /* FIX FULLSCREEN: TETAP DIPAKSA RASIO 4:5 DI TENGAH LAYAR HP/PC */
+        #gameWrapper:fullscreen #canvasArea,
+        #gameWrapper:-webkit-full-screen #canvasArea {
+            max-width: none !important;
+            max-height: none !important;
+            width: min(98vw, calc(98vh * (480 / 600))) !important;
+            height: min(98vh, calc(98vw * (600 / 480))) !important;
+            border-radius: 0;
+            border: none;
+        }
+
+        canvas {
             display: block;
             width: 100% !important;
             height: 100% !important;
             touch-action: none;
         }
 
-        /* MODE LANDSCAPE: SEMBUNYIKAN JUDUL ATAS & JAGA KANVAS TETAP DI TENGAH (NO GEPENG) */
-        @media (orientation: landscape), (max-height: 580px) {
-            .header-title { display: none !important; }
-            #gameWrapper {
-                height: 96vh;
-                width: calc(96vh * (480 / 600));
-                max-width: none;
-                max-height: none;
-            }
-        }
-
-        /* FIX FULLSCREEN: TETAAP JAGA PROPORSI CANVAS KETAT DI TENGAH LAYAR */
-        #gameWrapper:fullscreen, #gameWrapper:-webkit-full-screen {
-            width: calc(100vh * (480 / 600)) !important;
-            height: 100vh !important;
-            max-width: none !important;
-            max-height: none !important;
-            background: #0f1015;
-            margin: auto;
-        }
-        #gameWrapper:fullscreen canvas, #gameWrapper:-webkit-full-screen canvas {
-            border-radius: 0;
-            border: none;
-        }
-
-        /* HUD PRESISI TERKUNCI DALAM BOUNDS CANVAS */
+        /* HUD TERKUNCI DALAM CANVASAREA (TIDAK AKAN LEPAS KE POJOK LAYAR) */
         .hud {
             position: absolute;
             top: 8px; left: 8px; right: 8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.68rem;
+            font-size: 0.65rem;
             font-weight: 600;
             pointer-events: none;
             color: #e2e2e9;
@@ -157,7 +164,7 @@
         
         #bossBarContainer {
             position: absolute;
-            top: 40px; left: 50%;
+            top: 38px; left: 50%;
             transform: translateX(-50%);
             width: 60%;
             height: 6px;
@@ -169,17 +176,16 @@
         }
         #bossBar { width: 100%; height: 100%; background: #ffb4ab; transition: width 0.1s; }
         
-        /* OVERLAY MENU TERKUNCI PERSIS DI ATAS CANVAS */
+        /* OVERLAY SCREEN MENU TERKUNCI DALAM KANVAS */
         .overlay-screen {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(18, 19, 24, 0.95);
+            background: rgba(18, 19, 24, 0.96);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            border-radius: 20px;
-            padding: 14px;
+            padding: 12px;
             text-align: center;
             z-index: 10;
             backdrop-filter: blur(12px);
@@ -190,16 +196,16 @@
             flex-direction: column;
             align-items: center;
             width: 100%;
-            max-width: 360px;
+            max-width: 340px;
             gap: 4px;
         }
 
         .author-box {
             background: #1e2027;
             border: 1px solid #2d313a;
-            border-radius: 14px;
-            padding: 6px 12px;
-            margin: 4px 0 6px 0;
+            border-radius: 12px;
+            padding: 6px 10px;
+            margin: 2px 0 4px 0;
             width: 100%;
         }
 
@@ -210,16 +216,16 @@
         }
 
         .author-sub {
-            font-size: 0.65rem; 
+            font-size: 0.62rem; 
             color: #c4c6d0; 
         }
 
         .diff-title {
-            font-size: 0.65rem;
+            font-size: 0.62rem;
             color: #a8c7fa;
             letter-spacing: 0.8px;
             font-weight: 700;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
             text-transform: uppercase;
         }
 
@@ -232,12 +238,12 @@
 
         .diff-btn {
             flex: 1;
-            padding: 6px 0;
+            padding: 5px 0;
             background: #1e2027;
             color: #c4c6d0;
             border: 1px solid #2d313a;
-            border-radius: 10px;
-            font-size: 0.62rem;
+            border-radius: 8px;
+            font-size: 0.6rem;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -259,9 +265,9 @@
             grid-template-columns: repeat(3, 1fr);
             gap: 4px;
             width: 100%;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             background: #1e2027;
-            border-radius: 14px;
+            border-radius: 12px;
             padding: 6px;
             border: 1px solid #2d313a;
         }
@@ -274,15 +280,15 @@
         }
 
         .legend-item img {
-            width: 22px;
-            height: 22px;
+            width: 20px;
+            height: 20px;
             max-width: 64px;
             max-height: 64px;
             object-fit: contain;
         }
 
         .legend-item span {
-            font-size: 0.58rem;
+            font-size: 0.55rem;
             color: #c4c6d0;
             white-space: nowrap;
         }
@@ -292,30 +298,30 @@
             flex-direction: column;
             gap: 6px;
             width: 100%;
-            max-width: 260px;
-            margin-top: 6px;
+            max-width: 240px;
+            margin-top: 4px;
         }
 
         .btn-action {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            padding: 8px 14px;
+            gap: 6px;
+            padding: 7px 12px;
             background: #1e2027;
             color: #e2e2e9;
             border: 1px solid #2d313a;
             border-radius: 100px;
             font-family: inherit;
-            font-size: 0.78rem;
+            font-size: 0.75rem;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s ease;
         }
 
         .btn-action img {
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             max-width: 64px;
             max-height: 64px;
             object-fit: contain;
@@ -347,124 +353,128 @@
     </div>
 
     <div id="gameWrapper">
-        <canvas id="canvas" width="480" height="600"></canvas>
-        <div class="hud">
-            <div class="hud-left">
-                <div class="hud-chip">
-                    <span>SKOR:</span> <span id="score" style="color:#a8c7fa;">0</span> 
-                    <span id="combo" style="color:#f7d488; font-size:0.62rem"></span>
-                </div>
-                <div class="hud-chip">
-                    <span id="hudDiff" style="color:#f7d488;">MEDIUM</span>
-                </div>
-            </div>
-            <div class="hud-right">
-                <div class="hud-chip">
-                    <img src="power_shield.png" class="hud-icon" alt="HP" onerror="this.style.display='none'">
-                    <span id="hp" style="color:#6ddb9d">100%</span>
-                </div>
-                <button class="hud-btn" onclick="toggleFullscreen()" title="Full Screen">
-                    <img src="icon_fullscreen.png" class="btn-icon-img" alt="FS" onerror="this.outerHTML='⛶'">
-                </button>
-                <button class="hud-btn" onclick="pauseGame()" title="Pause Menu">
-                    <img src="icon_pause.png" class="btn-icon-img" alt="II" onerror="this.outerHTML='❚❚'">
-                </button>
-            </div>
-        </div>
-
-        <div id="bossBarContainer">
-            <div id="bossBar"></div>
-        </div>
-
-        <!-- START SCREEN -->
-        <div id="startScreen" class="overlay-screen">
-            <h2 style="color: #d3e3fd; font-size: 1.15rem; font-weight: 700; margin-bottom: 2px;">NETWORK DEFENSE</h2>
+        <!-- CANVAS AREA UTAMA: SEMUA ELEMEN TERKUNCI DI SINI -->
+        <div id="canvasArea">
+            <canvas id="canvas" width="480" height="600"></canvas>
             
-            <div class="start-main-layout">
-                <div class="author-box">
-                    <div style="font-size: 0.6rem; color: #a8c7fa; letter-spacing: 1px; font-weight: 700;">KARYA MANDIRI PKJ</div>
-                    <div class="author-name">Razid Rahmanto</div>
-                    <div class="author-sub">D2 Pemeliharaan Komputer & Jaringan</div>
-                </div>
-
-                <div class="diff-title">Pilih Tingkat Kesulitan</div>
-                <div class="diff-container">
-                    <button class="diff-btn" data-diff="easy" onclick="selectDifficulty('easy')">EASY</button>
-                    <button class="diff-btn active" data-diff="medium" onclick="selectDifficulty('medium')">MEDIUM</button>
-                    <button class="diff-btn" data-diff="hard" onclick="selectDifficulty('hard')">HARD</button>
-                    <button class="diff-btn hardcore-btn" data-diff="hardcore" onclick="selectDifficulty('hardcore')">HARDCORE</button>
-                </div>
-
-                <div class="icon-legend-grid">
-                    <div class="legend-item">
-                        <img src="player.png" alt="Router" onerror="this.style.display='none'">
-                        <span>Router</span>
+            <div class="hud">
+                <div class="hud-left">
+                    <div class="hud-chip">
+                        <span>SKOR:</span> <span id="score" style="color:#a8c7fa;">0</span> 
+                        <span id="combo" style="color:#f7d488; font-size:0.58rem"></span>
                     </div>
-                    <div class="legend-item">
-                        <img src="enemy_ddos.png" alt="DDoS" onerror="this.style.display='none'">
-                        <span>DDoS</span>
-                    </div>
-                    <div class="legend-item">
-                        <img src="enemy_trojan.png" alt="Trojan" onerror="this.style.display='none'">
-                        <span>Trojan</span>
-                    </div>
-                    <div class="legend-item">
-                        <img src="enemy_ransom.png" alt="Malware" onerror="this.style.display='none'">
-                        <span>Ransom</span>
-                    </div>
-                    <div class="legend-item">
-                        <img src="boss.png" alt="Boss" onerror="this.style.display='none'">
-                        <span>Bos Virus</span>
-                    </div>
-                    <div class="legend-item">
-                        <img src="power_shield.png" alt="Shield" onerror="this.style.display='none'">
-                        <span>Shield HP</span>
+                    <div class="hud-chip">
+                        <span id="hudDiff" style="color:#f7d488;">MEDIUM</span>
                     </div>
                 </div>
-
-                <button class="btn-action btn-primary-action" style="width: 100%; justify-content: center; padding: 9px;" onclick="startGame()">MULAI GAME</button>
+                <div class="hud-right">
+                    <div class="hud-chip">
+                        <img src="power_shield.png" class="hud-icon" alt="HP" onerror="this.style.display='none'">
+                        <span id="hp" style="color:#6ddb9d">100%</span>
+                    </div>
+                    <button class="hud-btn" onclick="toggleFullscreen()" title="Full Screen">
+                        <img src="icon_fullscreen.png" class="btn-icon-img" alt="FS" onerror="this.outerHTML='⛶'">
+                    </button>
+                    <button class="hud-btn" onclick="pauseGame()" title="Pause Menu">
+                        <img src="icon_pause.png" class="btn-icon-img" alt="II" onerror="this.outerHTML='❚❚'">
+                    </button>
+                </div>
             </div>
-        </div>
 
-        <!-- PAUSE MENU OVERLAY -->
-        <div id="pauseScreen" class="overlay-screen hidden">
-            <h2 style="color: #d3e3fd; font-size: 1.25rem; font-weight:700; margin-bottom: 2px;">GAME DIHENTIKAN</h2>
-            <p style="color: #c4c6d0; font-size: 0.75rem; margin-bottom: 6px;">Pilih Tindakan Pertahanan</p>
-            
-            <div class="menu-action-grid">
-                <button class="btn-action btn-primary-action" onclick="resumeGame()">
-                    <span>LANJUT MAIN</span>
-                </button>
-                <button class="btn-action" onclick="startGame()">
-                    <img src="icon_restart.png" alt="Restart" onerror="this.style.display='none'">
-                    <span>RESTART</span>
-                </button>
-                <button class="btn-action" onclick="goHome()">
-                    <img src="icon_home.png" alt="Home" onerror="this.style.display='none'">
-                    <span>MENU UTAMA</span>
-                </button>
-                <button class="btn-action btn-danger-action" onclick="giveUp()">
-                    <span>AKU NYERAH 🗿</span>
-                </button>
+            <div id="bossBarContainer">
+                <div id="bossBar"></div>
             </div>
-        </div>
 
-        <!-- GAME OVER SCREEN -->
-        <div id="gameOverScreen" class="overlay-screen hidden">
-            <h2 id="ovTitle" style="color: #ff5449; font-size: 1.4rem; font-weight:700; margin-bottom: 2px;">KAMU KALAH!</h2>
-            <p style="color: #c4c6d0; font-size: 0.78rem; margin-bottom: 4px;">Sistem Router Jebol Ditembus Virus</p>
-            <p style="color: #e2e2e9; font-size: 0.85rem;">Skor Akhir: <span id="ovScore" style="color:#a8c7fa; font-weight:bold;">0</span></p>
-            <p style="color: #f7d488; font-size: 0.78rem; margin-bottom: 10px;">Skor Tertinggi: <span id="ovHigh">0</span></p>
-            
-            <div class="menu-action-grid">
-                <button class="btn-action btn-primary-action" onclick="startGame()">
-                    <img src="icon_restart.png" alt="Restart" onerror="this.style.display='none'">
-                    <span>MAIN LAGI</span>
-                </button>
-                <button class="btn-action" onclick="goHome()">
-                    <img src="icon_home.png" alt="Home" onerror="this.style.display='none'">
-                    <span>MENU UTAMA</span>
-                </button>
+            <!-- START SCREEN -->
+            <div id="startScreen" class="overlay-screen">
+                <h2 style="color: #d3e3fd; font-size: 1.1rem; font-weight: 700; margin-bottom: 2px;">NETWORK DEFENSE</h2>
+                
+                <div class="start-main-layout">
+                    <div class="author-box">
+                        <div style="font-size: 0.58rem; color: #a8c7fa; letter-spacing: 1px; font-weight: 700;">KARYA MANDIRI PKJ</div>
+                        <div class="author-name">Razid Rahmanto</div>
+                        <div class="author-sub">D2 Pemeliharaan Komputer & Jaringan</div>
+                    </div>
+
+                    <div class="diff-title">Pilih Tingkat Kesulitan</div>
+                    <div class="diff-container">
+                        <button class="diff-btn" data-diff="easy" onclick="selectDifficulty('easy')">EASY</button>
+                        <button class="diff-btn active" data-diff="medium" onclick="selectDifficulty('medium')">MEDIUM</button>
+                        <button class="diff-btn" data-diff="hard" onclick="selectDifficulty('hard')">HARD</button>
+                        <button class="diff-btn hardcore-btn" data-diff="hardcore" onclick="selectDifficulty('hardcore')">HARDCORE</button>
+                    </div>
+
+                    <div class="icon-legend-grid">
+                        <div class="legend-item">
+                            <img src="player.png" alt="Router" onerror="this.style.display='none'">
+                            <span>Router</span>
+                        </div>
+                        <div class="legend-item">
+                            <img src="enemy_ddos.png" alt="DDoS" onerror="this.style.display='none'">
+                            <span>DDoS</span>
+                        </div>
+                        <div class="legend-item">
+                            <img src="enemy_trojan.png" alt="Trojan" onerror="this.style.display='none'">
+                            <span>Trojan</span>
+                        </div>
+                        <div class="legend-item">
+                            <img src="enemy_ransom.png" alt="Malware" onerror="this.style.display='none'">
+                            <span>Ransom</span>
+                        </div>
+                        <div class="legend-item">
+                            <img src="boss.png" alt="Boss" onerror="this.style.display='none'">
+                            <span>Bos Virus</span>
+                        </div>
+                        <div class="legend-item">
+                            <img src="power_shield.png" alt="Shield" onerror="this.style.display='none'">
+                            <span>Shield HP</span>
+                        </div>
+                    </div>
+
+                    <button class="btn-action btn-primary-action" style="width: 100%; justify-content: center; padding: 8px;" onclick="startGame()">MULAI GAME</button>
+                </div>
+            </div>
+
+            <!-- PAUSE MENU OVERLAY -->
+            <div id="pauseScreen" class="overlay-screen hidden">
+                <h2 style="color: #d3e3fd; font-size: 1.2rem; font-weight:700; margin-bottom: 2px;">GAME DIHENTIKAN</h2>
+                <p style="color: #c4c6d0; font-size: 0.72rem; margin-bottom: 6px;">Pilih Tindakan Pertahanan</p>
+                
+                <div class="menu-action-grid">
+                    <button class="btn-action btn-primary-action" onclick="resumeGame()">
+                        <span>LANJUT MAIN</span>
+                    </button>
+                    <button class="btn-action" onclick="startGame()">
+                        <img src="icon_restart.png" alt="Restart" onerror="this.style.display='none'">
+                        <span>RESTART</span>
+                    </button>
+                    <button class="btn-action" onclick="goHome()">
+                        <img src="icon_home.png" alt="Home" onerror="this.style.display='none'">
+                        <span>MENU UTAMA</span>
+                    </button>
+                    <button class="btn-action btn-danger-action" onclick="giveUp()">
+                        <span>AKU NYERAH 🗿</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- GAME OVER SCREEN -->
+            <div id="gameOverScreen" class="overlay-screen hidden">
+                <h2 id="ovTitle" style="color: #ff5449; font-size: 1.35rem; font-weight:700; margin-bottom: 2px;">KAMU KALAH!</h2>
+                <p style="color: #c4c6d0; font-size: 0.75rem; margin-bottom: 4px;">Sistem Router Jebol Ditembus Virus</p>
+                <p style="color: #e2e2e9; font-size: 0.82rem;">Skor Akhir: <span id="ovScore" style="color:#a8c7fa; font-weight:bold;">0</span></p>
+                <p style="color: #f7d488; font-size: 0.75rem; margin-bottom: 8px;">Skor Tertinggi: <span id="ovHigh">0</span></p>
+                
+                <div class="menu-action-grid">
+                    <button class="btn-action btn-primary-action" onclick="startGame()">
+                        <img src="icon_restart.png" alt="Restart" onerror="this.style.display='none'">
+                        <span>MAIN LAGI</span>
+                    </button>
+                    <button class="btn-action" onclick="goHome()">
+                        <img src="icon_home.png" alt="Home" onerror="this.style.display='none'">
+                        <span>MENU UTAMA</span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
