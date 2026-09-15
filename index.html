@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NetStrike - KNZ-V2 Defense</title>
+    <title>NetStrike - KNZ-V2 God Mode AI</title>
     <link rel="icon" type="image/png" sizes="32x32" href="icon.png">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -24,12 +24,12 @@
         
         .header-title {
             text-align: center;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             flex-shrink: 0;
         }
 
         h1 { 
-            font-size: 1.25rem; 
+            font-size: 1.15rem; 
             font-weight: 800;
             color: #d3e3fd; 
             letter-spacing: 1px;
@@ -37,9 +37,9 @@
         }
         .subtitle { 
             color: #a8c7fa; 
-            font-size: 0.65rem; 
+            font-size: 0.6rem; 
             background: rgba(30, 32, 39, 0.8);
-            padding: 3px 12px;
+            padding: 2px 10px;
             border-radius: 100px;
             border: 1px solid #2d313a;
             display: inline-block;
@@ -58,8 +58,8 @@
         
         #canvasArea {
             position: relative;
-            width: min(94vw, calc(84vh * (480 / 600)));
-            height: min(84vh, calc(94vw * (600 / 480)));
+            width: min(94vw, calc(82vh * (480 / 600)));
+            height: min(82vh, calc(94vw * (600 / 480)));
             max-width: 480px;
             max-height: 600px;
             aspect-ratio: 480 / 600;
@@ -71,13 +71,14 @@
             flex-shrink: 0;
         }
 
-        @media (orientation: landscape), (max-height: 540px) {
+        @media (orientation: landscape), (max-height: 500px) {
             .header-title { display: none !important; }
             #canvasArea {
-                width: min(98vw, calc(98vh * (480 / 600)));
-                height: min(98vh, calc(98vw * (600 / 480)));
+                width: min(96vw, calc(96vh * (480 / 600)));
+                height: min(96vh, calc(96vw * (600 / 480)));
                 max-width: none;
                 max-height: none;
+                border-radius: 10px;
             }
         }
 
@@ -85,8 +86,8 @@
         #gameWrapper:-webkit-full-screen #canvasArea {
             max-width: none !important;
             max-height: none !important;
-            width: min(98vw, calc(98vh * (480 / 600))) !important;
-            height: min(98vh, calc(98vw * (600 / 480))) !important;
+            width: min(100vw, calc(100vh * (480 / 600))) !important;
+            height: min(100vh, calc(100vw * (600 / 480))) !important;
             border-radius: 0;
             border: none;
         }
@@ -100,11 +101,11 @@
 
         .hud {
             position: absolute;
-            top: 10px; left: 10px; right: 10px;
+            top: 8px; left: 8px; right: 8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.65rem;
+            font-size: 0.62rem;
             font-weight: 700;
             pointer-events: none;
             color: #e2e2e9;
@@ -114,64 +115,64 @@
         .hud-left, .hud-right {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
+            pointer-events: auto;
         }
 
         .hud-chip {
-            background: rgba(18, 20, 26, 0.85);
+            background: rgba(18, 20, 26, 0.9);
             border: 1px solid rgba(168, 199, 250, 0.2);
-            padding: 4px 10px;
+            padding: 3px 8px;
             border-radius: 100px;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
             white-space: nowrap;
-            pointer-events: auto;
         }
 
         .hud-btn {
             cursor: pointer;
-            background: rgba(18, 20, 26, 0.85);
+            background: rgba(18, 20, 26, 0.9);
             border: 1px solid rgba(168, 199, 250, 0.2);
             color: #e2e2e9;
             border-radius: 50%;
-            width: 28px;
-            height: 28px;
+            width: 26px;
+            height: 26px;
             display: flex;
             align-items: center;
             justify-content: center;
-            pointer-events: auto;
+            flex-shrink: 0;
             transition: all 0.2s ease;
         }
         .hud-btn:active { transform: scale(0.85); }
         .hud-btn:hover { background: rgba(40, 44, 56, 0.9); border-color: #a8c7fa; }
 
         .hud-icon, .btn-icon-img {
-            width: 14px;
-            height: 14px;
+            width: 13px;
+            height: 13px;
             object-fit: contain;
         }
 
         .ai-indicator {
             position: absolute;
-            top: 48px; left: 12px;
+            top: 42px; left: 8px;
             background: rgba(109, 219, 157, 0.15);
             color: #6ddb9d;
             border: 1px solid #6ddb9d;
-            padding: 3px 8px;
-            font-size: 0.55rem;
+            padding: 2px 6px;
+            font-size: 0.5rem;
             font-weight: 800;
             border-radius: 4px;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
             display: none;
         }
         
         #bossBarContainer {
             position: absolute;
-            top: 42px; left: 50%;
+            top: 38px; left: 50%;
             transform: translateX(-50%);
-            width: 60%;
-            height: 6px;
+            width: 55%;
+            height: 5px;
             background: rgba(255, 180, 171, 0.15);
             border-radius: 100px;
             overflow: hidden;
@@ -189,7 +190,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 12px;
+            padding: 10px;
             text-align: center;
             z-index: 10;
         }
@@ -199,33 +200,32 @@
             flex-direction: column;
             align-items: center;
             width: 100%;
-            max-width: 340px;
-            gap: 6px;
+            max-width: 320px;
+            gap: 5px;
         }
 
         .author-box {
             background: #1a1c23;
             border: 1px solid #333845;
-            border-radius: 12px;
-            padding: 8px 12px;
-            margin: 2px 0;
+            border-radius: 10px;
+            padding: 6px 10px;
             width: 100%;
         }
 
         .author-name {
             color: #a8c7fa; 
             font-weight: 800; 
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             letter-spacing: 0.5px;
         }
 
         .author-sub {
-            font-size: 0.6rem; 
+            font-size: 0.55rem; 
             color: #9aa0a6; 
         }
 
         .diff-title {
-            font-size: 0.62rem;
+            font-size: 0.58rem;
             color: #c4c6d0;
             letter-spacing: 0.8px;
             font-weight: 700;
@@ -234,19 +234,19 @@
 
         .diff-container {
             display: flex;
-            gap: 6px;
+            gap: 5px;
             width: 100%;
-            margin-bottom: 6px;
+            margin-bottom: 5px;
         }
 
         .diff-btn {
             flex: 1;
-            padding: 6px 0;
+            padding: 5px 0;
             background: #1a1c23;
             color: #9aa0a6;
             border: 1px solid #333845;
-            border-radius: 8px;
-            font-size: 0.62rem;
+            border-radius: 7px;
+            font-size: 0.58rem;
             font-weight: 800;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -266,12 +266,12 @@
         .icon-legend-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 6px;
+            gap: 5px;
             width: 100%;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             background: #1a1c23;
-            border-radius: 12px;
-            padding: 8px;
+            border-radius: 10px;
+            padding: 6px;
             border: 1px solid #333845;
         }
 
@@ -282,24 +282,24 @@
             justify-content: center;
         }
         .legend-item img {
-            width: 22px; height: 22px;
-            object-fit: contain; margin-bottom: 3px;
+            width: 20px; height: 20px;
+            object-fit: contain; margin-bottom: 2px;
         }
         .legend-item span {
-            font-size: 0.55rem; color: #c4c6d0; white-space: nowrap;
+            font-size: 0.5rem; color: #c4c6d0; white-space: nowrap;
         }
 
         .btn-ai-toggle {
             width: 100%;
-            padding: 8px;
+            padding: 6px;
             background: #1a1c23;
             color: #c4c6d0;
             border: 1px solid #333845;
-            border-radius: 8px;
-            font-size: 0.7rem;
+            border-radius: 7px;
+            font-size: 0.65rem;
             font-weight: 800;
             cursor: pointer;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
             transition: all 0.2s;
         }
         .btn-ai-toggle.active {
@@ -311,29 +311,29 @@
         .menu-action-grid {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
             width: 100%;
-            max-width: 260px;
-            margin-top: 6px;
+            max-width: 240px;
+            margin-top: 4px;
         }
 
         .btn-action {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            padding: 10px 16px;
+            gap: 6px;
+            padding: 8px 14px;
             background: #1a1c23;
             color: #e2e2e9;
             border: 1px solid #333845;
             border-radius: 100px;
             font-family: inherit;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 800;
             cursor: pointer;
             transition: all 0.2s ease;
         }
-        .btn-action img { width: 18px; height: 18px; object-fit: contain; }
+        .btn-action img { width: 16px; height: 16px; object-fit: contain; }
         .btn-action:hover { background: #2b2e38; transform: scale(1.02); }
 
         .btn-primary-action {
@@ -368,7 +368,7 @@
                 <div class="hud-left">
                     <div class="hud-chip">
                         <span>SKOR:</span> <span id="score" style="color:#a8c7fa;">0</span> 
-                        <span id="combo" style="color:#f7d488; font-size:0.58rem"></span>
+                        <span id="combo" style="color:#f7d488; font-size:0.55rem"></span>
                     </div>
                     <div class="hud-chip">
                         <span id="hudDiff" style="color:#f7d488;">MEDIUM</span>
@@ -388,7 +388,7 @@
                 </div>
             </div>
 
-            <div id="aiIndicator" class="ai-indicator">KNZ-V2 ACTIVE</div>
+            <div id="aiIndicator" class="ai-indicator">KNZ-V2 GOD MODE ACTIVE</div>
 
             <div id="bossBarContainer">
                 <div id="bossBar"></div>
@@ -396,11 +396,11 @@
 
             <!-- START SCREEN -->
             <div id="startScreen" class="overlay-screen">
-                <h2 style="color: #d3e3fd; font-size: 1.3rem; font-weight: 800; margin-bottom: 2px;">NETWORK DEFENSE</h2>
+                <h2 style="color: #d3e3fd; font-size: 1.2rem; font-weight: 800; margin-bottom: 2px;">NETWORK DEFENSE</h2>
                 
                 <div class="start-main-layout">
                     <div class="author-box">
-                        <div style="font-size: 0.55rem; color: #a8c7fa; letter-spacing: 1px; font-weight: 800;">Created by:</div>
+                        <div style="font-size: 0.5rem; color: #a8c7fa; letter-spacing: 1px; font-weight: 800;">Created by:</div>
                         <div class="author-name">RAZID RAHMANTO</div>
                         <div class="author-sub">Welcome</div>
                     </div>
@@ -418,7 +418,7 @@
                     </button>
 
                     <div class="icon-legend-grid">
-                        <div class="legend-item"><img src="player.png" alt="R" onerror="this.style.display='none'"><span>Router</span></div>
+                        <div class="legend-item"><img src="ai_router.png" alt="R" onerror="this.style.display='none'"><span>Router</span></div>
                         <div class="legend-item"><img src="enemy_ddos.png" alt="D" onerror="this.style.display='none'"><span>DDoS</span></div>
                         <div class="legend-item"><img src="enemy_trojan.png" alt="T" onerror="this.style.display='none'"><span>Trojan</span></div>
                         <div class="legend-item"><img src="enemy_ransom.png" alt="M" onerror="this.style.display='none'"><span>Ransom</span></div>
@@ -426,14 +426,14 @@
                         <div class="legend-item"><img src="power_shield.png" alt="S" onerror="this.style.display='none'"><span>Shield HP</span></div>
                     </div>
 
-                    <button class="btn-action btn-primary-action" style="width: 100%; justify-content: center; padding: 10px; font-size:0.85rem" onclick="startGame()">SISTEM MULAI</button>
+                    <button class="btn-action btn-primary-action" style="width: 100%; justify-content: center; padding: 8px; font-size:0.8rem" onclick="startGame()">SISTEM MULAI</button>
                 </div>
             </div>
 
             <!-- PAUSE SCREEN -->
             <div id="pauseScreen" class="overlay-screen hidden">
-                <h2 style="color: #d3e3fd; font-size: 1.4rem; font-weight:800; margin-bottom: 2px;">SISTEM JEDA</h2>
-                <p style="color: #c4c6d0; font-size: 0.72rem; margin-bottom: 10px;">Pilih Tindakan Pertahanan</p>
+                <h2 style="color: #d3e3fd; font-size: 1.3rem; font-weight:800; margin-bottom: 2px;">SISTEM JEDA</h2>
+                <p style="color: #c4c6d0; font-size: 0.68rem; margin-bottom: 8px;">Pilih Tindakan Pertahanan</p>
                 
                 <div class="menu-action-grid">
                     <button class="btn-action btn-primary-action" onclick="resumeGame()">
@@ -455,10 +455,10 @@
 
             <!-- GAME OVER SCREEN -->
             <div id="gameOverScreen" class="overlay-screen hidden">
-                <h2 id="ovTitle" style="color: #ff5449; font-size: 1.5rem; font-weight:800; margin-bottom: 2px;">KAMU KALAH!</h2>
-                <p style="color: #c4c6d0; font-size: 0.75rem; margin-bottom: 6px;">Pertahanan Router Jebol Ditembus Virus</p>
-                <p style="color: #e2e2e9; font-size: 0.9rem; margin-bottom: 2px;">Skor Akhir: <span id="ovScore" style="color:#a8c7fa; font-weight:800;">0</span></p>
-                <p style="color: #f7d488; font-size: 0.75rem; margin-bottom: 12px;">Skor Tertinggi: <span id="ovHigh">0</span></p>
+                <h2 id="ovTitle" style="color: #ff5449; font-size: 1.4rem; font-weight:800; margin-bottom: 2px;">KAMU KALAH!</h2>
+                <p style="color: #c4c6d0; font-size: 0.7rem; margin-bottom: 5px;">Pertahanan Router Jebol Ditembus Virus</p>
+                <p style="color: #e2e2e9; font-size: 0.85rem; margin-bottom: 2px;">Skor Akhir: <span id="ovScore" style="color:#a8c7fa; font-weight:800;">0</span></p>
+                <p style="color: #f7d488; font-size: 0.7rem; margin-bottom: 10px;">Skor Tertinggi: <span id="ovHigh">0</span></p>
                 
                 <div class="menu-action-grid">
                     <button class="btn-action btn-primary-action" onclick="startGame()">
@@ -500,7 +500,7 @@ const difficultyConfig = {
     easy:     { label: 'EASY',     speedMult: 0.75, spawnRate: 0.025, leakDmg: 0,  hitDmg: 10, powerupChance: 0.35, color: '#6ddb9d' },
     medium:   { label: 'MEDIUM',   speedMult: 1.0,  spawnRate: 0.035, leakDmg: 5,  hitDmg: 15, powerupChance: 0.25, color: '#f7d488' },
     hard:     { label: 'HARD',     speedMult: 1.35, spawnRate: 0.05,  leakDmg: 15, hitDmg: 25, powerupChance: 0.15, color: '#ffb4ab' },
-    hardcore: { label: 'HARDCORE', speedMult: 2.2,  spawnRate: 0.085, leakDmg: 30, hitDmg: 40, powerupChance: 0.05, color: '#ff5449' }
+    hardcore: { label: 'HARDCORE', speedMult: 2.0,  spawnRate: 0.075, leakDmg: 30, hitDmg: 40, powerupChance: 0.08, color: '#ff5449' }
 };
 
 let currentDiffKey = 'medium';
@@ -529,7 +529,7 @@ const imgs = {
     player: new Image(), ddos: new Image(), trojan: new Image(), ransom: new Image(),
     boss: new Image(), p_shield: new Image(), p_triple: new Image(), p_nuke: new Image()
 };
-imgs.player.src = 'player.png'; imgs.ddos.src = 'enemy_ddos.png'; imgs.trojan.src = 'enemy_trojan.png';
+imgs.player.src = 'ai_router.png'; imgs.ddos.src = 'enemy_ddos.png'; imgs.trojan.src = 'enemy_trojan.png';
 imgs.ransom.src = 'enemy_ransom.png'; imgs.boss.src = 'boss.png'; imgs.p_shield.src = 'power_shield.png';
 imgs.p_triple.src = 'power_triple.png'; imgs.p_nuke.src = 'power_nuke.png';
 
@@ -556,12 +556,15 @@ function playSound(type) {
     } catch(e){}
 }
 
-let keys = {}, bullets = [], enemies = [], particles = [], powerups = [], bgStreams = [], boss = null;
+let keys = {}, bullets = [], missiles = [], enemies = [], particles = [], powerups = [], bgStreams = [], boss = null;
 let score = 0, combo = 0, hp = 100, highScore = parseInt(localStorage.getItem('pkj_high')) || 0;
 let shakeTimer = 0, multiShotTimer = 0, shieldActive = false, gameLoop;
 let isPlaying = false, isPaused = false;
+let teleportTimer = 0;
+let playerRot = 0; 
 
-let player = { x: 214, y: 510, w: 52, h: 52, speed: 7 };
+// Ukuran player diset ke 64px sesuai ukuran file ai_router.png
+let player = { x: 208, y: 500, w: 64, h: 64, speed: 20 };
 
 for(let i=0; i<20; i++) {
     bgStreams.push({
@@ -576,6 +579,12 @@ document.addEventListener('keydown', e => {
     if(e.code==='KeyP' || e.code==='Escape') { if(isPlaying) isPaused ? resumeGame() : pauseGame(); }
 });
 document.addEventListener('keyup', e => keys[e.code] = false);
+
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden && isPlaying && !isPaused) {
+        pauseGame();
+    }
+});
 
 function toggleFullscreen() {
     const elem = document.getElementById('gameWrapper');
@@ -606,10 +615,66 @@ function shoot() {
     if(multiShotTimer > 0) {
         const spread = [-3, -2, -1, 0, 1, 2, 3];
         spread.forEach(a => {
-            bullets.push({x: player.x + player.w/2 - 3, y: player.y, w: 6, h: 14, vx: a * 1.2, vy: -11});
+            bullets.push({x: player.x + player.w/2 - 3, y: player.y, w: 6, h: 16, vx: a * 1.5, vy: -20});
         });
     } else {
-        bullets.push({x: player.x + player.w/2 - 3, y: player.y - 5, w: 6, h: 14, vx: 0, vy: -10});
+        bullets.push({x: player.x + player.w/2 - 3, y: player.y - 5, w: 6, h: 16, vx: 0, vy: -18});
+    }
+}
+
+// AI God Mode Otonom 360° Omnidirectional
+function aiFireAutonomousBullets(target, isCritical) {
+    if(!isPlaying || isPaused || !target) return;
+    playSound('shoot');
+
+    let bulletCount = 8;
+    let bulletSpeed = 30;
+
+    if (isCritical || score > 10000) {
+        let enemyCount = enemies.length + (boss ? 6 : 0);
+        bulletCount = Math.min(40, Math.max(20, enemyCount * 5));
+        
+        for(let i = 0; i < bulletCount; i++) {
+            let angle = (i / bulletCount) * Math.PI * 2 + (Math.random() * 0.08);
+            bullets.push({
+                x: player.x + player.w / 2 - 3,
+                y: player.y + player.h / 2,
+                w: 6,
+                h: 16,
+                vx: Math.cos(angle) * bulletSpeed,
+                vy: Math.sin(angle) * bulletSpeed
+            });
+        }
+    } else {
+        let dx = (target.x + target.w / 2) - (player.x + player.w / 2);
+        let dy = (target.y + target.h / 2) - (player.y + player.h / 2);
+        let baseAngle = Math.atan2(dy, dx);
+        let spreadWidth = 1.3;
+
+        for(let i = 0; i < bulletCount; i++) {
+            let offset = bulletCount > 1 ? (i / (bulletCount - 1) - 0.5) * spreadWidth : 0;
+            let finalAngle = baseAngle + offset;
+            bullets.push({
+                x: player.x + player.w / 2 - 3,
+                y: player.y + player.h / 2,
+                w: 6,
+                h: 16,
+                vx: Math.cos(finalAngle) * bulletSpeed,
+                vy: Math.sin(finalAngle) * bulletSpeed
+            });
+        }
+    }
+
+    if (Math.random() < 0.7 && target) {
+        missiles.push({
+            x: player.x + player.w / 2,
+            y: player.y + player.h / 2,
+            vx: 0, vy: -12,
+            target: target,
+            speed: 24,
+            w: 8, h: 20,
+            color: '#6ddb9d'
+        });
     }
 }
 
@@ -624,9 +689,9 @@ function createExplosion(x, y, color, count=10) {
 
 function getDynamicHardcoreBoost() {
     if (currentDiffKey !== 'hardcore') return { speedBoost: 0, spawnBoost: 0 };
-    const scoreFactor = Math.floor(score / 150);
-    const rekorFactor = score > highScore ? Math.floor((score - highScore) / 100) + 1 : 0;
-    return { speedBoost: (scoreFactor * 0.2) + (rekorFactor * 0.3), spawnBoost: (scoreFactor * 0.008) + (rekorFactor * 0.012) };
+    const scoreFactor = Math.min(50, Math.floor(score / 250));
+    const rekorFactor = score > highScore ? Math.min(8, Math.floor((score - highScore) / 200) + 1) : 0;
+    return { speedBoost: (scoreFactor * 0.05) + (rekorFactor * 0.08), spawnBoost: (scoreFactor * 0.002) + (rekorFactor * 0.004) };
 }
 
 function spawnEnemy() {
@@ -635,7 +700,6 @@ function spawnEnemy() {
     const { speedBoost } = getDynamicHardcoreBoost();
     const finalSpeedMult = cfg.speedMult + speedBoost;
 
-    // SEMUA VIRUS KECIL DISet HP: 1 (1-Hit Kill Sekali Kena Langsung Mati)
     const types = [
         { type: 'ddos', color: '#a8c7fa', hp: 1, speed: 3.8 * finalSpeedMult, points: 10, w: 32, h: 54, imgKey: 'ddos', label: 'DDoS' },
         { type: 'trojan', color: '#ffb4ab', hp: 1, speed: 2.5 * finalSpeedMult, points: 25, w: 44, h: 44, imgKey: 'trojan', label: 'TROJAN' },
@@ -647,7 +711,7 @@ function spawnEnemy() {
     enemies.push({ x: Math.random() * (canvas.width - selected.w), y: -60, ...selected });
 
     if(score >= 400 && !boss && Math.random() < 0.08) {
-        boss = { x: 192, y: -100, targetY: 80, w: 96, h: 96, hp: 80, maxHp: 80, vx: 2 * finalSpeedMult, imgKey: 'boss' };
+        boss = { x: 192, y: -100, targetY: 80, w: 96, h: 96, hp: 80, maxHp: 80, vx: 2.2 * finalSpeedMult, imgKey: 'boss' };
         bossBarContainer.style.display = 'block';
     }
 }
@@ -664,9 +728,9 @@ function spawnPowerup(x, y) {
 
 function startGame() {
     score = 0; combo = 0; hp = 100;
-    bullets = []; enemies = []; particles = []; powerups = []; boss = null;
+    bullets = []; missiles = []; enemies = []; particles = []; powerups = []; boss = null;
     multiShotTimer = 0; shieldActive = false; isPlaying = true; isPaused = false;
-    player.x = 214;
+    player.x = 208; player.y = 500;
     scoreEl.innerText = '0'; comboEl.innerText = ''; hpEl.innerText = '100%';
     
     const cfg = difficultyConfig[currentDiffKey];
@@ -694,7 +758,7 @@ function goHome() {
 }
 
 function giveUp() {
-    isPaused = false; // Reset jeda agar tidak macet
+    isPaused = false;
     pauseScreen.classList.add('hidden'); 
     takeDamage(999);
 }
@@ -706,44 +770,85 @@ function isColliding(a, b) {
 function update() {
     if(isPaused) return;
 
-    // AI KNZ-V2 LOGIC (Mengontrol gerakan & tembakan secara otomatis, tetap punya HP normal)
     if(isAIEnabled) {
         let target = null;
-        let lowestY = -999;
-        if (boss) {
-            target = boss;
-        } else {
-            for(let e of enemies) {
-                if(e.y > lowestY) { lowestY = e.y; target = e; }
+        
+        let lowestEnemy = null;
+        let maxEnemyY = -999;
+        for(let e of enemies) {
+            if(e.y > maxEnemyY) {
+                maxEnemyY = e.y;
+                lowestEnemy = e;
             }
         }
-        for(let p of powerups) {
-            if(p.y > canvas.height - 150) target = p; 
+
+        let dangerEnemy = null;
+        for(let e of enemies) {
+            if(Math.abs((e.x + e.w/2) - (player.x + player.w/2)) < 90 && e.y > player.y - 220 && e.y < player.y) {
+                dangerEnemy = e;
+                break;
+            }
         }
 
-        if(target) {
-            let tx = target.x + target.w/2 - player.w/2;
-            player.x += (tx - player.x) * 0.3;
+        teleportTimer++;
+        if ((dangerEnemy || (lowestEnemy && lowestEnemy.y > 250)) && teleportTimer > 6) {
+            createExplosion(player.x + player.w/2, player.y + player.h/2, '#6ddb9d', 15);
+            let rescueTarget = dangerEnemy || lowestEnemy;
+            player.x = Math.max(0, Math.min(canvas.width - player.w, rescueTarget.x));
+            player.y = 380 + Math.random() * 140;
+            createExplosion(player.x + player.w/2, player.y + player.h/2, '#a8c7fa', 15);
+            teleportTimer = 0;
+            target = rescueTarget;
+        } else {
+            for(let p of powerups) {
+                if(p.y > canvas.height - 400) { target = p; break; }
+            }
+
+            if (!target) {
+                if (boss) {
+                    target = boss;
+                } else {
+                    target = lowestEnemy;
+                }
+            }
+
+            if(target) {
+                let tx = (target.x + target.w / 2) - player.w / 2;
+                let ty = Math.min(550, Math.max(320, (target.y + 100)));
+                
+                player.x += (tx - player.x) * 0.85;
+                player.y += (ty - player.y) * 0.75;
+            }
         }
-        if(Math.random() < 0.25) shoot();
+
+        player.x = Math.max(0, Math.min(canvas.width - player.w, player.x));
+        player.y = Math.max(300, Math.min(550, player.y));
+        
+        let isCritical = hp <= 20 || score > 10000;
+
+        if(target && Math.random() < 0.98) {
+            aiFireAutonomousBullets(target, isCritical);
+        }
     } else {
+        player.y = 500;
         if(keys['ArrowLeft'] || keys['KeyA']) if(player.x > 0) player.x -= player.speed;
         if(keys['ArrowRight'] || keys['KeyD']) if(player.x < canvas.width - player.w) player.x += player.speed;
     }
 
     let sx = 0, sy = 0;
     if(shakeTimer > 0) {
-        shakeTimer--; sx = (Math.random()-0.5) * 10; sy = (Math.random()-0.5) * 10;
+        shakeTimer--; 
+        sx = Math.round((Math.random() - 0.5) * 10); 
+        sy = Math.round((Math.random() - 0.5) * 10);
     }
 
     ctx.save(); ctx.translate(sx, sy);
     ctx.clearRect(-20, -20, canvas.width+40, canvas.height+40);
 
-    // Render Background Bersih & Ringan (Tanpa Shadow Blur agar tidak lag)
     ctx.fillStyle = '#12141a';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    for(let i=0; i<bgStreams.length; i++) {
+    for(let i=0; i<20; i++) {
         let b = bgStreams[i];
         b.y += b.s;
         ctx.fillStyle = b.c;
@@ -753,20 +858,24 @@ function update() {
 
     if(multiShotTimer > 0) multiShotTimer--;
 
-    // Render Player
     ctx.save();
+    ctx.translate(player.x + player.w / 2, player.y + player.h / 2);
+    if (isAIEnabled) {
+        playerRot += (hp <= 20 || score > 10000 ? 0.5 : 0.2);
+        ctx.rotate(playerRot);
+    }
     if(hp <= 30 && !isAIEnabled) { ctx.globalAlpha = 0.4 + 0.6 * Math.abs(Math.sin(Date.now() / 200)); }
+    
     if(imgs.player.complete && imgs.player.naturalWidth !== 0) {
-        ctx.drawImage(imgs.player, player.x, player.y, player.w, player.h);
+        ctx.drawImage(imgs.player, -player.w / 2, -player.h / 2, player.w, player.h);
     } else {
-        ctx.fillStyle = '#a8c7fa'; ctx.fillRect(player.x + 10, player.y + 15, 32, 25);
+        ctx.fillStyle = '#a8c7fa'; ctx.fillRect(-player.w / 2, -player.h / 2, player.w, player.h);
     }
     ctx.restore();
 
-    // RENDER FIREWALL (SHIELD)
     if(shieldActive) {
         ctx.strokeStyle = '#6ddb9d'; ctx.lineWidth = 2;
-        ctx.beginPath(); ctx.arc(player.x+player.w/2, player.y+player.h/2, 36, 0, Math.PI*2); ctx.stroke();
+        ctx.beginPath(); ctx.arc(player.x+player.w/2, player.y+player.h/2, 40, 0, Math.PI*2); ctx.stroke();
         
         ctx.fillStyle = 'rgba(109, 219, 157, 0.2)';
         ctx.fillRect(0, canvas.height - 30, canvas.width, 30);
@@ -778,16 +887,56 @@ function update() {
         ctx.textAlign = 'left';
     }
 
-    // Bullets Rendering
     ctx.fillStyle = '#ffffff';
     for(let i=bullets.length-1; i>=0; i--) {
         let b = bullets[i];
         b.x += b.vx; b.y += b.vy;
         ctx.fillRect(b.x, b.y, b.w, b.h);
-        ctx.fillStyle = 'rgba(109, 219, 157, 0.5)';
-        ctx.fillRect(b.x+1, b.y+b.h, b.w-2, 6);
+        ctx.fillStyle = 'rgba(109, 219, 157, 0.7)';
+        ctx.fillRect(b.x+1, b.y+b.h, b.w-2, 8);
         ctx.fillStyle = '#ffffff';
-        if(b.y < -20 || b.x < -10 || b.x > canvas.width + 10) bullets.splice(i,1);
+        if(b.y < -60 || b.x < -60 || b.x > canvas.width + 60 || b.y > canvas.height + 60) bullets.splice(i,1);
+    }
+
+    for(let i=missiles.length-1; i>=0; i--) {
+        let m = missiles[i];
+        if (m.target && (m.target.hp > 0 || enemies.includes(m.target) || boss === m.target)) {
+            let dx = (m.target.x + m.target.w / 2) - m.x;
+            let dy = (m.target.y + m.target.h / 2) - m.y;
+            let dist = Math.sqrt(dx * dx + dy * dy) || 1;
+            m.vx = (dx / dist) * m.speed * 1.8;
+            m.vy = (dy / dist) * m.speed * 1.8;
+        } else {
+            m.vy = -m.speed * 1.8;
+        }
+        m.x += m.vx; m.y += m.vy;
+
+        ctx.fillStyle = '#ffb4ab';
+        ctx.fillRect(m.x, m.y, m.w, m.h);
+        ctx.fillStyle = 'rgba(255, 84, 73, 0.9)';
+        ctx.fillRect(m.x + 1, m.y + m.h, m.w - 2, 10);
+
+        let missileHit = false;
+        if(boss && isColliding(m, boss)) {
+            boss.hp -= 12;
+            bossBar.style.width = `${(boss.hp / boss.maxHp) * 100}%`;
+            createExplosion(m.x, m.y, '#ffb4ab', 12);
+            missileHit = true;
+        } else {
+            for(let j=enemies.length-1; j>=0; j--) {
+                let e = enemies[j];
+                if(isColliding(m, e)) {
+                    createExplosion(e.x + e.w/2, e.y + e.h/2, e.color, 15);
+                    score += e.points * 2; scoreEl.innerText = formatScore(score);
+                    enemies.splice(j, 1);
+                    missileHit = true;
+                    break;
+                }
+            }
+        }
+        if(missileHit || m.y < -50 || m.x < -50 || m.x > canvas.width + 50 || m.y > canvas.height + 50) {
+            missiles.splice(i, 1);
+        }
     }
 
     const cfg = difficultyConfig[currentDiffKey];
@@ -839,7 +988,6 @@ function update() {
         }
     }
 
-    // BOSS LOGIC (Mengeluarkan virus secara bertahap & santai)
     if(boss) {
         if(boss.y < boss.targetY) boss.y += 2;
         boss.x += boss.vx;
@@ -853,7 +1001,6 @@ function update() {
             ctx.fillText("⚠️ CRITICAL THREAT ⚠️", boss.x + boss.w/2, boss.y - 10); ctx.textAlign = 'left';
         }
 
-        // Spawn virus bertahap secara perlahan dan tidak brutal
         if (Math.random() < 0.003) {
             const types = [
                 { type: 'ddos', color: '#a8c7fa', hp: 1, speed: 2.8, points: 5, w: 32, h: 54, imgKey: 'ddos', label: 'DDoS' },
