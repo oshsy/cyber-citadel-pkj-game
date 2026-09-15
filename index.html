@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PKJ Cyber Citadel - DDoS & Malware Defense</title>
+    <title>NetStrike - Malware Defense</title>
     <!-- Favicon Tab Browser -->
     <link rel="icon" type="image/png" sizes="32x32" href="icon.png">
     <style>
@@ -84,7 +84,7 @@
         }
         #bossBar { width: 100%; height: 100%; background: #f43f5e; transition: width 0.1s; }
         
-        /* OVERLAY / START SCREEN MODERN DARK UI */
+        /* OVERLAY SCREEN */
         .overlay-screen {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -123,7 +123,7 @@
             margin-top: 2px;
         }
 
-        /* LEGENDA GRID YANG RAPI & MATAK NYAMAN */
+        /* LEGENDA GRID */
         .icon-legend-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -157,7 +157,7 @@
             white-space: nowrap;
         }
 
-        /* BUTTON DESIGN ELEGAN (TIDAK FULL BIRU NEON) */
+        /* BUTTON DESIGN */
         button {
             padding: 12px 32px;
             background: linear-gradient(135deg, #0284c7, #2563eb);
@@ -181,22 +181,22 @@
 </head>
 <body>
 
-    <h1>CYBER CITADEL</h1>
+    <h1>NETSTRIKE</h1>
     <div class="subtitle">[A/D / Panah] Gerak | [SPASI] Tembak | Touch HP</div>
 
     <div id="gameWrapper">
         <canvas id="canvas" width="480" height="600"></canvas>
         <div class="hud">
-            <div>SCORE: <span id="score" style="color:#38bdf8;">0</span> <span id="combo" style="color:#fbbf24; font-size:0.8rem"></span></div>
-            <div>SHIELD: <span id="hp" style="color:#34d399">100%</span></div>
+            <div>SKOR: <span id="score" style="color:#38bdf8;">0</span> <span id="combo" style="color:#fbbf24; font-size:0.8rem"></span></div>
+            <div>PELINDUNG: <span id="hp" style="color:#34d399">100%</span></div>
         </div>
         <div id="bossBarContainer">
             <div id="bossBar"></div>
         </div>
 
-        <!-- START SCREEN HASIL KARYA -->
+        <!-- START SCREEN -->
         <div id="startScreen" class="overlay-screen">
-            <h2 style="color: #38bdf8; font-size: 1.4rem; font-weight: 700;">MALWARE STRIKE</h2>
+            <h2 style="color: #38bdf8; font-size: 1.4rem; font-weight: 700;">NETWORK DEFENSE</h2>
             
             <div class="author-box">
                 <div style="font-size: 0.72rem; color: #38bdf8; letter-spacing: 1px;">KARYA MANDIRI PKJ</div>
@@ -209,15 +209,15 @@
             <div class="icon-legend-grid">
                 <div class="legend-item">
                     <img src="player.png" alt="Router" onerror="this.style.display='none'">
-                    <span>Router</span>
+                    <span>Router Kamu</span>
                 </div>
                 <div class="legend-item">
                     <img src="enemy_ddos.png" alt="DDoS" onerror="this.style.display='none'">
-                    <span>DDoS Missile</span>
+                    <span>Rudal DDoS</span>
                 </div>
                 <div class="legend-item">
                     <img src="enemy_trojan.png" alt="Trojan" onerror="this.style.display='none'">
-                    <span>Trojan Virus</span>
+                    <span>Virus Trojan</span>
                 </div>
                 <div class="legend-item">
                     <img src="enemy_ransom.png" alt="Malware" onerror="this.style.display='none'">
@@ -225,23 +225,24 @@
                 </div>
                 <div class="legend-item">
                     <img src="boss.png" alt="Boss" onerror="this.style.display='none'">
-                    <span>Mega Boss</span>
+                    <span>Bos Virus</span>
                 </div>
                 <div class="legend-item">
                     <img src="power_shield.png" alt="Shield" onerror="this.style.display='none'">
-                    <span>Shield Power</span>
+                    <span>Pelindung</span>
                 </div>
             </div>
 
-            <button onclick="startGame()">START SYSTEM</button>
+            <button onclick="startGame()">MULAI GAME</button>
         </div>
 
-        <!-- GAME OVER SCREEN -->
+        <!-- GAME OVER SCREEN (PAS KALAH) -->
         <div id="gameOverScreen" class="overlay-screen hidden">
-            <h2 id="ovTitle" style="color: #f43f5e; font-size: 1.6rem; font-weight:700; margin-bottom: 8px;">SYSTEM BREACHED</h2>
-            <p style="color: #94a3b8; font-size: 0.9rem;">Skor Akhir: <span id="ovScore" style="color:#ffffff; font-weight:bold;">0</span></p>
-            <p style="color: #fbbf24; font-size: 0.85rem; margin-top:4px; margin-bottom: 16px;">High Score: <span id="ovHigh">0</span></p>
-            <button onclick="startGame()">REBOOT SYSTEM</button>
+            <h2 id="ovTitle" style="color: #f43f5e; font-size: 1.8rem; font-weight:700; margin-bottom: 8px;">KAMU KALAH!</h2>
+            <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 4px;">Sistem Router Jebol Ditembus Virus</p>
+            <p style="color: #ffffff; font-size: 0.95rem; margin-top: 6px;">Skor Akhir: <span id="ovScore" style="color:#38bdf8; font-weight:bold;">0</span></p>
+            <p style="color: #fbbf24; font-size: 0.85rem; margin-top:4px; margin-bottom: 18px;">Skor Tertinggi: <span id="ovHigh">0</span></p>
+            <button onclick="startGame()">MAIN LAGI</button>
         </div>
     </div>
 
@@ -536,7 +537,7 @@ function update() {
             ctx.textAlign = 'center';
             ctx.shadowBlur = 6;
             ctx.shadowColor = '#f43f5e';
-            ctx.fillText("⚠️ MEGA VIRUS BOSS ⚠️", boss.x + boss.w/2, boss.y - 8);
+            ctx.fillText("⚠️ BOS VIRUS ⚠️", boss.x + boss.w/2, boss.y - 8);
             ctx.textAlign = 'left';
         }
 
