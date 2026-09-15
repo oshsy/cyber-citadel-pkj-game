@@ -63,28 +63,41 @@
             touch-action: none;
         }
 
+        /* HUD LAYOUT RAPI */
         .hud {
             position: absolute;
             top: 14px; left: 16px; right: 16px;
             display: flex;
             justify-content: space-between;
+            align-items: center;
             font-size: 0.8rem;
             font-weight: 600;
             pointer-events: none;
             color: #e2e2e9;
+            z-index: 5;
         }
         
         .hud-chip {
-            background: rgba(30, 32, 39, 0.85);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(30, 32, 39, 0.88);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             backdrop-filter: blur(8px);
-            padding: 4px 10px;
+            padding: 5px 12px;
             border-radius: 100px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .hud-icon {
+            width: 18px;
+            height: 18px;
+            object-fit: contain;
         }
         
         #bossBarContainer {
             position: absolute;
-            top: 48px; left: 50%;
+            top: 54px; left: 50%;
             transform: translateX(-50%);
             width: 70%;
             height: 8px;
@@ -92,6 +105,7 @@
             border-radius: 100px;
             overflow: hidden;
             display: none;
+            z-index: 5;
         }
         #bossBar { width: 100%; height: 100%; background: #ffb4ab; transition: width 0.1s; }
         
@@ -115,7 +129,7 @@
             border: 1px solid #2d313a;
             border-radius: 18px;
             padding: 10px 18px;
-            margin: 10px 0 12px 0;
+            margin: 8px 0 12px 0;
             width: 100%;
             max-width: 360px;
         }
@@ -133,7 +147,6 @@
             margin-top: 2px;
         }
 
-        /* SELEKTOR DIFFICULTY */
         .diff-title {
             font-size: 0.72rem;
             color: #a8c7fa;
@@ -148,7 +161,7 @@
             gap: 6px;
             width: 100%;
             max-width: 360px;
-            margin-bottom: 14px;
+            margin-bottom: 12px;
         }
 
         .diff-btn {
@@ -161,26 +174,21 @@
             font-size: 0.72rem;
             font-weight: 700;
             cursor: pointer;
-            box-shadow: none;
             transition: all 0.2s ease;
         }
-        .diff-btn:hover {
-            transform: none;
-            box-shadow: none;
-            background: #2b2e38;
-        }
+        .diff-btn:hover { background: #2b2e38; }
         .diff-btn.active {
             background: #a8c7fa;
             color: #042f56;
             border-color: #a8c7fa;
         }
         .diff-btn.hardcore-btn.active {
-            background: #ffb4ab;
-            color: #690005;
-            border-color: #ffb4ab;
+            background: #ff5449;
+            color: #ffffff;
+            border-color: #ff5449;
+            box-shadow: 0 0 12px rgba(255, 84, 73, 0.4);
         }
 
-        /* LEGENDA GRID MATERIAL DESIGN */
         .icon-legend-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -201,9 +209,12 @@
             justify-content: center;
         }
 
+        /* FIT UNTUK ASSET ICON 64PX AGAR RAPI */
         .legend-item img {
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
+            max-width: 64px;
+            max-height: 64px;
             object-fit: contain;
             margin-bottom: 2px;
         }
@@ -214,7 +225,6 @@
             white-space: nowrap;
         }
 
-        /* MATERIAL YOU PILL BUTTON */
         .btn-start {
             padding: 12px 36px;
             background: #a8c7fa;
@@ -244,15 +254,23 @@
     <div id="gameWrapper">
         <canvas id="canvas" width="480" height="600"></canvas>
         <div class="hud">
-            <div class="hud-chip">SKOR: <span id="score" style="color:#a8c7fa;">0</span> <span id="combo" style="color:#f7d488; font-size:0.75rem"></span></div>
-            <div class="hud-chip">MODE: <span id="hudDiff" style="color:#f7d488;">MEDIUM</span></div>
-            <div class="hud-chip">PELINDUNG: <span id="hp" style="color:#6ddb9d">100%</span></div>
+            <div class="hud-chip">
+                <span>SKOR:</span> <span id="score" style="color:#a8c7fa;">0</span> 
+                <span id="combo" style="color:#f7d488; font-size:0.75rem"></span>
+            </div>
+            <div class="hud-chip">
+                MODE: <span id="hudDiff" style="color:#f7d488;">MEDIUM</span>
+            </div>
+            <div class="hud-chip">
+                <img src="power_shield.png" class="hud-icon" alt="HP" onerror="this.style.display='none'">
+                <span id="hp" style="color:#6ddb9d">100%</span>
+            </div>
         </div>
         <div id="bossBarContainer">
             <div id="bossBar"></div>
         </div>
 
-        <!-- START SCREEN (MATERIAL YOU / PIXEL DESIGN) -->
+        <!-- START SCREEN -->
         <div id="startScreen" class="overlay-screen">
             <h2 style="color: #d3e3fd; font-size: 1.35rem; font-weight: 700;">NETWORK DEFENSE</h2>
             
@@ -263,7 +281,6 @@
                 <div style="font-size: 0.68rem; color: #8e9099; margin-top: 1px;">AKN Pacitan</div>
             </div>
 
-            <!-- MODE KESULITAN -->
             <div class="diff-title">Pilih Tingkat Kesulitan</div>
             <div class="diff-container">
                 <button class="diff-btn" data-diff="easy" onclick="selectDifficulty('easy')">EASY</button>
@@ -272,7 +289,6 @@
                 <button class="diff-btn hardcore-btn" data-diff="hardcore" onclick="selectDifficulty('hardcore')">HARDCORE</button>
             </div>
 
-            <!-- LEGENDA ICON PANDUAN DOSEN -->
             <div class="icon-legend-grid">
                 <div class="legend-item">
                     <img src="player.png" alt="Router" onerror="this.style.display='none'">
@@ -296,16 +312,16 @@
                 </div>
                 <div class="legend-item">
                     <img src="power_shield.png" alt="Shield" onerror="this.style.display='none'">
-                    <span>Pelindung</span>
+                    <span>Pelindung HP</span>
                 </div>
             </div>
 
             <button class="btn-start" onclick="startGame()">MULAI GAME</button>
         </div>
 
-        <!-- GAME OVER SCREEN (MATERIAL DESTRUCTIVE TONE) -->
+        <!-- GAME OVER SCREEN -->
         <div id="gameOverScreen" class="overlay-screen hidden">
-            <h2 id="ovTitle" style="color: #ffb4ab; font-size: 1.7rem; font-weight:700; margin-bottom: 6px;">KAMU KALAH!</h2>
+            <h2 id="ovTitle" style="color: #ff5449; font-size: 1.7rem; font-weight:700; margin-bottom: 6px;">SYSTEM BREACHED!</h2>
             <p style="color: #c4c6d0; font-size: 0.85rem; margin-bottom: 4px;">Sistem Router Jebol Ditembus Virus</p>
             <p style="color: #e2e2e9; font-size: 0.95rem; margin-top: 6px;">Skor Akhir: <span id="ovScore" style="color:#a8c7fa; font-weight:bold;">0</span></p>
             <p style="color: #f7d488; font-size: 0.85rem; margin-top:4px; margin-bottom: 20px;">Skor Tertinggi: <span id="ovHigh">0</span></p>
@@ -325,12 +341,12 @@ const gameOverScreen = document.getElementById('gameOverScreen');
 const bossBarContainer = document.getElementById('bossBarContainer');
 const bossBar = document.getElementById('bossBar');
 
-// Konfigurasi Kesulitan
+// HARDCORE REVAMPED (Extremely Brutal + Dynamic High Score Scaling)
 const difficultyConfig = {
     easy:     { label: 'EASY',     speedMult: 0.75, spawnRate: 0.025, leakDmg: 0,  hitDmg: 10, powerupChance: 0.35, color: '#6ddb9d' },
     medium:   { label: 'MEDIUM',   speedMult: 1.0,  spawnRate: 0.035, leakDmg: 5,  hitDmg: 15, powerupChance: 0.25, color: '#f7d488' },
-    hard:     { label: 'HARD',     speedMult: 1.3,  spawnRate: 0.048, leakDmg: 10, hitDmg: 25, powerupChance: 0.18, color: '#ffb4ab' },
-    hardcore: { label: 'HARDCORE', speedMult: 1.6,  spawnRate: 0.065, leakDmg: 20, hitDmg: 35, powerupChance: 0.10, color: '#ff5449' }
+    hard:     { label: 'HARD',     speedMult: 1.35, spawnRate: 0.05,  leakDmg: 15, hitDmg: 25, powerupChance: 0.15, color: '#ffb4ab' },
+    hardcore: { label: 'HARDCORE', speedMult: 2.2,  spawnRate: 0.085, leakDmg: 30, hitDmg: 40, powerupChance: 0.05, color: '#ff5449' }
 };
 let currentDiffKey = 'medium';
 
@@ -344,7 +360,6 @@ function selectDifficulty(key) {
     hudDiffEl.style.color = cfg.color;
 }
 
-// Load Aset Gambar Icon
 const imgs = {
     player: new Image(),
     ddos: new Image(),
@@ -364,7 +379,6 @@ imgs.p_shield.src = 'power_shield.png';
 imgs.p_triple.src = 'power_triple.png';
 imgs.p_nuke.src = 'power_nuke.png';
 
-// Audio Synthesizer Browser
 const audio = new (window.AudioContext || window.webkitAudioContext)();
 function playSound(type) {
     try {
@@ -390,7 +404,7 @@ function playSound(type) {
 }
 
 let keys = {}, bullets = [], enemies = [], particles = [], powerups = [], boss = null;
-let score = 0, combo = 0, hp = 100, highScore = localStorage.getItem('pkj_high') || 0;
+let score = 0, combo = 0, hp = 100, highScore = parseInt(localStorage.getItem('pkj_high')) || 0;
 let shakeTimer = 0, tripleShotTimer = 0, shieldActive = false, gameLoop;
 let isPlaying = false;
 
@@ -402,7 +416,6 @@ document.addEventListener('keydown', e => {
 });
 document.addEventListener('keyup', e => keys[e.code] = false);
 
-// Touch Support HP
 function handleTouch(e) {
     if(!isPlaying) return;
     let r = canvas.getBoundingClientRect();
@@ -438,13 +451,28 @@ function createExplosion(x, y, color, count=12) {
     }
 }
 
+function getDynamicHardcoreBoost() {
+    if (currentDiffKey !== 'hardcore') return { speedBoost: 0, spawnBoost: 0 };
+    // Setiap kelipatan 150 poin atau melebihi highscore, musuh makin cepat & makin padat
+    const scoreFactor = Math.floor(score / 150);
+    const rekorFactor = score > highScore ? Math.floor((score - highScore) / 100) + 1 : 0;
+    
+    return {
+        speedBoost: (scoreFactor * 0.2) + (rekorFactor * 0.3),
+        spawnBoost: (scoreFactor * 0.008) + (rekorFactor * 0.012)
+    };
+}
+
 function spawnEnemy() {
     if(boss) return;
     const cfg = difficultyConfig[currentDiffKey];
+    const { speedBoost } = getDynamicHardcoreBoost();
+    const finalSpeedMult = cfg.speedMult + speedBoost;
+
     const types = [
-        { type: 'ddos', color: '#a8c7fa', hp: 1, speed: 3.8 * cfg.speedMult, points: 10, w: 32, h: 54, imgKey: 'ddos', label: 'DDoS' },
-        { type: 'trojan', color: '#ffb4ab', hp: 2, speed: 2.5 * cfg.speedMult, points: 25, w: 44, h: 44, imgKey: 'trojan', label: 'TROJAN' },
-        { type: 'ransom', color: '#f7d488', hp: 4, speed: 1.6 * cfg.speedMult, points: 50, w: 46, h: 46, imgKey: 'ransom', label: 'VIRUS' }
+        { type: 'ddos', color: '#a8c7fa', hp: 1, speed: 3.8 * finalSpeedMult, points: 10, w: 32, h: 54, imgKey: 'ddos', label: 'DDoS' },
+        { type: 'trojan', color: '#ffb4ab', hp: 2, speed: 2.5 * finalSpeedMult, points: 25, w: 44, h: 44, imgKey: 'trojan', label: 'TROJAN' },
+        { type: 'ransom', color: '#f7d488', hp: 4, speed: 1.6 * finalSpeedMult, points: 50, w: 46, h: 46, imgKey: 'ransom', label: 'VIRUS' }
     ];
     let r = Math.random();
     let selected = types[0];
@@ -457,7 +485,7 @@ function spawnEnemy() {
     });
 
     if(score >= 400 && !boss && Math.random() < 0.08) {
-        boss = { x: 192, y: -100, w: 96, h: 96, hp: 50, maxHp: 50, vx: 3 * cfg.speedMult, imgKey: 'boss' };
+        boss = { x: 192, y: -100, w: 96, h: 96, hp: 60, maxHp: 60, vx: 3 * finalSpeedMult, imgKey: 'boss' };
         bossBarContainer.style.display = 'block';
     }
 }
@@ -492,7 +520,6 @@ function startGame() {
     gameLoop = setInterval(update, 1000/60);
 }
 
-// AABB Box Collision
 function isColliding(a, b) {
     return a.x < b.x + b.w &&
            a.x + a.w > b.x &&
@@ -501,28 +528,36 @@ function isColliding(a, b) {
 }
 
 function update() {
+    // EFEK GUNCANGAN EKRAN (SCREEN SHAKE)
     let sx = 0, sy = 0;
     if(shakeTimer > 0) {
         shakeTimer--;
-        sx = (Math.random()-0.5)*8; sy = (Math.random()-0.5)*8;
+        sx = (Math.random()-0.5) * 12; 
+        sy = (Math.random()-0.5) * 12;
     }
 
     ctx.save();
     ctx.translate(sx, sy);
     ctx.clearRect(-20, -20, canvas.width+40, canvas.height+40);
 
-    // Subtle Background Grid Material Tone
+    // Grid Background
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.02)';
     ctx.lineWidth = 1;
     for(let i=0; i<canvas.width; i+=30) { ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,canvas.height); ctx.stroke(); }
     for(let j=0; j<canvas.height; j+=30) { ctx.beginPath(); ctx.moveTo(0,j); ctx.lineTo(canvas.width,j); ctx.stroke(); }
 
-    // Control Player Keyboard
     if(keys['ArrowLeft'] || keys['KeyA']) if(player.x > 0) player.x -= player.speed;
     if(keys['ArrowRight'] || keys['KeyD']) if(player.x < canvas.width - player.w) player.x += player.speed;
     if(tripleShotTimer > 0) tripleShotTimer--;
 
-    // Render Player Router
+    // RENDER ROUTER - KEDIP SLOW PAS HP KRITIS (<= 30%)
+    ctx.save();
+    if(hp <= 30) {
+        // Pulsa transparan perlahan (Slow Blink)
+        let slowAlpha = 0.35 + 0.65 * Math.abs(Math.sin(Date.now() / 240));
+        ctx.globalAlpha = slowAlpha;
+    }
+
     ctx.shadowBlur = 10; ctx.shadowColor = 'rgba(168, 199, 250, 0.3)';
     if(imgs.player.complete && imgs.player.naturalWidth !== 0) {
         ctx.drawImage(imgs.player, player.x, player.y, player.w, player.h);
@@ -532,6 +567,7 @@ function update() {
         ctx.fillRect(player.x + 5, player.y + 5, 4, 15);
         ctx.fillRect(player.x + 43, player.y + 5, 4, 15);
     }
+    ctx.restore();
 
     if(shieldActive) {
         ctx.strokeStyle = '#6ddb9d'; ctx.lineWidth = 2.5;
@@ -547,12 +583,14 @@ function update() {
         if(b.y < -20 || b.x < -10 || b.x > canvas.width + 10) bullets.splice(i,1);
     }
 
-    // Spawn rate menyesuaikan tingkat kesulitan
-    if(Math.random() < difficultyConfig[currentDiffKey].spawnRate) spawnEnemy();
+    // Spawn Enemy dengan Dynamic Hardcore Rate
+    const cfg = difficultyConfig[currentDiffKey];
+    const { spawnBoost } = getDynamicHardcoreBoost();
+    if(Math.random() < (cfg.spawnRate + spawnBoost)) spawnEnemy();
 
     const isBlink = Math.floor(Date.now() / 300) % 2 === 0;
 
-    // Enemies
+    // Enemies Loop
     for(let i=enemies.length-1; i>=0; i--) {
         let e = enemies[i];
         e.y += e.speed;
@@ -566,7 +604,6 @@ function update() {
             ctx.fillRect(e.x, e.y, e.w, e.h);
         }
 
-        // Label Di Atas Icon
         if(isBlink) {
             ctx.fillStyle = '#ffb4ab';
             ctx.font = '600 10px sans-serif';
@@ -577,7 +614,6 @@ function update() {
             ctx.textAlign = 'left';
         }
 
-        // Bullet vs Enemy
         let enemyHit = false;
         for(let j=bullets.length-1; j>=0; j--) {
             let b = bullets[j];
@@ -601,18 +637,18 @@ function update() {
         }
         if(enemyHit) continue;
 
-        // Enemy vs Player
         if(isColliding(e, player)) {
             enemies.splice(i,1);
             createExplosion(e.x + e.w/2, e.y + e.h/2, '#ffb4ab', 20);
-            takeDamage(difficultyConfig[currentDiffKey].hitDmg);
+            takeDamage(cfg.hitDmg);
         } else if(e.y > canvas.height + 40) {
-            // VIRUS LOLOS MENEMBUS BENTENG
+            // VIRUS LOLOS MENEMBUS BENTENG - GUNCANGAN LAYAR & DAMAGE
             enemies.splice(i,1);
             combo = 0; comboEl.innerText = '';
-            const leakDmg = difficultyConfig[currentDiffKey].leakDmg;
-            if(leakDmg > 0) {
-                takeDamage(leakDmg);
+            if(cfg.leakDmg > 0) {
+                shakeTimer = 18; // Trigger Guncangan Layar
+                createExplosion(e.x + e.w/2, canvas.height - 10, '#ff5449', 15);
+                takeDamage(cfg.leakDmg);
             }
         }
     }
@@ -660,7 +696,7 @@ function update() {
         }
     }
 
-    // Power-ups Render
+    // Power-ups
     for(let i=powerups.length-1; i>=0; i--) {
         let p = powerups[i];
         p.y += p.vy;
@@ -687,7 +723,7 @@ function update() {
         } else if(p.y > canvas.height) powerups.splice(i,1);
     }
 
-    // Particles
+    // Particles Render
     for(let i=particles.length-1; i>=0; i--) {
         let pt = particles[i];
         pt.x += pt.vx; pt.y += pt.vy; pt.life -= 0.03;
