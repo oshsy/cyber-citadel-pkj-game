@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NetStrike - Malware Defense</title>
-    <!-- Favicon Tab Browser -->
+    <title>NetStrike - KNO-2V Defense</title>
     <link rel="icon" type="image/png" sizes="32x32" href="icon.png">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -27,23 +26,25 @@
             text-align: center;
             margin-bottom: 6px;
             flex-shrink: 0;
+            text-shadow: 0 0 10px rgba(168, 199, 250, 0.4);
         }
 
         h1 { 
-            font-size: 1.2rem; 
-            font-weight: 700;
+            font-size: 1.25rem; 
+            font-weight: 800;
             color: #d3e3fd; 
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
             margin-bottom: 2px;
         }
         .subtitle { 
-            color: #c4c6d0; 
-            font-size: 0.7rem; 
-            background: #1e2027;
-            padding: 2px 10px;
+            color: #a8c7fa; 
+            font-size: 0.65rem; 
+            background: rgba(30, 32, 39, 0.8);
+            padding: 3px 12px;
             border-radius: 100px;
             border: 1px solid #2d313a;
             display: inline-block;
+            box-shadow: 0 0 8px rgba(168, 199, 250, 0.15);
         }
         
         /* PEMBUNGKUS UTAMA LAYAR FULLSCREEN / WINDOW */
@@ -54,39 +55,36 @@
             align-items: center;
             width: 100vw;
             height: 100vh;
-            background: #090a0f;
+            background: radial-gradient(circle at center, #121318 0%, #050608 100%);
             overflow: hidden;
         }
         
-        /* FIX KUNCI RASIO 4:5 (480x600) UNTUK KANVAS & HUD - ANTI GEPENG */
+        /* KUNCI RASIO 4:5 (480x600) UNTUK KANVAS & HUD - ANTI GEPENG */
         #canvasArea {
             position: relative;
-            /* Formula presisi responsif mengunci rasio 480:600 di HP/Tablet/PC */
-            width: min(94vw, calc(82vh * (480 / 600)));
-            height: min(82vh, calc(94vw * (600 / 480)));
+            width: min(94vw, calc(84vh * (480 / 600)));
+            height: min(84vh, calc(94vw * (600 / 480)));
             max-width: 480px;
             max-height: 600px;
             aspect-ratio: 480 / 600;
-            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.7);
-            border-radius: 20px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(168, 199, 250, 0.1);
+            border-radius: 18px;
             overflow: hidden;
-            background: #1a1c23;
-            border: 1px solid #2d313a;
+            background: #12141a;
+            border: 1px solid #333845;
             flex-shrink: 0;
         }
 
-        /* STYLING MODE LANDSCAPE & SCREEN PENDEK */
         @media (orientation: landscape), (max-height: 540px) {
             .header-title { display: none !important; }
             #canvasArea {
-                width: min(98vw, calc(96vh * (480 / 600)));
-                height: min(96vh, calc(98vw * (600 / 480)));
+                width: min(98vw, calc(98vh * (480 / 600)));
+                height: min(98vh, calc(98vw * (600 / 480)));
                 max-width: none;
                 max-height: none;
             }
         }
 
-        /* FIX FULLSCREEN: TETAP DIPAKSA RASIO 4:5 DI TENGAH LAYAR HP/PC */
         #gameWrapper:fullscreen #canvasArea,
         #gameWrapper:-webkit-full-screen #canvasArea {
             max-width: none !important;
@@ -104,15 +102,14 @@
             touch-action: none;
         }
 
-        /* HUD TERKUNCI DALAM CANVASAREA (TIDAK AKAN LEPAS KE POJOK LAYAR) */
         .hud {
             position: absolute;
-            top: 8px; left: 8px; right: 8px;
+            top: 10px; left: 10px; right: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-size: 0.65rem;
-            font-weight: 600;
+            font-weight: 700;
             pointer-events: none;
             color: #e2e2e9;
             z-index: 5;
@@ -121,66 +118,83 @@
         .hud-left, .hud-right {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
         }
 
         .hud-chip {
-            background: rgba(30, 32, 39, 0.92);
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(18, 20, 26, 0.85);
+            border: 1px solid rgba(168, 199, 250, 0.2);
             backdrop-filter: blur(8px);
-            padding: 3px 8px;
+            padding: 4px 10px;
             border-radius: 100px;
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
             white-space: nowrap;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
             pointer-events: auto;
         }
 
         .hud-btn {
             cursor: pointer;
-            background: rgba(30, 32, 39, 0.92);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(18, 20, 26, 0.85);
+            border: 1px solid rgba(168, 199, 250, 0.2);
             color: #e2e2e9;
             border-radius: 50%;
-            width: 26px;
-            height: 26px;
+            width: 28px;
+            height: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
             pointer-events: auto;
-            transition: transform 0.15s ease;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
         }
-        .hud-btn:active { transform: scale(0.9); }
+        .hud-btn:active { transform: scale(0.85); }
+        .hud-btn:hover { background: rgba(40, 44, 56, 0.9); border-color: #a8c7fa; }
 
         .hud-icon, .btn-icon-img {
             width: 14px;
             height: 14px;
-            max-width: 64px;
-            max-height: 64px;
             object-fit: contain;
+        }
+
+        .ai-indicator {
+            position: absolute;
+            top: 48px; left: 12px;
+            background: rgba(109, 219, 157, 0.15);
+            color: #6ddb9d;
+            border: 1px solid #6ddb9d;
+            padding: 3px 8px;
+            font-size: 0.55rem;
+            font-weight: 800;
+            border-radius: 4px;
+            letter-spacing: 1px;
+            display: none;
+            box-shadow: 0 0 8px rgba(109, 219, 157, 0.4);
+            animation: pulseGlow 1.5s infinite alternate;
         }
         
         #bossBarContainer {
             position: absolute;
-            top: 38px; left: 50%;
+            top: 42px; left: 50%;
             transform: translateX(-50%);
             width: 60%;
             height: 6px;
-            background: rgba(255, 180, 171, 0.2);
+            background: rgba(255, 180, 171, 0.15);
             border-radius: 100px;
             overflow: hidden;
             display: none;
             z-index: 5;
+            border: 1px solid rgba(255, 180, 171, 0.3);
+            box-shadow: 0 0 10px rgba(255, 84, 73, 0.4);
         }
         #bossBar { width: 100%; height: 100%; background: #ffb4ab; transition: width 0.1s; }
         
-        /* OVERLAY SCREEN MENU TERKUNCI DALAM KANVAS */
         .overlay-screen {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(18, 19, 24, 0.96);
+            background: rgba(14, 16, 21, 0.95);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -188,7 +202,7 @@
             padding: 12px;
             text-align: center;
             z-index: 10;
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(14px);
         }
 
         .start-main-layout {
@@ -197,79 +211,84 @@
             align-items: center;
             width: 100%;
             max-width: 340px;
-            gap: 4px;
+            gap: 6px;
         }
 
         .author-box {
-            background: #1e2027;
-            border: 1px solid #2d313a;
+            background: linear-gradient(145deg, #1a1c23, #222630);
+            border: 1px solid #333845;
             border-radius: 12px;
-            padding: 6px 10px;
-            margin: 2px 0 4px 0;
+            padding: 8px 12px;
+            margin: 2px 0;
             width: 100%;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
         .author-name {
             color: #a8c7fa; 
-            font-weight: 700; 
+            font-weight: 800; 
             font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .author-sub {
-            font-size: 0.62rem; 
-            color: #c4c6d0; 
+            font-size: 0.6rem; 
+            color: #9aa0a6; 
         }
 
         .diff-title {
             font-size: 0.62rem;
-            color: #a8c7fa;
+            color: #c4c6d0;
             letter-spacing: 0.8px;
             font-weight: 700;
-            margin-bottom: 3px;
-            text-transform: uppercase;
+            margin-bottom: 2px;
         }
 
         .diff-container {
             display: flex;
-            gap: 4px;
+            gap: 6px;
             width: 100%;
             margin-bottom: 6px;
         }
 
         .diff-btn {
             flex: 1;
-            padding: 5px 0;
-            background: #1e2027;
-            color: #c4c6d0;
-            border: 1px solid #2d313a;
+            padding: 6px 0;
+            background: #1a1c23;
+            color: #9aa0a6;
+            border: 1px solid #333845;
             border-radius: 8px;
-            font-size: 0.6rem;
-            font-weight: 700;
+            font-size: 0.62rem;
+            font-weight: 800;
             cursor: pointer;
             transition: all 0.2s ease;
         }
-        .diff-btn:hover { background: #2b2e38; }
+        .diff-btn:hover { background: #2b2e38; color: #e2e2e9; }
         .diff-btn.active {
-            background: #a8c7fa;
-            color: #042f56;
+            background: rgba(168, 199, 250, 0.15);
+            color: #a8c7fa;
             border-color: #a8c7fa;
+            box-shadow: 0 0 10px rgba(168, 199, 250, 0.2);
         }
         .diff-btn.hardcore-btn.active {
-            background: #ff5449;
-            color: #ffffff;
+            background: rgba(255, 84, 73, 0.15);
+            color: #ffb4ab;
             border-color: #ff5449;
+            box-shadow: 0 0 12px rgba(255, 84, 73, 0.4);
         }
 
         .icon-legend-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 4px;
+            gap: 6px;
             width: 100%;
-            margin-bottom: 6px;
-            background: #1e2027;
+            margin-bottom: 8px;
+            background: #1a1c23;
             border-radius: 12px;
-            padding: 6px;
-            border: 1px solid #2d313a;
+            padding: 8px;
+            border: 1px solid #333845;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.2);
         }
 
         .legend-item {
@@ -278,82 +297,97 @@
             align-items: center;
             justify-content: center;
         }
-
         .legend-item img {
-            width: 20px;
-            height: 20px;
-            max-width: 64px;
-            max-height: 64px;
-            object-fit: contain;
+            width: 22px; height: 22px;
+            object-fit: contain; margin-bottom: 3px;
+        }
+        .legend-item span {
+            font-size: 0.55rem; color: #c4c6d0; white-space: nowrap;
         }
 
-        .legend-item span {
-            font-size: 0.55rem;
+        .btn-ai-toggle {
+            width: 100%;
+            padding: 8px;
+            background: #1a1c23;
             color: #c4c6d0;
-            white-space: nowrap;
+            border: 1px solid #333845;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            cursor: pointer;
+            margin-bottom: 4px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-ai-toggle.active {
+            background: rgba(109, 219, 157, 0.15);
+            color: #6ddb9d;
+            border-color: #6ddb9d;
+            box-shadow: 0 0 12px rgba(109, 219, 157, 0.3);
         }
 
         .menu-action-grid {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
             width: 100%;
-            max-width: 240px;
-            margin-top: 4px;
+            max-width: 260px;
+            margin-top: 6px;
         }
 
         .btn-action {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
-            padding: 7px 12px;
-            background: #1e2027;
+            gap: 8px;
+            padding: 10px 16px;
+            background: #1a1c23;
             color: #e2e2e9;
-            border: 1px solid #2d313a;
+            border: 1px solid #333845;
             border-radius: 100px;
             font-family: inherit;
             font-size: 0.75rem;
-            font-weight: 700;
+            font-weight: 800;
             cursor: pointer;
             transition: all 0.2s ease;
         }
-
-        .btn-action img {
-            width: 16px;
-            height: 16px;
-            max-width: 64px;
-            max-height: 64px;
-            object-fit: contain;
-        }
-
-        .btn-action:hover { background: #2b2e38; }
+        .btn-action img { width: 18px; height: 18px; object-fit: contain; }
+        .btn-action:hover { background: #2b2e38; transform: scale(1.02); }
 
         .btn-primary-action {
             background: #a8c7fa;
             color: #042f56;
             border: none;
+            box-shadow: 0 4px 15px rgba(168, 199, 250, 0.3);
         }
-        .btn-primary-action:hover { background: #c3e7ff; }
+        .btn-primary-action:hover { background: #c3e7ff; box-shadow: 0 6px 20px rgba(168, 199, 250, 0.5); }
 
         .btn-danger-action {
             background: rgba(255, 84, 73, 0.15);
             color: #ffb4ab;
-            border: 1px solid rgba(255, 84, 73, 0.3);
+            border: 1px solid rgba(255, 84, 73, 0.4);
         }
+        .btn-danger-action:hover { background: rgba(255, 84, 73, 0.25); }
 
         .hidden { display: none !important; }
+
+        @keyframes pulseGlow {
+            from { box-shadow: 0 0 4px rgba(109, 219, 157, 0.2); }
+            to { box-shadow: 0 0 12px rgba(109, 219, 157, 0.6); }
+        }
     </style>
 </head>
 <body>
 
     <div class="header-title">
         <h1>NETSTRIKE</h1>
-        <div class="subtitle">[A/D / Panah] Gerak | [SPASI] Tembak | Touch HP</div>
+        <div class="subtitle">[A/D / Panah] Gerak | [SPASI] Tembak</div>
     </div>
 
     <div id="gameWrapper">
-        <!-- CANVAS AREA UTAMA: SEMUA ELEMEN TERKUNCI DI SINI -->
         <div id="canvasArea">
             <canvas id="canvas" width="480" height="600"></canvas>
             
@@ -381,22 +415,24 @@
                 </div>
             </div>
 
+            <div id="aiIndicator" class="ai-indicator">KNO-2V AI ACTIVE</div>
+
             <div id="bossBarContainer">
                 <div id="bossBar"></div>
             </div>
 
             <!-- START SCREEN -->
             <div id="startScreen" class="overlay-screen">
-                <h2 style="color: #d3e3fd; font-size: 1.1rem; font-weight: 700; margin-bottom: 2px;">NETWORK DEFENSE</h2>
+                <h2 style="color: #d3e3fd; font-size: 1.3rem; font-weight: 800; margin-bottom: 2px; text-shadow: 0 2px 10px rgba(168,199,250,0.3);">NETWORK DEFENSE</h2>
                 
                 <div class="start-main-layout">
                     <div class="author-box">
-                        <div style="font-size: 0.58rem; color: #a8c7fa; letter-spacing: 1px; font-weight: 700;">KARYA MANDIRI PKJ</div>
+                        <div style="font-size: 0.55rem; color: #a8c7fa; letter-spacing: 1px; font-weight: 800;">KARYA MANDIRI PKJ</div>
                         <div class="author-name">Razid Rahmanto</div>
-                        <div class="author-sub">D2 Pemeliharaan Komputer & Jaringan</div>
+                        <div class="author-sub">KNO-2V ENGINE Dev</div>
                     </div>
 
-                    <div class="diff-title">Pilih Tingkat Kesulitan</div>
+                    <div class="diff-title">Tingkat Kesulitan</div>
                     <div class="diff-container">
                         <button class="diff-btn" data-diff="easy" onclick="selectDifficulty('easy')">EASY</button>
                         <button class="diff-btn active" data-diff="medium" onclick="selectDifficulty('medium')">MEDIUM</button>
@@ -404,75 +440,61 @@
                         <button class="diff-btn hardcore-btn" data-diff="hardcore" onclick="selectDifficulty('hardcore')">HARDCORE</button>
                     </div>
 
+                    <button id="btnAiToggle" class="btn-ai-toggle" onclick="toggleAI()">
+                        KNO-2V AI MODE: OFF
+                    </button>
+
                     <div class="icon-legend-grid">
-                        <div class="legend-item">
-                            <img src="player.png" alt="Router" onerror="this.style.display='none'">
-                            <span>Router</span>
-                        </div>
-                        <div class="legend-item">
-                            <img src="enemy_ddos.png" alt="DDoS" onerror="this.style.display='none'">
-                            <span>DDoS</span>
-                        </div>
-                        <div class="legend-item">
-                            <img src="enemy_trojan.png" alt="Trojan" onerror="this.style.display='none'">
-                            <span>Trojan</span>
-                        </div>
-                        <div class="legend-item">
-                            <img src="enemy_ransom.png" alt="Malware" onerror="this.style.display='none'">
-                            <span>Ransom</span>
-                        </div>
-                        <div class="legend-item">
-                            <img src="boss.png" alt="Boss" onerror="this.style.display='none'">
-                            <span>Bos Virus</span>
-                        </div>
-                        <div class="legend-item">
-                            <img src="power_shield.png" alt="Shield" onerror="this.style.display='none'">
-                            <span>Shield HP</span>
-                        </div>
+                        <div class="legend-item"><img src="player.png" alt="R" onerror="this.style.display='none'"><span>Router</span></div>
+                        <div class="legend-item"><img src="enemy_ddos.png" alt="D" onerror="this.style.display='none'"><span>DDoS</span></div>
+                        <div class="legend-item"><img src="enemy_trojan.png" alt="T" onerror="this.style.display='none'"><span>Trojan</span></div>
+                        <div class="legend-item"><img src="enemy_ransom.png" alt="M" onerror="this.style.display='none'"><span>Ransom</span></div>
+                        <div class="legend-item"><img src="boss.png" alt="B" onerror="this.style.display='none'"><span>Bos Virus</span></div>
+                        <div class="legend-item"><img src="power_shield.png" alt="S" onerror="this.style.display='none'"><span>Shield HP</span></div>
                     </div>
 
-                    <button class="btn-action btn-primary-action" style="width: 100%; justify-content: center; padding: 8px;" onclick="startGame()">MULAI GAME</button>
+                    <button class="btn-action btn-primary-action" style="width: 100%; justify-content: center; padding: 10px; font-size:0.85rem" onclick="startGame()">SISTEM MULAI</button>
                 </div>
             </div>
 
-            <!-- PAUSE MENU OVERLAY -->
+            <!-- PAUSE SCREEN -->
             <div id="pauseScreen" class="overlay-screen hidden">
-                <h2 style="color: #d3e3fd; font-size: 1.2rem; font-weight:700; margin-bottom: 2px;">GAME DIHENTIKAN</h2>
-                <p style="color: #c4c6d0; font-size: 0.72rem; margin-bottom: 6px;">Pilih Tindakan Pertahanan</p>
+                <h2 style="color: #d3e3fd; font-size: 1.4rem; font-weight:800; margin-bottom: 2px;">SISTEM JEDA</h2>
+                <p style="color: #c4c6d0; font-size: 0.72rem; margin-bottom: 10px;">Pilih Tindakan Pertahanan</p>
                 
                 <div class="menu-action-grid">
                     <button class="btn-action btn-primary-action" onclick="resumeGame()">
-                        <span>LANJUT MAIN</span>
+                        <span>LANJUTKAN</span>
                     </button>
                     <button class="btn-action" onclick="startGame()">
-                        <img src="icon_restart.png" alt="Restart" onerror="this.style.display='none'">
-                        <span>RESTART</span>
+                        <img src="icon_restart.png" alt="R" onerror="this.style.display='none'">
+                        <span>RESTART SYSTEM</span>
                     </button>
                     <button class="btn-action" onclick="goHome()">
-                        <img src="icon_home.png" alt="Home" onerror="this.style.display='none'">
+                        <img src="icon_home.png" alt="H" onerror="this.style.display='none'">
                         <span>MENU UTAMA</span>
                     </button>
                     <button class="btn-action btn-danger-action" onclick="giveUp()">
-                        <span>AKU NYERAH 🗿</span>
+                        <span>MENYERAH</span>
                     </button>
                 </div>
             </div>
 
             <!-- GAME OVER SCREEN -->
             <div id="gameOverScreen" class="overlay-screen hidden">
-                <h2 id="ovTitle" style="color: #ff5449; font-size: 1.35rem; font-weight:700; margin-bottom: 2px;">KAMU KALAH!</h2>
-                <p style="color: #c4c6d0; font-size: 0.75rem; margin-bottom: 4px;">Sistem Router Jebol Ditembus Virus</p>
-                <p style="color: #e2e2e9; font-size: 0.82rem;">Skor Akhir: <span id="ovScore" style="color:#a8c7fa; font-weight:bold;">0</span></p>
-                <p style="color: #f7d488; font-size: 0.75rem; margin-bottom: 8px;">Skor Tertinggi: <span id="ovHigh">0</span></p>
+                <h2 id="ovTitle" style="color: #ff5449; font-size: 1.5rem; font-weight:800; margin-bottom: 2px; text-shadow: 0 0 15px rgba(255,84,73,0.4);">SYSTEM BREACHED!</h2>
+                <p style="color: #c4c6d0; font-size: 0.75rem; margin-bottom: 6px;">Pertahanan Router Jebol Ditembus Virus</p>
+                <p style="color: #e2e2e9; font-size: 0.9rem; margin-bottom: 2px;">Skor Akhir: <span id="ovScore" style="color:#a8c7fa; font-weight:800;">0</span></p>
+                <p style="color: #f7d488; font-size: 0.75rem; margin-bottom: 12px;">Skor Tertinggi: <span id="ovHigh">0</span></p>
                 
                 <div class="menu-action-grid">
                     <button class="btn-action btn-primary-action" onclick="startGame()">
-                        <img src="icon_restart.png" alt="Restart" onerror="this.style.display='none'">
-                        <span>MAIN LAGI</span>
+                        <img src="icon_restart.png" alt="R" onerror="this.style.display='none'">
+                        <span>COBA LAGI</span>
                     </button>
                     <button class="btn-action" onclick="goHome()">
-                        <img src="icon_home.png" alt="Home" onerror="this.style.display='none'">
-                        <span>MENU UTAMA</span>
+                        <img src="icon_home.png" alt="H" onerror="this.style.display='none'">
+                        <span>KEMBALI KE MENU</span>
                     </button>
                 </div>
             </div>
@@ -491,6 +513,8 @@ const pauseScreen = document.getElementById('pauseScreen');
 const gameOverScreen = document.getElementById('gameOverScreen');
 const bossBarContainer = document.getElementById('bossBarContainer');
 const bossBar = document.getElementById('bossBar');
+const btnAiToggle = document.getElementById('btnAiToggle');
+const aiIndicator = document.getElementById('aiIndicator');
 
 function formatScore(n) {
     if (n >= 1e9) return (n / 1e9).toFixed(1).replace(/\.0$/, '') + 'B';
@@ -505,43 +529,42 @@ const difficultyConfig = {
     hard:     { label: 'HARD',     speedMult: 1.35, spawnRate: 0.05,  leakDmg: 15, hitDmg: 25, powerupChance: 0.15, color: '#ffb4ab' },
     hardcore: { label: 'HARDCORE', speedMult: 2.2,  spawnRate: 0.085, leakDmg: 30, hitDmg: 40, powerupChance: 0.05, color: '#ff5449' }
 };
+
 let currentDiffKey = 'medium';
+let isAIEnabled = false;
 
 function selectDifficulty(key) {
     currentDiffKey = key;
-    document.querySelectorAll('.diff-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.diff === key);
-    });
+    document.querySelectorAll('.diff-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.diff === key));
     const cfg = difficultyConfig[key];
     hudDiffEl.innerText = cfg.label;
     hudDiffEl.style.color = cfg.color;
 }
 
+function toggleAI() {
+    isAIEnabled = !isAIEnabled;
+    if(isAIEnabled) {
+        btnAiToggle.classList.add('active');
+        btnAiToggle.innerText = 'KNO-2V AI MODE: ON';
+    } else {
+        btnAiToggle.classList.remove('active');
+        btnAiToggle.innerText = 'KNO-2V AI MODE: OFF';
+    }
+}
+
 const imgs = {
-    player: new Image(),
-    ddos: new Image(),
-    trojan: new Image(),
-    ransom: new Image(),
-    boss: new Image(),
-    p_shield: new Image(),
-    p_triple: new Image(),
-    p_nuke: new Image()
+    player: new Image(), ddos: new Image(), trojan: new Image(), ransom: new Image(),
+    boss: new Image(), p_shield: new Image(), p_triple: new Image(), p_nuke: new Image()
 };
-imgs.player.src = 'player.png';
-imgs.ddos.src = 'enemy_ddos.png';
-imgs.trojan.src = 'enemy_trojan.png';
-imgs.ransom.src = 'enemy_ransom.png';
-imgs.boss.src = 'boss.png';
-imgs.p_shield.src = 'power_shield.png';
-imgs.p_triple.src = 'power_triple.png';
-imgs.p_nuke.src = 'power_nuke.png';
+imgs.player.src = 'player.png'; imgs.ddos.src = 'enemy_ddos.png'; imgs.trojan.src = 'enemy_trojan.png';
+imgs.ransom.src = 'enemy_ransom.png'; imgs.boss.src = 'boss.png'; imgs.p_shield.src = 'power_shield.png';
+imgs.p_triple.src = 'power_triple.png'; imgs.p_nuke.src = 'power_nuke.png';
 
 const audio = new (window.AudioContext || window.webkitAudioContext)();
 function playSound(type) {
     try {
         if(audio.state === 'suspended') audio.resume();
-        const osc = audio.createOscillator();
-        const gain = audio.createGain();
+        const osc = audio.createOscillator(); const gain = audio.createGain();
         osc.connect(gain); gain.connect(audio.destination);
         const now = audio.currentTime;
         if(type === 'shoot') {
@@ -560,19 +583,25 @@ function playSound(type) {
     } catch(e){}
 }
 
-let keys = {}, bullets = [], enemies = [], particles = [], powerups = [], boss = null;
+let keys = {}, bullets = [], enemies = [], particles = [], powerups = [], bgStreams = [], boss = null;
 let score = 0, combo = 0, hp = 100, highScore = parseInt(localStorage.getItem('pkj_high')) || 0;
-let shakeTimer = 0, tripleShotTimer = 0, shieldActive = false, gameLoop;
+let shakeTimer = 0, multiShotTimer = 0, shieldActive = false, gameLoop;
 let isPlaying = false, isPaused = false;
 
 let player = { x: 214, y: 510, w: 52, h: 52, speed: 7 };
 
+// Inisialisasi Matrix Background
+for(let i=0; i<25; i++) {
+    bgStreams.push({
+        x: Math.random() * 480, y: Math.random() * 600,
+        s: 1 + Math.random() * 3, c: Math.random() > 0.5 ? '#1d2330' : '#232b38'
+    });
+}
+
 document.addEventListener('keydown', e => { 
     keys[e.code] = true; 
     if(e.code==='Space') shoot(); 
-    if(e.code==='KeyP' || e.code==='Escape') {
-        if(isPlaying) isPaused ? resumeGame() : pauseGame();
-    }
+    if(e.code==='KeyP' || e.code==='Escape') { if(isPlaying) isPaused ? resumeGame() : pauseGame(); }
 });
 document.addEventListener('keyup', e => keys[e.code] = false);
 
@@ -588,7 +617,7 @@ function toggleFullscreen() {
 }
 
 function handleTouch(e) {
-    if(!isPlaying || isPaused) return;
+    if(!isPlaying || isPaused || isAIEnabled) return;
     let r = canvas.getBoundingClientRect();
     let scaleX = canvas.width / r.width;
     let touchX = (e.touches[0].clientX - r.left) * scaleX;
@@ -602,22 +631,22 @@ canvas.addEventListener('touchmove', handleTouch, {passive:false});
 function shoot() {
     if(!isPlaying || isPaused) return;
     playSound('shoot');
-    if(tripleShotTimer > 0) {
-        bullets.push({x: player.x + 4, y: player.y, w: 6, h: 14, vx: -2, vy: -10});
-        bullets.push({x: player.x + player.w/2 - 3, y: player.y - 5, w: 6, h: 14, vx: 0, vy: -10});
-        bullets.push({x: player.x + player.w - 10, y: player.y, w: 6, h: 14, vx: 2, vy: -10});
+    if(multiShotTimer > 0) {
+        // BARRAGE - 7 PELURU MENYEBAR
+        const spread = [-3, -2, -1, 0, 1, 2, 3];
+        spread.forEach(a => {
+            bullets.push({x: player.x + player.w/2 - 3, y: player.y, w: 6, h: 14, vx: a * 1.2, vy: -11});
+        });
     } else {
         bullets.push({x: player.x + player.w/2 - 3, y: player.y - 5, w: 6, h: 14, vx: 0, vy: -10});
     }
 }
 
-function createExplosion(x, y, color, count=12) {
+function createExplosion(x, y, color, count=15) {
     for(let i=0; i<count; i++) {
         particles.push({
-            x, y,
-            vx: (Math.random() - 0.5) * 8,
-            vy: (Math.random() - 0.5) * 8,
-            life: 1, color, size: Math.random()*3 + 2
+            x, y, vx: (Math.random() - 0.5) * 10, vy: (Math.random() - 0.5) * 10,
+            life: 1, color, size: Math.random()*4 + 2
         });
     }
 }
@@ -626,11 +655,7 @@ function getDynamicHardcoreBoost() {
     if (currentDiffKey !== 'hardcore') return { speedBoost: 0, spawnBoost: 0 };
     const scoreFactor = Math.floor(score / 150);
     const rekorFactor = score > highScore ? Math.floor((score - highScore) / 100) + 1 : 0;
-    
-    return {
-        speedBoost: (scoreFactor * 0.2) + (rekorFactor * 0.3),
-        spawnBoost: (scoreFactor * 0.008) + (rekorFactor * 0.012)
-    };
+    return { speedBoost: (scoreFactor * 0.2) + (rekorFactor * 0.3), spawnBoost: (scoreFactor * 0.008) + (rekorFactor * 0.012) };
 }
 
 function spawnEnemy() {
@@ -645,17 +670,12 @@ function spawnEnemy() {
         { type: 'ransom', color: '#f7d488', hp: 4, speed: 1.6 * finalSpeedMult, points: 50, w: 46, h: 46, imgKey: 'ransom', label: 'VIRUS' }
     ];
     let r = Math.random();
-    let selected = types[0];
-    if(r > 0.5) selected = types[1];
-    if(r > 0.8) selected = types[2];
+    let selected = types[0]; if(r > 0.5) selected = types[1]; if(r > 0.8) selected = types[2];
 
-    enemies.push({
-        x: Math.random() * (canvas.width - selected.w),
-        y: -60, ...selected
-    });
+    enemies.push({ x: Math.random() * (canvas.width - selected.w), y: -60, ...selected });
 
     if(score >= 400 && !boss && Math.random() < 0.08) {
-        boss = { x: 192, y: -100, targetY: 85, w: 96, h: 96, hp: 60, maxHp: 60, vx: 3 * finalSpeedMult, imgKey: 'boss' };
+        boss = { x: 192, y: -100, targetY: 80, w: 96, h: 96, hp: 80, maxHp: 80, vx: 3 * finalSpeedMult, imgKey: 'boss' };
         bossBarContainer.style.display = 'block';
     }
 }
@@ -665,115 +685,142 @@ function spawnPowerup(x, y) {
     if(Math.random() < cfg.powerupChance) {
         const kinds = ['SHIELD', 'TRIPLE', 'NUKE'];
         const type = kinds[Math.floor(Math.random()*kinds.length)];
-        let imgKey = 'p_shield';
-        if(type === 'TRIPLE') imgKey = 'p_triple';
-        if(type === 'NUKE') imgKey = 'p_nuke';
-        powerups.push({ x: x - 16, y, type, imgKey, vy: 2, w: 32, h: 32 });
+        let imgKey = 'p_shield'; if(type === 'TRIPLE') imgKey = 'p_triple'; if(type === 'NUKE') imgKey = 'p_nuke';
+        powerups.push({ x: x - 16, y, type, imgKey, vy: 2.5, w: 32, h: 32 });
     }
 }
 
 function startGame() {
     score = 0; combo = 0; hp = 100;
     bullets = []; enemies = []; particles = []; powerups = []; boss = null;
-    tripleShotTimer = 0; shieldActive = false; isPlaying = true; isPaused = false;
+    multiShotTimer = 0; shieldActive = false; isPlaying = true; isPaused = false;
     player.x = 214;
     scoreEl.innerText = '0'; comboEl.innerText = ''; hpEl.innerText = '100%';
     
     const cfg = difficultyConfig[currentDiffKey];
-    hudDiffEl.innerText = cfg.label;
-    hudDiffEl.style.color = cfg.color;
+    hudDiffEl.innerText = cfg.label; hudDiffEl.style.color = cfg.color;
 
+    aiIndicator.style.display = isAIEnabled ? 'block' : 'none';
     bossBarContainer.style.display = 'none';
-    startScreen.classList.add('hidden');
-    pauseScreen.classList.add('hidden');
-    gameOverScreen.classList.add('hidden');
-    clearInterval(gameLoop);
-    gameLoop = setInterval(update, 1000/60);
+    startScreen.classList.add('hidden'); pauseScreen.classList.add('hidden'); gameOverScreen.classList.add('hidden');
+    clearInterval(gameLoop); gameLoop = setInterval(update, 1000/60);
 }
 
 function pauseGame() {
     if(!isPlaying || isPaused) return;
-    isPaused = true;
-    pauseScreen.classList.remove('hidden');
+    isPaused = true; pauseScreen.classList.remove('hidden');
 }
 
 function resumeGame() {
-    isPaused = false;
-    pauseScreen.classList.add('hidden');
+    isPaused = false; pauseScreen.classList.add('hidden');
 }
 
 function goHome() {
-    isPlaying = false;
-    isPaused = false;
-    clearInterval(gameLoop);
-    bossBarContainer.style.display = 'none';
-    pauseScreen.classList.add('hidden');
-    gameOverScreen.classList.add('hidden');
-    startScreen.classList.remove('hidden');
+    isPlaying = false; isPaused = false; clearInterval(gameLoop);
+    bossBarContainer.style.display = 'none'; aiIndicator.style.display = 'none';
+    pauseScreen.classList.add('hidden'); gameOverScreen.classList.add('hidden'); startScreen.classList.remove('hidden');
 }
 
 function giveUp() {
-    pauseScreen.classList.add('hidden');
-    takeDamage(999);
+    pauseScreen.classList.add('hidden'); takeDamage(999);
 }
 
 function isColliding(a, b) {
-    return a.x < b.x + b.w &&
-           a.x + a.w > b.x &&
-           a.y < b.y + b.h &&
-           a.y + a.h > b.y;
+    return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
 }
 
 function update() {
     if(isPaused) return;
 
+    // AI AUTOPLAY LOGIC (PERFECT TRACKING & GOD MODE)
+    if(isAIEnabled) {
+        hp = 100; // Auto Regen / God mode
+        hpEl.innerText = '100%';
+        
+        let target = null;
+        let lowestY = -999;
+        // Prioritas boss, kalau tidak ada cari musuh terendah
+        if (boss) {
+            target = boss;
+        } else {
+            for(let e of enemies) {
+                if(e.y > lowestY) { lowestY = e.y; target = e; }
+            }
+        }
+        
+        // Ambil powerup jika dekat
+        for(let p of powerups) {
+            if(p.y > canvas.height - 150) target = p; 
+        }
+
+        if(target) {
+            let tx = target.x + target.w/2 - player.w/2;
+            player.x += (tx - player.x) * 0.25; // Smooth but fast tracking
+        }
+        
+        if(Math.random() < 0.3) shoot(); // Auto fire
+    } else {
+        // Kontrol Manual
+        if(keys['ArrowLeft'] || keys['KeyA']) if(player.x > 0) player.x -= player.speed;
+        if(keys['ArrowRight'] || keys['KeyD']) if(player.x < canvas.width - player.w) player.x += player.speed;
+    }
+
     let sx = 0, sy = 0;
     if(shakeTimer > 0) {
-        shakeTimer--;
-        sx = (Math.random()-0.5) * 12; 
-        sy = (Math.random()-0.5) * 12;
+        shakeTimer--; sx = (Math.random()-0.5) * 12; sy = (Math.random()-0.5) * 12;
     }
 
-    ctx.save();
-    ctx.translate(sx, sy);
+    ctx.save(); ctx.translate(sx, sy);
     ctx.clearRect(-20, -20, canvas.width+40, canvas.height+40);
 
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.02)';
-    ctx.lineWidth = 1;
-    for(let i=0; i<canvas.width; i+=30) { ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,canvas.height); ctx.stroke(); }
-    for(let j=0; j<canvas.height; j+=30) { ctx.beginPath(); ctx.moveTo(0,j); ctx.lineTo(canvas.width,j); ctx.stroke(); }
-
-    if(keys['ArrowLeft'] || keys['KeyA']) if(player.x > 0) player.x -= player.speed;
-    if(keys['ArrowRight'] || keys['KeyD']) if(player.x < canvas.width - player.w) player.x += player.speed;
-    if(tripleShotTimer > 0) tripleShotTimer--;
-
-    ctx.save();
-    if(hp <= 30) {
-        let slowAlpha = 0.35 + 0.65 * Math.abs(Math.sin(Date.now() / 240));
-        ctx.globalAlpha = slowAlpha;
+    // Render Matrix Background Dinamis
+    for(let i=0; i<bgStreams.length; i++) {
+        let b = bgStreams[i];
+        b.y += b.s;
+        ctx.fillStyle = b.c;
+        ctx.fillRect(b.x, b.y, 2, 15);
+        if(b.y > canvas.height) { b.y = -20; b.x = Math.random() * canvas.width; }
     }
 
-    ctx.shadowBlur = 10; ctx.shadowColor = 'rgba(168, 199, 250, 0.3)';
+    if(multiShotTimer > 0) multiShotTimer--;
+
+    // Render Player
+    ctx.save();
+    if(hp <= 30 && !isAIEnabled) { ctx.globalAlpha = 0.35 + 0.65 * Math.abs(Math.sin(Date.now() / 240)); }
+    ctx.shadowBlur = 15; ctx.shadowColor = 'rgba(168, 199, 250, 0.4)';
     if(imgs.player.complete && imgs.player.naturalWidth !== 0) {
         ctx.drawImage(imgs.player, player.x, player.y, player.w, player.h);
     } else {
-        ctx.fillStyle = '#a8c7fa';
-        ctx.fillRect(player.x + 10, player.y + 15, 32, 25);
-        ctx.fillRect(player.x + 5, player.y + 5, 4, 15);
-        ctx.fillRect(player.x + 43, player.y + 5, 4, 15);
+        ctx.fillStyle = '#a8c7fa'; ctx.fillRect(player.x + 10, player.y + 15, 32, 25);
     }
     ctx.restore();
 
+    // RENDER FIREWALL (SHIELD UPGRADE)
     if(shieldActive) {
-        ctx.strokeStyle = '#6ddb9d'; ctx.lineWidth = 2.5;
-        ctx.beginPath(); ctx.arc(player.x+player.w/2, player.y+player.h/2, 35, 0, Math.PI*2); ctx.stroke();
+        // Bubble
+        ctx.strokeStyle = '#6ddb9d'; ctx.lineWidth = 2.5; ctx.shadowBlur = 10; ctx.shadowColor = '#6ddb9d';
+        ctx.beginPath(); ctx.arc(player.x+player.w/2, player.y+player.h/2, 36, 0, Math.PI*2); ctx.stroke();
+        
+        // Tembok Belakang (Firewall)
+        ctx.fillStyle = 'rgba(109, 219, 157, 0.2)';
+        ctx.fillRect(0, canvas.height - 30, canvas.width, 30);
+        ctx.fillStyle = '#6ddb9d';
+        ctx.fillRect(0, canvas.height - 8, canvas.width, 8);
+        
+        ctx.fillStyle = '#12141a'; ctx.font = '700 10px sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText("=== FIREWALL ACTIVE ===", canvas.width/2, canvas.height - 12);
+        ctx.textAlign = 'left';
     }
 
-    ctx.fillStyle = '#6ddb9d'; ctx.shadowBlur = 6; ctx.shadowColor = '#6ddb9d';
+    // Bullets (Diberi efek trail glowing)
+    ctx.fillStyle = '#ffffff'; ctx.shadowBlur = 8; ctx.shadowColor = '#6ddb9d';
     for(let i=bullets.length-1; i>=0; i--) {
         let b = bullets[i];
         b.x += b.vx; b.y += b.vy;
         ctx.fillRect(b.x, b.y, b.w, b.h);
+        ctx.fillStyle = 'rgba(109, 219, 157, 0.5)';
+        ctx.fillRect(b.x+1, b.y+b.h, b.w-2, 6); // Trail
+        ctx.fillStyle = '#ffffff';
         if(b.y < -20 || b.x < -10 || b.x > canvas.width + 10) bullets.splice(i,1);
     }
 
@@ -781,65 +828,50 @@ function update() {
     const { spawnBoost } = getDynamicHardcoreBoost();
     if(Math.random() < (cfg.spawnRate + spawnBoost)) spawnEnemy();
 
-    const isBlink = Math.floor(Date.now() / 300) % 2 === 0;
+    const isBlink = Math.floor(Date.now() / 250) % 2 === 0;
 
     for(let i=enemies.length-1; i>=0; i--) {
-        let e = enemies[i];
-        e.y += e.speed;
-
-        ctx.shadowBlur = 8; ctx.shadowColor = e.color;
+        let e = enemies[i]; e.y += e.speed;
+        ctx.shadowBlur = 10; ctx.shadowColor = e.color;
         let img = imgs[e.imgKey];
-        if(img.complete && img.naturalWidth !== 0) {
-            ctx.drawImage(img, e.x, e.y, e.w, e.h);
-        } else {
-            ctx.fillStyle = e.color;
-            ctx.fillRect(e.x, e.y, e.w, e.h);
-        }
+        if(img.complete && img.naturalWidth !== 0) ctx.drawImage(img, e.x, e.y, e.w, e.h);
+        else { ctx.fillStyle = e.color; ctx.fillRect(e.x, e.y, e.w, e.h); }
 
         if(isBlink) {
-            ctx.fillStyle = '#ffb4ab';
-            ctx.font = '600 10px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.shadowBlur = 4;
-            ctx.shadowColor = '#ffb4ab';
-            ctx.fillText(e.label, e.x + e.w/2, e.y - 6);
-            ctx.textAlign = 'left';
+            ctx.fillStyle = '#ffb4ab'; ctx.font = '700 9px sans-serif'; ctx.textAlign = 'center';
+            ctx.shadowBlur = 6; ctx.shadowColor = '#ffb4ab';
+            ctx.fillText(e.label, e.x + e.w/2, e.y - 6); ctx.textAlign = 'left';
         }
 
         let enemyHit = false;
         for(let j=bullets.length-1; j>=0; j--) {
             let b = bullets[j];
             if(isColliding(b, e)) {
-                e.hp--;
-                bullets.splice(j,1);
-                createExplosion(b.x + b.w/2, b.y, e.color, 6);
+                e.hp--; bullets.splice(j,1); createExplosion(b.x + b.w/2, b.y, e.color, 6);
                 if(e.hp <= 0) {
-                    playSound('hit');
-                    score += e.points;
-                    combo++;
-                    comboEl.innerText = `x${combo}`;
-                    scoreEl.innerText = formatScore(score);
-                    spawnPowerup(e.x + e.w/2, e.y + e.h/2);
-                    createExplosion(e.x + e.w/2, e.y + e.h/2, e.color, 15);
-                    enemies.splice(i,1);
-                    enemyHit = true;
-                    break;
+                    playSound('hit'); score += e.points; combo++; comboEl.innerText = `x${combo}`; scoreEl.innerText = formatScore(score);
+                    spawnPowerup(e.x + e.w/2, e.y + e.h/2); createExplosion(e.x + e.w/2, e.y + e.h/2, e.color, 15);
+                    enemies.splice(i,1); enemyHit = true; break;
                 }
             }
         }
         if(enemyHit) continue;
 
         if(isColliding(e, player)) {
-            enemies.splice(i,1);
-            createExplosion(e.x + e.w/2, e.y + e.h/2, '#ffb4ab', 20);
+            enemies.splice(i,1); createExplosion(e.x + e.w/2, e.y + e.h/2, '#ffb4ab', 25);
             takeDamage(cfg.hitDmg);
-        } else if(e.y > canvas.height + 40) {
-            enemies.splice(i,1);
-            combo = 0; comboEl.innerText = '';
-            if(cfg.leakDmg > 0) {
-                shakeTimer = 18;
-                createExplosion(e.x + e.w/2, canvas.height - 10, '#ff5449', 15);
-                takeDamage(cfg.leakDmg);
+        } else if(e.y + e.h > canvas.height - 25) {
+            // JIKA MENYENTUH FIREWALL SAAT SHIELD AKTIF
+            if(shieldActive) {
+                createExplosion(e.x + e.w/2, canvas.height - 20, '#6ddb9d', 20); // Meledak kena tembok
+                score += Math.floor(e.points / 2); scoreEl.innerText = formatScore(score);
+                enemies.splice(i,1);
+            } else {
+                enemies.splice(i,1); combo = 0; comboEl.innerText = '';
+                if(cfg.leakDmg > 0) {
+                    shakeTimer = 18; createExplosion(e.x + e.w/2, canvas.height - 10, '#ff5449', 15);
+                    takeDamage(cfg.leakDmg);
+                }
             }
         }
     }
@@ -849,78 +881,54 @@ function update() {
         boss.x += boss.vx;
         if(boss.x < 10 || boss.x > canvas.width - boss.w - 10) boss.vx *= -1;
 
-        ctx.shadowBlur = 12; ctx.shadowColor = '#ffb4ab';
-        if(imgs.boss.complete && imgs.boss.naturalWidth !== 0) {
-            ctx.drawImage(imgs.boss, boss.x, boss.y, boss.w, boss.h);
-        } else {
-            ctx.fillStyle = '#ffb4ab';
-            ctx.fillRect(boss.x, boss.y, boss.w, boss.h);
-        }
+        ctx.shadowBlur = 15; ctx.shadowColor = '#ffb4ab';
+        if(imgs.boss.complete && imgs.boss.naturalWidth !== 0) ctx.drawImage(imgs.boss, boss.x, boss.y, boss.w, boss.h);
+        else { ctx.fillStyle = '#ffb4ab'; ctx.fillRect(boss.x, boss.y, boss.w, boss.h); }
 
         if(isBlink) {
-            ctx.fillStyle = '#ffb4ab';
-            ctx.font = '600 11px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.shadowBlur = 6;
-            ctx.shadowColor = '#ffb4ab';
-            ctx.fillText("⚠️ BOS VIRUS ⚠️", boss.x + boss.w/2, boss.y - 8);
-            ctx.textAlign = 'left';
+            ctx.fillStyle = '#ffb4ab'; ctx.font = '800 11px sans-serif'; ctx.textAlign = 'center';
+            ctx.fillText("⚠️ CRITICAL THREAT ⚠️", boss.x + boss.w/2, boss.y - 10); ctx.textAlign = 'left';
         }
 
         for(let j=bullets.length-1; j>=0; j--) {
             let b = bullets[j];
             if(isColliding(b, boss)) {
-                boss.hp--;
-                bullets.splice(j,1);
-                createExplosion(b.x, b.y, '#ffb4ab', 5);
+                boss.hp--; bullets.splice(j,1); createExplosion(b.x, b.y, '#ffb4ab', 8);
                 bossBar.style.width = `${(boss.hp / boss.maxHp) * 100}%`;
                 if(boss.hp <= 0) {
-                    score += 500;
-                    scoreEl.innerText = formatScore(score);
-                    createExplosion(boss.x+boss.w/2, boss.y+boss.h/2, '#ffb4ab', 50);
-                    boss = null;
-                    bossBarContainer.style.display = 'none';
-                    break;
+                    score += 1000; scoreEl.innerText = formatScore(score);
+                    createExplosion(boss.x+boss.w/2, boss.y+boss.h/2, '#ffb4ab', 80);
+                    boss = null; bossBarContainer.style.display = 'none'; break;
                 }
             }
         }
     }
 
     for(let i=powerups.length-1; i>=0; i--) {
-        let p = powerups[i];
-        p.y += p.vy;
-        ctx.shadowBlur = 8; ctx.shadowColor = '#f7d488';
-
+        let p = powerups[i]; p.y += p.vy;
+        ctx.shadowBlur = 10; ctx.shadowColor = '#f7d488';
         let pImg = imgs[p.imgKey];
-        if(pImg.complete && pImg.naturalWidth !== 0) {
-            ctx.drawImage(pImg, p.x, p.y, p.w, p.h);
-        } else {
-            ctx.fillStyle = '#f7d488';
-            ctx.font = '11px sans-serif';
-            ctx.fillText(`[${p.type}]`, p.x, p.y);
-        }
+        if(pImg.complete && pImg.naturalWidth !== 0) ctx.drawImage(pImg, p.x, p.y, p.w, p.h);
+        else { ctx.fillStyle = '#f7d488'; ctx.fillText(`[${p.type}]`, p.x, p.y); }
 
         if(isColliding(p, player)) {
             playSound('powerup');
             if(p.type === 'SHIELD') {
-                shieldActive = true;
-                hp = Math.min(100, hp + 25);
-                hpEl.innerText = `${hp}%`;
-                createExplosion(player.x + player.w/2, player.y + player.h/2, '#6ddb9d', 10);
+                shieldActive = true; hp = Math.min(100, hp + 35); hpEl.innerText = `${hp}%`;
+                createExplosion(player.x + player.w/2, player.y + player.h/2, '#6ddb9d', 20);
             }
-            if(p.type === 'TRIPLE') tripleShotTimer = 300;
+            if(p.type === 'TRIPLE') multiShotTimer = 400; // Durasi Barrage
             if(p.type === 'NUKE') {
-                enemies.forEach(e => createExplosion(e.x+e.w/2, e.y+e.h/2, e.color, 12));
-                enemies = [];
+                ctx.fillStyle = 'rgba(255,255,255,0.8)'; ctx.fillRect(0,0,canvas.width,canvas.height); // Screen flash
+                enemies.forEach(e => createExplosion(e.x+e.w/2, e.y+e.h/2, e.color, 15)); enemies = [];
             }
             powerups.splice(i,1);
         } else if(p.y > canvas.height) powerups.splice(i,1);
     }
 
     for(let i=particles.length-1; i>=0; i--) {
-        let pt = particles[i];
-        pt.x += pt.vx; pt.y += pt.vy; pt.life -= 0.03;
-        ctx.fillStyle = pt.color; ctx.shadowBlur = 4; ctx.shadowColor = pt.color;
+        let pt = particles[i]; pt.x += pt.vx; pt.y += pt.vy; pt.life -= 0.025;
+        ctx.fillStyle = pt.color; ctx.shadowBlur = 6; ctx.shadowColor = pt.color;
         ctx.fillRect(pt.x, pt.y, pt.size, pt.size);
         if(pt.life <= 0) particles.splice(i,1);
     }
@@ -929,15 +937,12 @@ function update() {
 }
 
 function takeDamage(amt) {
+    if(isAIEnabled) return; // AI GOD MODE
     if(shieldActive) { shieldActive = false; return; }
-    shakeTimer = 15;
-    playSound('hit');
-    hp -= amt;
-    hpEl.innerText = `${Math.max(0, hp)}%`;
+    shakeTimer = 18; playSound('hit'); hp -= amt; hpEl.innerText = `${Math.max(0, hp)}%`;
+    
     if(hp <= 0) {
-        isPlaying = false;
-        isPaused = false;
-        clearInterval(gameLoop);
+        isPlaying = false; isPaused = false; clearInterval(gameLoop);
         if(score > highScore) { highScore = score; localStorage.setItem('pkj_high', highScore); }
         document.getElementById('ovScore').innerText = formatScore(score);
         document.getElementById('ovHigh').innerText = formatScore(highScore);
