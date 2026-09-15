@@ -9,30 +9,36 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            background: #0b0f19;
-            color: #e2e8f0;
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            background: #121318;
+            color: #e2e2e9;
+            font-family: 'Google Sans', 'Roboto', system-ui, -apple-system, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
             overflow: hidden;
-            padding: 10px;
+            padding: 12px;
         }
         
         h1 { 
-            font-size: 1.3rem; 
-            color: #38bdf8; 
-            letter-spacing: 1px;
+            font-size: 1.4rem; 
+            font-weight: 700;
+            color: #d3e3fd; 
+            letter-spacing: 0.5px;
             margin-bottom: 3px; 
             text-align: center; 
         }
         .subtitle { 
-            color: #64748b; 
+            color: #c4c6d0; 
             font-size: 0.78rem; 
-            margin-bottom: 10px; 
+            margin-bottom: 12px; 
             text-align: center; 
+            background: #1e2027;
+            padding: 4px 14px;
+            border-radius: 100px;
+            border: 1px solid #2d313a;
+            display: inline-block;
         }
         
         #gameWrapper { 
@@ -44,97 +50,103 @@
             max-width: 480px;
         }
         
-        /* RESPONSIVE AUTO-SCALE CANVAS */
+        /* RESPONSIVE AUTO-SCALE CANVAS - PIXEL STYLE ROUNDED */
         canvas {
-            border: 1px solid #1e293b;
-            border-radius: 12px;
-            background: #0f172a;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid #2d313a;
+            border-radius: 24px;
+            background: #1a1c23;
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
             display: block;
             width: 100%;
             height: auto;
-            max-height: 75vh;
+            max-height: 74vh;
             aspect-ratio: 480 / 600;
             touch-action: none;
         }
 
         .hud {
             position: absolute;
-            top: 12px; left: 16px; right: 16px;
+            top: 14px; left: 16px; right: 16px;
             display: flex;
             justify-content: space-between;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 600;
             pointer-events: none;
-            color: #f1f5f9;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            color: #e2e2e9;
+        }
+        
+        .hud-chip {
+            background: rgba(30, 32, 39, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            padding: 4px 12px;
+            border-radius: 100px;
         }
         
         #bossBarContainer {
             position: absolute;
-            top: 40px; left: 50%;
+            top: 48px; left: 50%;
             transform: translateX(-50%);
             width: 70%;
-            height: 10px;
-            background: rgba(244, 63, 94, 0.2);
-            border: 1px solid #f43f5e;
-            border-radius: 5px;
+            height: 8px;
+            background: rgba(255, 180, 171, 0.2);
+            border-radius: 100px;
             overflow: hidden;
             display: none;
         }
-        #bossBar { width: 100%; height: 100%; background: #f43f5e; transition: width 0.1s; }
+        #bossBar { width: 100%; height: 100%; background: #ffb4ab; transition: width 0.1s; }
         
-        /* OVERLAY SCREEN */
+        /* OVERLAY SCREEN - MATERIAL YOU SURFACE CONTAINER */
         .overlay-screen {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.96);
+            background: rgba(18, 19, 24, 0.94);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: 24px;
+            padding: 24px;
             text-align: center;
             z-index: 10;
-            backdrop-filter: blur(4px);
+            backdrop-filter: blur(12px);
         }
 
         .author-box {
-            background: rgba(30, 41, 59, 0.7);
-            border: 1px solid rgba(56, 189, 248, 0.2);
-            border-radius: 8px;
-            padding: 10px 16px;
-            margin: 12px 0 14px 0;
+            background: #1e2027;
+            border: 1px solid #2d313a;
+            border-radius: 18px;
+            padding: 12px 18px;
+            margin: 14px 0 16px 0;
             width: 100%;
             max-width: 360px;
         }
 
         .author-name {
-            color: #fbbf24; 
+            color: #a8c7fa; 
             font-weight: 700; 
-            font-size: 0.95rem;
+            font-size: 1rem;
             margin-top: 2px;
         }
 
         .author-sub {
-            font-size: 0.75rem; 
-            color: #94a3b8; 
+            font-size: 0.76rem; 
+            color: #c4c6d0; 
             margin-top: 2px;
         }
 
-        /* LEGENDA GRID */
+        /* LEGENDA GRID MATERIAL DESIGN */
         .icon-legend-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
+            gap: 10px;
             width: 100%;
             max-width: 360px;
-            margin-bottom: 16px;
-            background: rgba(30, 41, 59, 0.4);
-            border-radius: 8px;
-            padding: 12px 8px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 20px;
+            background: #1e2027;
+            border-radius: 18px;
+            padding: 14px 10px;
+            border: 1px solid #2d313a;
         }
 
         .legend-item {
@@ -145,36 +157,36 @@
         }
 
         .legend-item img {
-            width: 30px;
-            height: 30px;
+            width: 32px;
+            height: 32px;
             object-fit: contain;
             margin-bottom: 4px;
         }
 
         .legend-item span {
             font-size: 0.68rem;
-            color: #cbd5e1;
+            color: #c4c6d0;
             white-space: nowrap;
         }
 
-        /* BUTTON DESIGN */
+        /* MATERIAL YOU PILL BUTTON */
         button {
-            padding: 12px 32px;
-            background: linear-gradient(135deg, #0284c7, #2563eb);
-            color: #ffffff;
+            padding: 12px 36px;
+            background: #a8c7fa;
+            color: #042f56;
             border: none;
-            border-radius: 8px;
+            border-radius: 100px;
+            font-family: 'Google Sans', 'Roboto', sans-serif;
             font-size: 0.95rem;
-            font-weight: 600;
-            letter-spacing: 0.5px;
+            font-weight: 700;
             cursor: pointer;
-            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
+            box-shadow: 0 2px 10px rgba(168, 199, 250, 0.25);
             transition: all 0.2s ease;
         }
         button:hover { 
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(2, 132, 199, 0.45);
-            background: linear-gradient(135deg, #0369a1, #1d4ed8);
+            background: #c3e7ff;
+            transform: scale(1.03);
+            box-shadow: 0 4px 16px rgba(168, 199, 250, 0.4);
         }
         .hidden { display: none !important; }
     </style>
@@ -187,22 +199,22 @@
     <div id="gameWrapper">
         <canvas id="canvas" width="480" height="600"></canvas>
         <div class="hud">
-            <div>SKOR: <span id="score" style="color:#38bdf8;">0</span> <span id="combo" style="color:#fbbf24; font-size:0.8rem"></span></div>
-            <div>PELINDUNG: <span id="hp" style="color:#34d399">100%</span></div>
+            <div class="hud-chip">SKOR: <span id="score" style="color:#a8c7fa;">0</span> <span id="combo" style="color:#f7d488; font-size:0.8rem"></span></div>
+            <div class="hud-chip">PELINDUNG: <span id="hp" style="color:#6ddb9d">100%</span></div>
         </div>
         <div id="bossBarContainer">
             <div id="bossBar"></div>
         </div>
 
-        <!-- START SCREEN -->
+        <!-- START SCREEN (MATERIAL YOU / PIXEL DESIGN) -->
         <div id="startScreen" class="overlay-screen">
-            <h2 style="color: #38bdf8; font-size: 1.4rem; font-weight: 700;">NETWORK DEFENSE</h2>
+            <h2 style="color: #d3e3fd; font-size: 1.35rem; font-weight: 700;">NETWORK DEFENSE</h2>
             
             <div class="author-box">
-                <div style="font-size: 0.72rem; color: #38bdf8; letter-spacing: 1px;">KARYA MANDIRI PKJ</div>
+                <div style="font-size: 0.7rem; color: #a8c7fa; letter-spacing: 1px; font-weight: 700;">KARYA MANDIRI PKJ</div>
                 <div class="author-name">Razid Rahmanto</div>
                 <div class="author-sub">D2 Pemeliharaan Komputer & Jaringan</div>
-                <div style="font-size: 0.7rem; color: #64748b; margin-top: 1px;">AKN Pacitan</div>
+                <div style="font-size: 0.7rem; color: #8e9099; margin-top: 1px;">AKN Pacitan</div>
             </div>
 
             <!-- LEGENDA ICON PANDUAN DOSEN -->
@@ -213,7 +225,7 @@
                 </div>
                 <div class="legend-item">
                     <img src="enemy_ddos.png" alt="DDoS" onerror="this.style.display='none'">
-                    <span>Rudal DDoS</span>
+                    <span>DDoS Packet</span>
                 </div>
                 <div class="legend-item">
                     <img src="enemy_trojan.png" alt="Trojan" onerror="this.style.display='none'">
@@ -236,12 +248,12 @@
             <button onclick="startGame()">MULAI GAME</button>
         </div>
 
-        <!-- GAME OVER SCREEN (PAS KALAH) -->
+        <!-- GAME OVER SCREEN (MATERIAL DESTRUCTIVE TONE) -->
         <div id="gameOverScreen" class="overlay-screen hidden">
-            <h2 id="ovTitle" style="color: #f43f5e; font-size: 1.8rem; font-weight:700; margin-bottom: 8px;">KAMU KALAH!</h2>
-            <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 4px;">Sistem Router Jebol Ditembus Virus</p>
-            <p style="color: #ffffff; font-size: 0.95rem; margin-top: 6px;">Skor Akhir: <span id="ovScore" style="color:#38bdf8; font-weight:bold;">0</span></p>
-            <p style="color: #fbbf24; font-size: 0.85rem; margin-top:4px; margin-bottom: 18px;">Skor Tertinggi: <span id="ovHigh">0</span></p>
+            <h2 id="ovTitle" style="color: #ffb4ab; font-size: 1.7rem; font-weight:700; margin-bottom: 6px;">KAMU KALAH!</h2>
+            <p style="color: #c4c6d0; font-size: 0.85rem; margin-bottom: 4px;">Sistem Router Jebol Ditembus Virus</p>
+            <p style="color: #e2e2e9; font-size: 0.95rem; margin-top: 6px;">Skor Akhir: <span id="ovScore" style="color:#a8c7fa; font-weight:bold;">0</span></p>
+            <p style="color: #f7d488; font-size: 0.85rem; margin-top:4px; margin-bottom: 20px;">Skor Tertinggi: <span id="ovHigh">0</span></p>
             <button onclick="startGame()">MAIN LAGI</button>
         </div>
     </div>
@@ -354,9 +366,9 @@ function createExplosion(x, y, color, count=12) {
 function spawnEnemy() {
     if(boss) return;
     const types = [
-        { type: 'ddos', color: '#38bdf8', hp: 1, speed: 3.8, points: 10, w: 32, h: 54, imgKey: 'ddos', label: 'DDoS' },
-        { type: 'trojan', color: '#f43f5e', hp: 2, speed: 2.5, points: 25, w: 44, h: 44, imgKey: 'trojan', label: 'TROJAN' },
-        { type: 'ransom', color: '#fbbf24', hp: 4, speed: 1.6, points: 50, w: 46, h: 46, imgKey: 'ransom', label: 'VIRUS' }
+        { type: 'ddos', color: '#a8c7fa', hp: 1, speed: 3.8, points: 10, w: 32, h: 54, imgKey: 'ddos', label: 'DDoS' },
+        { type: 'trojan', color: '#ffb4ab', hp: 2, speed: 2.5, points: 25, w: 44, h: 44, imgKey: 'trojan', label: 'TROJAN' },
+        { type: 'ransom', color: '#f7d488', hp: 4, speed: 1.6, points: 50, w: 46, h: 46, imgKey: 'ransom', label: 'VIRUS' }
     ];
     let r = Math.random();
     let selected = types[0];
@@ -417,8 +429,8 @@ function update() {
     ctx.translate(sx, sy);
     ctx.clearRect(-20, -20, canvas.width+40, canvas.height+40);
 
-    // Subtle Background Grid
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
+    // Subtle Background Grid Material Tone
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.02)';
     ctx.lineWidth = 1;
     for(let i=0; i<canvas.width; i+=30) { ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,canvas.height); ctx.stroke(); }
     for(let j=0; j<canvas.height; j+=30) { ctx.beginPath(); ctx.moveTo(0,j); ctx.lineTo(canvas.width,j); ctx.stroke(); }
@@ -429,23 +441,23 @@ function update() {
     if(tripleShotTimer > 0) tripleShotTimer--;
 
     // Render Player Router
-    ctx.shadowBlur = 8; ctx.shadowColor = 'rgba(56, 189, 248, 0.4)';
+    ctx.shadowBlur = 10; ctx.shadowColor = 'rgba(168, 199, 250, 0.3)';
     if(imgs.player.complete && imgs.player.naturalWidth !== 0) {
         ctx.drawImage(imgs.player, player.x, player.y, player.w, player.h);
     } else {
-        ctx.fillStyle = '#38bdf8';
+        ctx.fillStyle = '#a8c7fa';
         ctx.fillRect(player.x + 10, player.y + 15, 32, 25);
         ctx.fillRect(player.x + 5, player.y + 5, 4, 15);
         ctx.fillRect(player.x + 43, player.y + 5, 4, 15);
     }
 
     if(shieldActive) {
-        ctx.strokeStyle = '#34d399'; ctx.lineWidth = 2.5;
+        ctx.strokeStyle = '#6ddb9d'; ctx.lineWidth = 2.5;
         ctx.beginPath(); ctx.arc(player.x+player.w/2, player.y+player.h/2, 35, 0, Math.PI*2); ctx.stroke();
     }
 
     // Bullets
-    ctx.fillStyle = '#34d399'; ctx.shadowBlur = 6; ctx.shadowColor = '#34d399';
+    ctx.fillStyle = '#6ddb9d'; ctx.shadowBlur = 6; ctx.shadowColor = '#6ddb9d';
     for(let i=bullets.length-1; i>=0; i--) {
         let b = bullets[i];
         b.x += b.vx; b.y += b.vy;
@@ -473,11 +485,11 @@ function update() {
 
         // Label Di Atas Icon
         if(isBlink) {
-            ctx.fillStyle = '#f43f5e';
+            ctx.fillStyle = '#ffb4ab';
             ctx.font = '600 10px sans-serif';
             ctx.textAlign = 'center';
             ctx.shadowBlur = 4;
-            ctx.shadowColor = '#f43f5e';
+            ctx.shadowColor = '#ffb4ab';
             ctx.fillText(e.label, e.x + e.w/2, e.y - 6);
             ctx.textAlign = 'left';
         }
@@ -509,7 +521,7 @@ function update() {
         // Enemy vs Player
         if(isColliding(e, player)) {
             enemies.splice(i,1);
-            createExplosion(e.x + e.w/2, e.y + e.h/2, '#f43f5e', 20);
+            createExplosion(e.x + e.w/2, e.y + e.h/2, '#ffb4ab', 20);
             takeDamage(20);
         } else if(e.y > canvas.height + 40) {
             enemies.splice(i,1);
@@ -523,20 +535,20 @@ function update() {
         boss.x += boss.vx;
         if(boss.x < 10 || boss.x > canvas.width - boss.w - 10) boss.vx *= -1;
 
-        ctx.shadowBlur = 12; ctx.shadowColor = '#f43f5e';
+        ctx.shadowBlur = 12; ctx.shadowColor = '#ffb4ab';
         if(imgs.boss.complete && imgs.boss.naturalWidth !== 0) {
             ctx.drawImage(imgs.boss, boss.x, boss.y, boss.w, boss.h);
         } else {
-            ctx.fillStyle = '#f43f5e';
+            ctx.fillStyle = '#ffb4ab';
             ctx.fillRect(boss.x, boss.y, boss.w, boss.h);
         }
 
         if(isBlink) {
-            ctx.fillStyle = '#f43f5e';
+            ctx.fillStyle = '#ffb4ab';
             ctx.font = '600 11px sans-serif';
             ctx.textAlign = 'center';
             ctx.shadowBlur = 6;
-            ctx.shadowColor = '#f43f5e';
+            ctx.shadowColor = '#ffb4ab';
             ctx.fillText("⚠️ BOS VIRUS ⚠️", boss.x + boss.w/2, boss.y - 8);
             ctx.textAlign = 'left';
         }
@@ -546,12 +558,12 @@ function update() {
             if(isColliding(b, boss)) {
                 boss.hp--;
                 bullets.splice(j,1);
-                createExplosion(b.x, b.y, '#f43f5e', 5);
+                createExplosion(b.x, b.y, '#ffb4ab', 5);
                 bossBar.style.width = `${(boss.hp / boss.maxHp) * 100}%`;
                 if(boss.hp <= 0) {
                     score += 500;
                     scoreEl.innerText = score;
-                    createExplosion(boss.x+boss.w/2, boss.y+boss.h/2, '#f43f5e', 50);
+                    createExplosion(boss.x+boss.w/2, boss.y+boss.h/2, '#ffb4ab', 50);
                     boss = null;
                     bossBarContainer.style.display = 'none';
                     break;
@@ -564,13 +576,13 @@ function update() {
     for(let i=powerups.length-1; i>=0; i--) {
         let p = powerups[i];
         p.y += p.vy;
-        ctx.shadowBlur = 8; ctx.shadowColor = '#fbbf24';
+        ctx.shadowBlur = 8; ctx.shadowColor = '#f7d488';
 
         let pImg = imgs[p.imgKey];
         if(pImg.complete && pImg.naturalWidth !== 0) {
             ctx.drawImage(pImg, p.x, p.y, p.w, p.h);
         } else {
-            ctx.fillStyle = '#fbbf24';
+            ctx.fillStyle = '#f7d488';
             ctx.font = '11px sans-serif';
             ctx.fillText(`[${p.type}]`, p.x, p.y);
         }
