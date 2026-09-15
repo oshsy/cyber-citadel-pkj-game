@@ -8,7 +8,11 @@
     <link rel="icon" type="image/png" sizes="32x32" href="icon.png">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
+        
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
             background: #121318;
             color: #e2e2e9;
             font-family: 'Google Sans', 'Roboto', system-ui, -apple-system, sans-serif;
@@ -16,96 +20,78 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            overflow: hidden;
-            padding: 12px;
         }
         
+        .header-title {
+            text-align: center;
+            margin-bottom: 8px;
+            flex-shrink: 0;
+        }
+
         h1 { 
-            font-size: 1.4rem; 
+            font-size: 1.3rem; 
             font-weight: 700;
             color: #d3e3fd; 
             letter-spacing: 0.5px;
-            margin-bottom: 3px; 
-            text-align: center; 
+            margin-bottom: 2px;
         }
         .subtitle { 
             color: #c4c6d0; 
-            font-size: 0.78rem; 
-            margin-bottom: 12px; 
-            text-align: center; 
+            font-size: 0.75rem; 
             background: #1e2027;
-            padding: 4px 14px;
+            padding: 3px 12px;
             border-radius: 100px;
             border: 1px solid #2d313a;
             display: inline-block;
         }
         
+        /* RESPONSIVE AUTO-FIT GAME WRAPPER (PORTRAIT & LANDSCAPE) */
         #gameWrapper { 
             position: relative; 
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 100%;
-            max-width: 480px;
+            /* Formula presisi pas di layar HP, Tablet, & Monitor */
+            width: min(96vw, (90vh - 50px) * (480 / 600));
+            height: min(90vh - 50px, 96vw * (600 / 480));
             aspect-ratio: 480 / 600;
         }
         
         canvas {
             border: 1px solid #2d313a;
-            border-radius: 24px;
+            border-radius: 20px;
             background: #1a1c23;
             box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
             display: block;
             width: 100%;
-            height: auto;
-            max-height: 74vh;
-            aspect-ratio: 480 / 600;
+            height: 100%;
             touch-action: none;
         }
 
-        /* LANDSCAPE ADAPTIVE DESIGN */
+        /* LANDSCAPE OPTIMIZATION & RE-LAYOUT */
         @media (orientation: landscape) {
-            body {
-                padding: 4px;
-            }
-            h1, .subtitle {
-                display: none; /* Sembunyikan header di mode landscape untuk memaksimalkan tinggi canvas */
-            }
+            .header-title { display: none !important; }
             #gameWrapper {
-                max-width: none;
-                height: 95vh;
-                width: auto;
-            }
-            canvas {
-                height: 100%;
-                width: auto;
-                max-height: 95vh;
+                width: min(98vw, 96vh * (480 / 600));
+                height: min(96vh, 98vw * (600 / 480));
             }
         }
 
-        /* FULLSCREEN STYLE SUPPORT */
+        /* FULLSCREEN CONTAINER OVERRIDE */
         #gameWrapper:fullscreen, #gameWrapper:-webkit-full-screen {
-            width: 100vw;
-            height: 100vh;
-            max-width: none;
+            width: min(100vw, 100vh * (480 / 600)) !important;
+            height: 100vh !important;
             background: #121318;
-            border-radius: 0;
         }
         #gameWrapper:fullscreen canvas, #gameWrapper:-webkit-full-screen canvas {
-            height: 100vh;
-            width: auto;
-            max-height: 100vh;
             border-radius: 0;
             border: none;
         }
 
-        /* HUD PRESISI DAN RAPI */
+        /* HUD STABIL DALAM CANVAS */
         .hud {
             position: absolute;
-            top: 10px; 
-            left: 10px; 
-            right: 10px;
+            top: 10px; left: 10px; right: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -152,17 +138,9 @@
         }
         .hud-btn:active { transform: scale(0.9); }
 
-        .hud-icon {
+        .hud-icon, .btn-icon-img {
             width: 14px;
             height: 14px;
-            max-width: 64px;
-            max-height: 64px;
-            object-fit: contain;
-        }
-
-        .btn-icon-img {
-            width: 16px;
-            height: 16px;
             max-width: 64px;
             max-height: 64px;
             object-fit: contain;
@@ -182,70 +160,86 @@
         }
         #bossBar { width: 100%; height: 100%; background: #ffb4ab; transition: width 0.1s; }
         
+        /* OVERLAY SCREEN & ADAPTIVE GRID FOR MENU */
         .overlay-screen {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(18, 19, 24, 0.94);
+            background: rgba(18, 19, 24, 0.95);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            border-radius: 24px;
-            padding: 24px;
+            border-radius: 20px;
+            padding: 16px;
             text-align: center;
             z-index: 10;
             backdrop-filter: blur(12px);
-            overflow-y: auto;
+        }
+
+        .start-main-layout {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 360px;
+        }
+
+        /* UBAH DUA KOLOM PAS LANDSCAPE / LAYAR PENDEK */
+        @media (orientation: landscape) or (max-height: 520px) {
+            .overlay-screen { padding: 10px 14px; }
+            .start-main-layout {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+                max-width: 440px;
+                align-items: center;
+            }
         }
 
         .author-box {
             background: #1e2027;
             border: 1px solid #2d313a;
-            border-radius: 18px;
-            padding: 8px 16px;
-            margin: 6px 0 10px 0;
+            border-radius: 14px;
+            padding: 6px 12px;
+            margin: 4px 0 8px 0;
             width: 100%;
-            max-width: 360px;
         }
 
         .author-name {
             color: #a8c7fa; 
             font-weight: 700; 
-            font-size: 0.95rem;
-            margin-top: 1px;
+            font-size: 0.88rem;
         }
 
         .author-sub {
-            font-size: 0.72rem; 
+            font-size: 0.68rem; 
             color: #c4c6d0; 
-            margin-top: 1px;
         }
 
         .diff-title {
-            font-size: 0.7rem;
+            font-size: 0.68rem;
             color: #a8c7fa;
             letter-spacing: 0.8px;
             font-weight: 700;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
             text-transform: uppercase;
         }
 
         .diff-container {
             display: flex;
-            gap: 6px;
+            gap: 4px;
             width: 100%;
-            max-width: 360px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .diff-btn {
             flex: 1;
-            padding: 7px 0;
+            padding: 6px 0;
             background: #1e2027;
             color: #c4c6d0;
             border: 1px solid #2d313a;
-            border-radius: 12px;
-            font-size: 0.7rem;
+            border-radius: 10px;
+            font-size: 0.65rem;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -260,19 +254,17 @@
             background: #ff5449;
             color: #ffffff;
             border-color: #ff5449;
-            box-shadow: 0 0 12px rgba(255, 84, 73, 0.4);
         }
 
         .icon-legend-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 6px;
+            gap: 4px;
             width: 100%;
-            max-width: 360px;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             background: #1e2027;
-            border-radius: 18px;
-            padding: 8px 6px;
+            border-radius: 14px;
+            padding: 6px;
             border: 1px solid #2d313a;
         }
 
@@ -284,16 +276,15 @@
         }
 
         .legend-item img {
-            width: 26px;
-            height: 26px;
+            width: 22px;
+            height: 22px;
             max-width: 64px;
             max-height: 64px;
             object-fit: contain;
-            margin-bottom: 2px;
         }
 
         .legend-item span {
-            font-size: 0.62rem;
+            font-size: 0.58rem;
             color: #c4c6d0;
             white-space: nowrap;
         }
@@ -301,10 +292,10 @@
         .menu-action-grid {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
             width: 100%;
-            max-width: 280px;
-            margin-top: 8px;
+            max-width: 260px;
+            margin-top: 6px;
         }
 
         .btn-action {
@@ -312,48 +303,39 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            padding: 9px 16px;
+            padding: 8px 14px;
             background: #1e2027;
             color: #e2e2e9;
             border: 1px solid #2d313a;
             border-radius: 100px;
             font-family: inherit;
-            font-size: 0.82rem;
+            font-size: 0.8rem;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s ease;
         }
 
         .btn-action img {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             max-width: 64px;
             max-height: 64px;
             object-fit: contain;
         }
 
-        .btn-action:hover {
-            background: #2b2e38;
-            transform: scale(1.02);
-        }
+        .btn-action:hover { background: #2b2e38; }
 
         .btn-primary-action {
             background: #a8c7fa;
             color: #042f56;
             border: none;
-            box-shadow: 0 2px 10px rgba(168, 199, 250, 0.25);
         }
-        .btn-primary-action:hover {
-            background: #c3e7ff;
-        }
+        .btn-primary-action:hover { background: #c3e7ff; }
 
         .btn-danger-action {
             background: rgba(255, 84, 73, 0.15);
             color: #ffb4ab;
             border: 1px solid rgba(255, 84, 73, 0.3);
-        }
-        .btn-danger-action:hover {
-            background: rgba(255, 84, 73, 0.25);
         }
 
         .hidden { display: none !important; }
@@ -361,8 +343,10 @@
 </head>
 <body>
 
-    <h1>NETSTRIKE</h1>
-    <div class="subtitle">[A/D / Panah] Gerak | [SPASI] Tembak | Touch HP</div>
+    <div class="header-title">
+        <h1>NETSTRIKE</h1>
+        <div class="subtitle">[A/D / Panah] Gerak | [SPASI] Tembak | Touch HP</div>
+    </div>
 
     <div id="gameWrapper">
         <canvas id="canvas" width="480" height="600"></canvas>
@@ -394,59 +378,64 @@
             <div id="bossBar"></div>
         </div>
 
-        <!-- START SCREEN -->
+        <!-- START SCREEN (2-COLUMN ADAPTIVE LANDSCAPE) -->
         <div id="startScreen" class="overlay-screen">
-            <h2 style="color: #d3e3fd; font-size: 1.25rem; font-weight: 700;">NETWORK DEFENSE</h2>
+            <h2 style="color: #d3e3fd; font-size: 1.15rem; font-weight: 700; margin-bottom: 4px;">NETWORK DEFENSE</h2>
             
-            <div class="author-box">
-                <div style="font-size: 0.65rem; color: #a8c7fa; letter-spacing: 1px; font-weight: 700;">KARYA MANDIRI PKJ</div>
-                <div class="author-name">Razid Rahmanto</div>
-                <div class="author-sub">D2 Pemeliharaan Komputer & Jaringan</div>
-                <div style="font-size: 0.65rem; color: #8e9099; margin-top: 1px;">AKN Pacitan</div>
-            </div>
+            <div class="start-main-layout">
+                <div class="start-col-left">
+                    <div class="author-box">
+                        <div style="font-size: 0.6rem; color: #a8c7fa; letter-spacing: 1px; font-weight: 700;">KARYA MANDIRI PKJ</div>
+                        <div class="author-name">Razid Rahmanto</div>
+                        <div class="author-sub">D2 Pemeliharaan Komputer & Jaringan</div>
+                    </div>
 
-            <div class="diff-title">Pilih Tingkat Kesulitan</div>
-            <div class="diff-container">
-                <button class="diff-btn" data-diff="easy" onclick="selectDifficulty('easy')">EASY</button>
-                <button class="diff-btn active" data-diff="medium" onclick="selectDifficulty('medium')">MEDIUM</button>
-                <button class="diff-btn" data-diff="hard" onclick="selectDifficulty('hard')">HARD</button>
-                <button class="diff-btn hardcore-btn" data-diff="hardcore" onclick="selectDifficulty('hardcore')">HARDCORE</button>
-            </div>
+                    <div class="diff-title">Pilih Tingkat Kesulitan</div>
+                    <div class="diff-container">
+                        <button class="diff-btn" data-diff="easy" onclick="selectDifficulty('easy')">EASY</button>
+                        <button class="diff-btn active" data-diff="medium" onclick="selectDifficulty('medium')">MEDIUM</button>
+                        <button class="diff-btn" data-diff="hard" onclick="selectDifficulty('hard')">HARD</button>
+                        <button class="diff-btn hardcore-btn" data-diff="hardcore" onclick="selectDifficulty('hardcore')">HARDCORE</button>
+                    </div>
+                </div>
 
-            <div class="icon-legend-grid">
-                <div class="legend-item">
-                    <img src="player.png" alt="Router" onerror="this.style.display='none'">
-                    <span>Router Kamu</span>
-                </div>
-                <div class="legend-item">
-                    <img src="enemy_ddos.png" alt="DDoS" onerror="this.style.display='none'">
-                    <span>DDoS Packet</span>
-                </div>
-                <div class="legend-item">
-                    <img src="enemy_trojan.png" alt="Trojan" onerror="this.style.display='none'">
-                    <span>Virus Trojan</span>
-                </div>
-                <div class="legend-item">
-                    <img src="enemy_ransom.png" alt="Malware" onerror="this.style.display='none'">
-                    <span>Ransomware</span>
-                </div>
-                <div class="legend-item">
-                    <img src="boss.png" alt="Boss" onerror="this.style.display='none'">
-                    <span>Bos Virus</span>
-                </div>
-                <div class="legend-item">
-                    <img src="power_shield.png" alt="Shield" onerror="this.style.display='none'">
-                    <span>Pelindung HP</span>
+                <div class="start-col-right" style="width: 100%;">
+                    <div class="icon-legend-grid">
+                        <div class="legend-item">
+                            <img src="player.png" alt="Router" onerror="this.style.display='none'">
+                            <span>Router</span>
+                        </div>
+                        <div class="legend-item">
+                            <img src="enemy_ddos.png" alt="DDoS" onerror="this.style.display='none'">
+                            <span>DDoS</span>
+                        </div>
+                        <div class="legend-item">
+                            <img src="enemy_trojan.png" alt="Trojan" onerror="this.style.display='none'">
+                            <span>Trojan</span>
+                        </div>
+                        <div class="legend-item">
+                            <img src="enemy_ransom.png" alt="Malware" onerror="this.style.display='none'">
+                            <span>Ransom</span>
+                        </div>
+                        <div class="legend-item">
+                            <img src="boss.png" alt="Boss" onerror="this.style.display='none'">
+                            <span>Bos Virus</span>
+                        </div>
+                        <div class="legend-item">
+                            <img src="power_shield.png" alt="Shield" onerror="this.style.display='none'">
+                            <span>Shield HP</span>
+                        </div>
+                    </div>
+
+                    <button class="btn-action btn-primary-action" style="width: 100%; justify-content: center; padding: 10px;" onclick="startGame()">MULAI GAME</button>
                 </div>
             </div>
-
-            <button class="btn-action btn-primary-action" style="padding: 10px 36px;" onclick="startGame()">MULAI GAME</button>
         </div>
 
         <!-- PAUSE MENU OVERLAY -->
         <div id="pauseScreen" class="overlay-screen hidden">
-            <h2 style="color: #d3e3fd; font-size: 1.4rem; font-weight:700; margin-bottom: 2px;">GAME DIHENTIKAN</h2>
-            <p style="color: #c4c6d0; font-size: 0.78rem; margin-bottom: 8px;">Pilih Tindakan Pertahanan</p>
+            <h2 style="color: #d3e3fd; font-size: 1.3rem; font-weight:700; margin-bottom: 2px;">GAME DIHENTIKAN</h2>
+            <p style="color: #c4c6d0; font-size: 0.75rem; margin-bottom: 6px;">Pilih Tindakan Pertahanan</p>
             
             <div class="menu-action-grid">
                 <button class="btn-action btn-primary-action" onclick="resumeGame()">
@@ -468,10 +457,10 @@
 
         <!-- GAME OVER SCREEN -->
         <div id="gameOverScreen" class="overlay-screen hidden">
-            <h2 id="ovTitle" style="color: #ff5449; font-size: 1.5rem; font-weight:700; margin-bottom: 4px;">KAMU KALAH!</h2>
-            <p style="color: #c4c6d0; font-size: 0.82rem; margin-bottom: 4px;">Sistem Router Jebol Ditembus Virus</p>
-            <p style="color: #e2e2e9; font-size: 0.9rem; margin-top: 4px;">Skor Akhir: <span id="ovScore" style="color:#a8c7fa; font-weight:bold;">0</span></p>
-            <p style="color: #f7d488; font-size: 0.8rem; margin-top:2px; margin-bottom: 12px;">Skor Tertinggi: <span id="ovHigh">0</span></p>
+            <h2 id="ovTitle" style="color: #ff5449; font-size: 1.4rem; font-weight:700; margin-bottom: 2px;">KAMU KALAH!</h2>
+            <p style="color: #c4c6d0; font-size: 0.78rem; margin-bottom: 4px;">Sistem Router Jebol Ditembus Virus</p>
+            <p style="color: #e2e2e9; font-size: 0.85rem;">Skor Akhir: <span id="ovScore" style="color:#a8c7fa; font-weight:bold;">0</span></p>
+            <p style="color: #f7d488; font-size: 0.78rem; margin-bottom: 10px;">Skor Tertinggi: <span id="ovHigh">0</span></p>
             
             <div class="menu-action-grid">
                 <button class="btn-action btn-primary-action" onclick="startGame()">
