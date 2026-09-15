@@ -63,16 +63,17 @@
             touch-action: none;
         }
 
-        /* HUD PERBAIKAN: PRESISI & KETAT DALAM CANVAS */
+        /* HUD STABIL & TERKUNCI DALAM CANVAS */
         .hud {
             position: absolute;
             top: 10px; 
-            left: 10px; 
-            right: 10px;
-            display: flex;
-            justify-content: space-between;
+            left: 12px; 
+            right: 12px;
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: 6px;
             align-items: center;
-            font-size: 0.72rem;
+            font-size: 0.7rem;
             font-weight: 600;
             pointer-events: none;
             color: #e2e2e9;
@@ -83,19 +84,25 @@
             background: rgba(30, 32, 39, 0.92);
             border: 1px solid rgba(255, 255, 255, 0.12);
             backdrop-filter: blur(8px);
-            padding: 4px 9px;
+            padding: 4px 8px;
             border-radius: 100px;
             display: flex;
             align-items: center;
             gap: 4px;
             white-space: nowrap;
+            overflow: hidden;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .hud-chip.score-chip {
+            min-width: 0;
         }
 
         .hud-icon {
             width: 14px;
             height: 14px;
             object-fit: contain;
+            flex-shrink: 0;
         }
         
         #bossBarContainer {
@@ -256,9 +263,9 @@
     <div id="gameWrapper">
         <canvas id="canvas" width="480" height="600"></canvas>
         <div class="hud">
-            <div class="hud-chip">
+            <div class="hud-chip score-chip">
                 <span>SKOR:</span> <span id="score" style="color:#a8c7fa;">0</span> 
-                <span id="combo" style="color:#f7d488; font-size:0.7rem"></span>
+                <span id="combo" style="color:#f7d488; font-size:0.65rem"></span>
             </div>
             <div class="hud-chip">
                 MODE: <span id="hudDiff" style="color:#f7d488;">MEDIUM</span>
@@ -321,7 +328,7 @@
             <button class="btn-start" onclick="startGame()">MULAI GAME</button>
         </div>
 
-        <!-- GAME OVER SCREEN (JUDUL DIKEMBALIKAN KE KAMU KALAH) -->
+        <!-- GAME OVER SCREEN -->
         <div id="gameOverScreen" class="overlay-screen hidden">
             <h2 id="ovTitle" style="color: #ff5449; font-size: 1.7rem; font-weight:700; margin-bottom: 6px;">KAMU KALAH!</h2>
             <p style="color: #c4c6d0; font-size: 0.85rem; margin-bottom: 4px;">Sistem Router Jebol Ditembus Virus</p>
@@ -342,6 +349,14 @@ const startScreen = document.getElementById('startScreen');
 const gameOverScreen = document.getElementById('gameOverScreen');
 const bossBarContainer = document.getElementById('bossBarContainer');
 const bossBar = document.getElementById('bossBar');
+
+// FORMAT SKOR RINGKAS (K, M, B)
+function formatScore(n) {
+    if (n >= 1e9) return (n / 1e9).toFixed(1).replace(/\.0$/, '') + 'B';
+    if (n >= 1e6) return (n / 1e6).toFixed(1).replace(/\.0$/, '') + 'M';
+    if (n >= 1e3) return (n / 1e3).toFixed(1).replace(/\.0$/, '') + 'K';
+    return n.toString();
+}
 
 const difficultyConfig = {
     easy:     { label: 'EASY',     speedMult: 0.75, spawnRate: 0.025, leakDmg: 0,  hitDmg: 10, powerupChance: 0.35, color: '#6ddb9d' },
@@ -507,7 +522,7 @@ function startGame() {
     bullets = []; enemies = []; particles = []; powerups = []; boss = null;
     tripleShotTimer = 0; shieldActive = false; isPlaying = true;
     player.x = 214;
-    scoreEl.innerText = 0; comboEl.innerText = ''; hpEl.innerText = '100%';
+    scoreEl.innerText = '0'; comboEl.innerText = ''; hpEl.innerText = '100%';
     
     const cfg = difficultyConfig[currentDiffKey];
     hudDiffEl.innerText = cfg.label;
@@ -618,8 +633,8 @@ function update() {
                     playSound('hit');
                     score += e.points;
                     combo++;
-                    comboEl.innerText = `x${combo} COMBO!`;
-                    scoreEl.innerText = score;
+                    comboEl.innerText = `x${combo}`;
+                    scoreEl.innerText = formatScore(score);
                     spawnPowerup(e.x + e.w/2, e.y + e.h/2);
                     createExplosion(e.x + e.w/2, e.y + e.h/2, e.color, 15);
                     enemies.splice(i,1);
@@ -677,7 +692,7 @@ function update() {
                 bossBar.style.width = `${(boss.hp / boss.maxHp) * 100}%`;
                 if(boss.hp <= 0) {
                     score += 500;
-                    scoreEl.innerText = score;
+                    scoreEl.innerText = formatScore(score);
                     createExplosion(boss.x+boss.w/2, boss.y+boss.h/2, '#ffb4ab', 50);
                     boss = null;
                     bossBarContainer.style.display = 'none';
@@ -703,7 +718,12 @@ function update() {
 
         if(isColliding(p, player)) {
             playSound('powerup');
-            if(p.type === 'SHIELD') shieldActive = true;
+            if(p.type === 'SHIELD') {
+                shieldActive = true;
+                hp = Math.min(100, hp + 25); // REGEN 25% HP UP TO 100%
+                hpEl.innerText = `${hp}%`;
+                createExplosion(player.x + player.w/2, player.y + player.h/2, '#6ddb9d', 10);
+            }
             if(p.type === 'TRIPLE') tripleShotTimer = 300;
             if(p.type === 'NUKE') {
                 enemies.forEach(e => createExplosion(e.x+e.w/2, e.y+e.h/2, e.color, 12));
@@ -734,8 +754,8 @@ function takeDamage(amt) {
         isPlaying = false;
         clearInterval(gameLoop);
         if(score > highScore) { highScore = score; localStorage.setItem('pkj_high', highScore); }
-        document.getElementById('ovScore').innerText = score;
-        document.getElementById('ovHigh').innerText = highScore;
+        document.getElementById('ovScore').innerText = formatScore(score);
+        document.getElementById('ovHigh').innerText = formatScore(highScore);
         gameOverScreen.classList.remove('hidden');
     }
 }
