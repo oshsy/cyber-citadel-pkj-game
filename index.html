@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NetStrike - KNO-2V Defense</title>
+    <title>NetStrike - KNZ-V2 Defense</title>
     <link rel="icon" type="image/png" sizes="32x32" href="icon.png">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -26,7 +26,6 @@
             text-align: center;
             margin-bottom: 6px;
             flex-shrink: 0;
-            text-shadow: 0 0 10px rgba(168, 199, 250, 0.4);
         }
 
         h1 { 
@@ -44,10 +43,8 @@
             border-radius: 100px;
             border: 1px solid #2d313a;
             display: inline-block;
-            box-shadow: 0 0 8px rgba(168, 199, 250, 0.15);
         }
         
-        /* PEMBUNGKUS UTAMA LAYAR FULLSCREEN / WINDOW */
         #gameWrapper { 
             position: relative; 
             display: flex;
@@ -55,11 +52,10 @@
             align-items: center;
             width: 100vw;
             height: 100vh;
-            background: radial-gradient(circle at center, #121318 0%, #050608 100%);
+            background: #090a0f;
             overflow: hidden;
         }
         
-        /* KUNCI RASIO 4:5 (480x600) UNTUK KANVAS & HUD - ANTI GEPENG */
         #canvasArea {
             position: relative;
             width: min(94vw, calc(84vh * (480 / 600)));
@@ -67,12 +63,13 @@
             max-width: 480px;
             max-height: 600px;
             aspect-ratio: 480 / 600;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(168, 199, 250, 0.1);
             border-radius: 18px;
             overflow: hidden;
             background: #12141a;
             border: 1px solid #333845;
             flex-shrink: 0;
+            /* Shadow Blur yang bikin lag parah pada Canvas dihilangkan, sisa box-shadow ringan di kontainer saja */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
         }
 
         @media (orientation: landscape), (max-height: 540px) {
@@ -124,14 +121,13 @@
         .hud-chip {
             background: rgba(18, 20, 26, 0.85);
             border: 1px solid rgba(168, 199, 250, 0.2);
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(4px);
             padding: 4px 10px;
             border-radius: 100px;
             display: flex;
             align-items: center;
             gap: 5px;
             white-space: nowrap;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
             pointer-events: auto;
         }
 
@@ -148,7 +144,6 @@
             justify-content: center;
             pointer-events: auto;
             transition: all 0.2s ease;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
         }
         .hud-btn:active { transform: scale(0.85); }
         .hud-btn:hover { background: rgba(40, 44, 56, 0.9); border-color: #a8c7fa; }
@@ -171,8 +166,6 @@
             border-radius: 4px;
             letter-spacing: 1px;
             display: none;
-            box-shadow: 0 0 8px rgba(109, 219, 157, 0.4);
-            animation: pulseGlow 1.5s infinite alternate;
         }
         
         #bossBarContainer {
@@ -187,7 +180,6 @@
             display: none;
             z-index: 5;
             border: 1px solid rgba(255, 180, 171, 0.3);
-            box-shadow: 0 0 10px rgba(255, 84, 73, 0.4);
         }
         #bossBar { width: 100%; height: 100%; background: #ffb4ab; transition: width 0.1s; }
         
@@ -202,7 +194,7 @@
             padding: 12px;
             text-align: center;
             z-index: 10;
-            backdrop-filter: blur(14px);
+            backdrop-filter: blur(10px);
         }
 
         .start-main-layout {
@@ -215,169 +207,83 @@
         }
 
         .author-box {
-            background: linear-gradient(145deg, #1a1c23, #222630);
+            background: #1a1c23;
             border: 1px solid #333845;
             border-radius: 12px;
             padding: 8px 12px;
             margin: 2px 0;
             width: 100%;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
         .author-name {
             color: #a8c7fa; 
             font-weight: 800; 
             font-size: 0.85rem;
-            text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        .author-sub {
-            font-size: 0.6rem; 
-            color: #9aa0a6; 
-        }
+        .author-sub { font-size: 0.6rem; color: #9aa0a6; }
 
         .diff-title {
-            font-size: 0.62rem;
-            color: #c4c6d0;
-            letter-spacing: 0.8px;
-            font-weight: 700;
-            margin-bottom: 2px;
+            font-size: 0.62rem; color: #c4c6d0;
+            letter-spacing: 0.8px; font-weight: 700; margin-bottom: 2px;
         }
 
         .diff-container {
-            display: flex;
-            gap: 6px;
-            width: 100%;
-            margin-bottom: 6px;
+            display: flex; gap: 6px; width: 100%; margin-bottom: 6px;
         }
 
         .diff-btn {
-            flex: 1;
-            padding: 6px 0;
-            background: #1a1c23;
-            color: #9aa0a6;
-            border: 1px solid #333845;
-            border-radius: 8px;
-            font-size: 0.62rem;
-            font-weight: 800;
-            cursor: pointer;
-            transition: all 0.2s ease;
+            flex: 1; padding: 6px 0; background: #1a1c23; color: #9aa0a6;
+            border: 1px solid #333845; border-radius: 8px; font-size: 0.62rem;
+            font-weight: 800; cursor: pointer; transition: all 0.2s ease;
         }
         .diff-btn:hover { background: #2b2e38; color: #e2e2e9; }
         .diff-btn.active {
-            background: rgba(168, 199, 250, 0.15);
-            color: #a8c7fa;
-            border-color: #a8c7fa;
-            box-shadow: 0 0 10px rgba(168, 199, 250, 0.2);
+            background: rgba(168, 199, 250, 0.15); color: #a8c7fa; border-color: #a8c7fa;
         }
         .diff-btn.hardcore-btn.active {
-            background: rgba(255, 84, 73, 0.15);
-            color: #ffb4ab;
-            border-color: #ff5449;
-            box-shadow: 0 0 12px rgba(255, 84, 73, 0.4);
+            background: rgba(255, 84, 73, 0.15); color: #ffb4ab; border-color: #ff5449;
         }
 
         .icon-legend-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 6px;
-            width: 100%;
-            margin-bottom: 8px;
-            background: #1a1c23;
-            border-radius: 12px;
-            padding: 8px;
-            border: 1px solid #333845;
-            box-shadow: inset 0 2px 10px rgba(0,0,0,0.2);
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
+            width: 100%; margin-bottom: 8px; background: #1a1c23;
+            border-radius: 12px; padding: 8px; border: 1px solid #333845;
         }
 
-        .legend-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        .legend-item img {
-            width: 22px; height: 22px;
-            object-fit: contain; margin-bottom: 3px;
-        }
-        .legend-item span {
-            font-size: 0.55rem; color: #c4c6d0; white-space: nowrap;
-        }
+        .legend-item { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .legend-item img { width: 22px; height: 22px; object-fit: contain; margin-bottom: 3px; }
+        .legend-item span { font-size: 0.55rem; color: #c4c6d0; white-space: nowrap; }
 
         .btn-ai-toggle {
-            width: 100%;
-            padding: 8px;
-            background: #1a1c23;
-            color: #c4c6d0;
-            border: 1px solid #333845;
-            border-radius: 8px;
-            font-size: 0.7rem;
-            font-weight: 800;
-            cursor: pointer;
-            margin-bottom: 4px;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            width: 100%; padding: 8px; background: #1a1c23; color: #c4c6d0;
+            border: 1px solid #333845; border-radius: 8px; font-size: 0.7rem;
+            font-weight: 800; cursor: pointer; margin-bottom: 4px; transition: all 0.2s;
         }
         .btn-ai-toggle.active {
-            background: rgba(109, 219, 157, 0.15);
-            color: #6ddb9d;
-            border-color: #6ddb9d;
-            box-shadow: 0 0 12px rgba(109, 219, 157, 0.3);
+            background: rgba(109, 219, 157, 0.15); color: #6ddb9d; border-color: #6ddb9d;
         }
 
         .menu-action-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            width: 100%;
-            max-width: 260px;
-            margin-top: 6px;
+            display: flex; flex-direction: column; gap: 8px; width: 100%; max-width: 260px; margin-top: 6px;
         }
 
         .btn-action {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 10px 16px;
-            background: #1a1c23;
-            color: #e2e2e9;
-            border: 1px solid #333845;
-            border-radius: 100px;
-            font-family: inherit;
-            font-size: 0.75rem;
-            font-weight: 800;
-            cursor: pointer;
-            transition: all 0.2s ease;
+            display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 16px;
+            background: #1a1c23; color: #e2e2e9; border: 1px solid #333845; border-radius: 100px;
+            font-family: inherit; font-size: 0.75rem; font-weight: 800; cursor: pointer; transition: all 0.2s ease;
         }
         .btn-action img { width: 18px; height: 18px; object-fit: contain; }
         .btn-action:hover { background: #2b2e38; transform: scale(1.02); }
 
-        .btn-primary-action {
-            background: #a8c7fa;
-            color: #042f56;
-            border: none;
-            box-shadow: 0 4px 15px rgba(168, 199, 250, 0.3);
-        }
-        .btn-primary-action:hover { background: #c3e7ff; box-shadow: 0 6px 20px rgba(168, 199, 250, 0.5); }
+        .btn-primary-action { background: #a8c7fa; color: #042f56; border: none; }
+        .btn-primary-action:hover { background: #c3e7ff; }
 
-        .btn-danger-action {
-            background: rgba(255, 84, 73, 0.15);
-            color: #ffb4ab;
-            border: 1px solid rgba(255, 84, 73, 0.4);
-        }
+        .btn-danger-action { background: rgba(255, 84, 73, 0.15); color: #ffb4ab; border: 1px solid rgba(255, 84, 73, 0.4); }
         .btn-danger-action:hover { background: rgba(255, 84, 73, 0.25); }
 
         .hidden { display: none !important; }
-
-        @keyframes pulseGlow {
-            from { box-shadow: 0 0 4px rgba(109, 219, 157, 0.2); }
-            to { box-shadow: 0 0 12px rgba(109, 219, 157, 0.6); }
-        }
     </style>
 </head>
 <body>
@@ -415,7 +321,7 @@
                 </div>
             </div>
 
-            <div id="aiIndicator" class="ai-indicator">KNO-2V AI ACTIVE</div>
+            <div id="aiIndicator" class="ai-indicator">KNZ-V2 ACTIVE</div>
 
             <div id="bossBarContainer">
                 <div id="bossBar"></div>
@@ -423,13 +329,13 @@
 
             <!-- START SCREEN -->
             <div id="startScreen" class="overlay-screen">
-                <h2 style="color: #d3e3fd; font-size: 1.3rem; font-weight: 800; margin-bottom: 2px; text-shadow: 0 2px 10px rgba(168,199,250,0.3);">NETWORK DEFENSE</h2>
+                <h2 style="color: #d3e3fd; font-size: 1.3rem; font-weight: 800; margin-bottom: 2px;">NETWORK DEFENSE</h2>
                 
                 <div class="start-main-layout">
                     <div class="author-box">
                         <div style="font-size: 0.55rem; color: #a8c7fa; letter-spacing: 1px; font-weight: 800;">KARYA MANDIRI PKJ</div>
                         <div class="author-name">Razid Rahmanto</div>
-                        <div class="author-sub">KNO-2V ENGINE Dev</div>
+                        <div class="author-sub">D2 Pemeliharaan Komputer & Jaringan</div>
                     </div>
 
                     <div class="diff-title">Tingkat Kesulitan</div>
@@ -441,7 +347,7 @@
                     </div>
 
                     <button id="btnAiToggle" class="btn-ai-toggle" onclick="toggleAI()">
-                        KNO-2V AI MODE: OFF
+                        KNZ-V2 MODE: OFF
                     </button>
 
                     <div class="icon-legend-grid">
@@ -474,15 +380,16 @@
                         <img src="icon_home.png" alt="H" onerror="this.style.display='none'">
                         <span>MENU UTAMA</span>
                     </button>
+                    <!-- BUG FIX: Memberi penekanan aksi agar GiveUp tidak macet/bug -->
                     <button class="btn-action btn-danger-action" onclick="giveUp()">
                         <span>MENYERAH</span>
                     </button>
                 </div>
             </div>
 
-            <!-- GAME OVER SCREEN -->
+            <!-- GAME OVER SCREEN (KAMU KALAH!) -->
             <div id="gameOverScreen" class="overlay-screen hidden">
-                <h2 id="ovTitle" style="color: #ff5449; font-size: 1.5rem; font-weight:800; margin-bottom: 2px; text-shadow: 0 0 15px rgba(255,84,73,0.4);">SYSTEM BREACHED!</h2>
+                <h2 id="ovTitle" style="color: #ff5449; font-size: 1.5rem; font-weight:800; margin-bottom: 2px;">KAMU KALAH!</h2>
                 <p style="color: #c4c6d0; font-size: 0.75rem; margin-bottom: 6px;">Pertahanan Router Jebol Ditembus Virus</p>
                 <p style="color: #e2e2e9; font-size: 0.9rem; margin-bottom: 2px;">Skor Akhir: <span id="ovScore" style="color:#a8c7fa; font-weight:800;">0</span></p>
                 <p style="color: #f7d488; font-size: 0.75rem; margin-bottom: 12px;">Skor Tertinggi: <span id="ovHigh">0</span></p>
@@ -502,8 +409,11 @@
     </div>
 
 <script>
+// --- ANTI LAG FIX: NO SHADOW BLUR ANYWHERE ---
+// Penggunaan ctx.shadowBlur membuat rendering sangat berat di HP. Semua shadow diganti render polos / opacity ganda.
+
 const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
+const ctx = canvas.getContext('2d', { alpha: false }); // Render lebih cepat tanpa transparansi ke background layer
 const scoreEl = document.getElementById('score');
 const comboEl = document.getElementById('combo');
 const hpEl = document.getElementById('hp');
@@ -545,10 +455,10 @@ function toggleAI() {
     isAIEnabled = !isAIEnabled;
     if(isAIEnabled) {
         btnAiToggle.classList.add('active');
-        btnAiToggle.innerText = 'KNO-2V AI MODE: ON';
+        btnAiToggle.innerText = 'KNZ-V2 MODE: ON';
     } else {
         btnAiToggle.classList.remove('active');
-        btnAiToggle.innerText = 'KNO-2V AI MODE: OFF';
+        btnAiToggle.innerText = 'KNZ-V2 MODE: OFF';
     }
 }
 
@@ -590,11 +500,11 @@ let isPlaying = false, isPaused = false;
 
 let player = { x: 214, y: 510, w: 52, h: 52, speed: 7 };
 
-// Inisialisasi Matrix Background
-for(let i=0; i<25; i++) {
+// Matrix BG Lighter (Anti-lag)
+for(let i=0; i<20; i++) {
     bgStreams.push({
         x: Math.random() * 480, y: Math.random() * 600,
-        s: 1 + Math.random() * 3, c: Math.random() > 0.5 ? '#1d2330' : '#232b38'
+        s: 1.5 + Math.random() * 2, c: Math.random() > 0.5 ? '#171a21' : '#1d2330'
     });
 }
 
@@ -632,7 +542,7 @@ function shoot() {
     if(!isPlaying || isPaused) return;
     playSound('shoot');
     if(multiShotTimer > 0) {
-        // BARRAGE - 7 PELURU MENYEBAR
+        // BARRAGE - 7 PELURU
         const spread = [-3, -2, -1, 0, 1, 2, 3];
         spread.forEach(a => {
             bullets.push({x: player.x + player.w/2 - 3, y: player.y, w: 6, h: 14, vx: a * 1.2, vy: -11});
@@ -642,11 +552,11 @@ function shoot() {
     }
 }
 
-function createExplosion(x, y, color, count=15) {
+function createExplosion(x, y, color, count=10) {
     for(let i=0; i<count; i++) {
         particles.push({
-            x, y, vx: (Math.random() - 0.5) * 10, vy: (Math.random() - 0.5) * 10,
-            life: 1, color, size: Math.random()*4 + 2
+            x, y, vx: (Math.random() - 0.5) * 8, vy: (Math.random() - 0.5) * 8,
+            life: 1, color, size: Math.random()*3 + 2
         });
     }
 }
@@ -675,18 +585,8 @@ function spawnEnemy() {
     enemies.push({ x: Math.random() * (canvas.width - selected.w), y: -60, ...selected });
 
     if(score >= 400 && !boss && Math.random() < 0.08) {
-        boss = { x: 192, y: -100, targetY: 80, w: 96, h: 96, hp: 80, maxHp: 80, vx: 3 * finalSpeedMult, imgKey: 'boss' };
+        boss = { x: 192, y: -100, targetY: 70, w: 96, h: 96, hp: 80, maxHp: 80, vx: 2 * finalSpeedMult, imgKey: 'boss' };
         bossBarContainer.style.display = 'block';
-    }
-}
-
-function spawnPowerup(x, y) {
-    const cfg = difficultyConfig[currentDiffKey];
-    if(Math.random() < cfg.powerupChance) {
-        const kinds = ['SHIELD', 'TRIPLE', 'NUKE'];
-        const type = kinds[Math.floor(Math.random()*kinds.length)];
-        let imgKey = 'p_shield'; if(type === 'TRIPLE') imgKey = 'p_triple'; if(type === 'NUKE') imgKey = 'p_nuke';
-        powerups.push({ x: x - 16, y, type, imgKey, vy: 2.5, w: 32, h: 32 });
     }
 }
 
@@ -722,7 +622,10 @@ function goHome() {
 }
 
 function giveUp() {
-    pauseScreen.classList.add('hidden'); takeDamage(999);
+    // FIX BUG MENYERAH MACET (KARENA TERTAHAN SHIELD)
+    pauseScreen.classList.add('hidden'); 
+    shieldActive = false; // Matikan shield paksa
+    takeDamage(999); // Langsung mati!
 }
 
 function isColliding(a, b) {
@@ -732,35 +635,23 @@ function isColliding(a, b) {
 function update() {
     if(isPaused) return;
 
-    // AI AUTOPLAY LOGIC (PERFECT TRACKING & GOD MODE)
+    // AI KNZ-V2 TRACKING LOGIC
     if(isAIEnabled) {
-        hp = 100; // Auto Regen / God mode
-        hpEl.innerText = '100%';
-        
         let target = null;
         let lowestY = -999;
-        // Prioritas boss, kalau tidak ada cari musuh terendah
-        if (boss) {
-            target = boss;
-        } else {
-            for(let e of enemies) {
-                if(e.y > lowestY) { lowestY = e.y; target = e; }
-            }
-        }
         
-        // Ambil powerup jika dekat
-        for(let p of powerups) {
-            if(p.y > canvas.height - 150) target = p; 
+        if (boss) { target = boss; } 
+        else {
+            for(let e of enemies) { if(e.y > lowestY) { lowestY = e.y; target = e; } }
         }
+        for(let p of powerups) { if(p.y > canvas.height - 200) target = p; }
 
         if(target) {
             let tx = target.x + target.w/2 - player.w/2;
-            player.x += (tx - player.x) * 0.25; // Smooth but fast tracking
+            player.x += (tx - player.x) * 0.35; // Kecepatan Track
         }
-        
-        if(Math.random() < 0.3) shoot(); // Auto fire
+        if(Math.random() < 0.25) shoot();
     } else {
-        // Kontrol Manual
         if(keys['ArrowLeft'] || keys['KeyA']) if(player.x > 0) player.x -= player.speed;
         if(keys['ArrowRight'] || keys['KeyD']) if(player.x < canvas.width - player.w) player.x += player.speed;
     }
@@ -771,14 +662,14 @@ function update() {
     }
 
     ctx.save(); ctx.translate(sx, sy);
-    ctx.clearRect(-20, -20, canvas.width+40, canvas.height+40);
+    // Fill Background Fast 
+    ctx.fillStyle = '#12141a';
+    ctx.fillRect(-20, -20, canvas.width+40, canvas.height+40);
 
-    // Render Matrix Background Dinamis
+    // Matrix Dinamis Fast Render
     for(let i=0; i<bgStreams.length; i++) {
-        let b = bgStreams[i];
-        b.y += b.s;
-        ctx.fillStyle = b.c;
-        ctx.fillRect(b.x, b.y, 2, 15);
+        let b = bgStreams[i]; b.y += b.s;
+        ctx.fillStyle = b.c; ctx.fillRect(b.x, b.y, 2, 18);
         if(b.y > canvas.height) { b.y = -20; b.x = Math.random() * canvas.width; }
     }
 
@@ -786,8 +677,7 @@ function update() {
 
     // Render Player
     ctx.save();
-    if(hp <= 30 && !isAIEnabled) { ctx.globalAlpha = 0.35 + 0.65 * Math.abs(Math.sin(Date.now() / 240)); }
-    ctx.shadowBlur = 15; ctx.shadowColor = 'rgba(168, 199, 250, 0.4)';
+    if(hp <= 30 && !isAIEnabled) { ctx.globalAlpha = 0.4 + 0.6 * Math.abs(Math.sin(Date.now() / 200)); }
     if(imgs.player.complete && imgs.player.naturalWidth !== 0) {
         ctx.drawImage(imgs.player, player.x, player.y, player.w, player.h);
     } else {
@@ -795,32 +685,23 @@ function update() {
     }
     ctx.restore();
 
-    // RENDER FIREWALL (SHIELD UPGRADE)
+    // RENDER FIREWALL (SHIELD)
     if(shieldActive) {
-        // Bubble
-        ctx.strokeStyle = '#6ddb9d'; ctx.lineWidth = 2.5; ctx.shadowBlur = 10; ctx.shadowColor = '#6ddb9d';
-        ctx.beginPath(); ctx.arc(player.x+player.w/2, player.y+player.h/2, 36, 0, Math.PI*2); ctx.stroke();
+        ctx.strokeStyle = '#6ddb9d'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(player.x+player.w/2, player.y+player.h/2, 34, 0, Math.PI*2); ctx.stroke();
         
-        // Tembok Belakang (Firewall)
-        ctx.fillStyle = 'rgba(109, 219, 157, 0.2)';
-        ctx.fillRect(0, canvas.height - 30, canvas.width, 30);
-        ctx.fillStyle = '#6ddb9d';
-        ctx.fillRect(0, canvas.height - 8, canvas.width, 8);
+        ctx.fillStyle = 'rgba(109, 219, 157, 0.15)'; ctx.fillRect(0, canvas.height - 30, canvas.width, 30);
+        ctx.fillStyle = '#6ddb9d'; ctx.fillRect(0, canvas.height - 8, canvas.width, 8);
         
         ctx.fillStyle = '#12141a'; ctx.font = '700 10px sans-serif'; ctx.textAlign = 'center';
-        ctx.fillText("=== FIREWALL ACTIVE ===", canvas.width/2, canvas.height - 12);
-        ctx.textAlign = 'left';
+        ctx.fillText("=== FIREWALL ACTIVE ===", canvas.width/2, canvas.height - 12); ctx.textAlign = 'left';
     }
 
-    // Bullets (Diberi efek trail glowing)
-    ctx.fillStyle = '#ffffff'; ctx.shadowBlur = 8; ctx.shadowColor = '#6ddb9d';
+    // Bullets - No blur for max performance
     for(let i=bullets.length-1; i>=0; i--) {
-        let b = bullets[i];
-        b.x += b.vx; b.y += b.vy;
-        ctx.fillRect(b.x, b.y, b.w, b.h);
-        ctx.fillStyle = 'rgba(109, 219, 157, 0.5)';
-        ctx.fillRect(b.x+1, b.y+b.h, b.w-2, 6); // Trail
-        ctx.fillStyle = '#ffffff';
+        let b = bullets[i]; b.x += b.vx; b.y += b.vy;
+        ctx.fillStyle = '#ffffff'; ctx.fillRect(b.x, b.y, b.w, b.h);
+        ctx.fillStyle = 'rgba(109, 219, 157, 0.5)'; ctx.fillRect(b.x+1, b.y+b.h, b.w-2, 6); // Trail
         if(b.y < -20 || b.x < -10 || b.x > canvas.width + 10) bullets.splice(i,1);
     }
 
@@ -832,14 +713,13 @@ function update() {
 
     for(let i=enemies.length-1; i>=0; i--) {
         let e = enemies[i]; e.y += e.speed;
-        ctx.shadowBlur = 10; ctx.shadowColor = e.color;
+        
         let img = imgs[e.imgKey];
         if(img.complete && img.naturalWidth !== 0) ctx.drawImage(img, e.x, e.y, e.w, e.h);
         else { ctx.fillStyle = e.color; ctx.fillRect(e.x, e.y, e.w, e.h); }
 
         if(isBlink) {
             ctx.fillStyle = '#ffb4ab'; ctx.font = '700 9px sans-serif'; ctx.textAlign = 'center';
-            ctx.shadowBlur = 6; ctx.shadowColor = '#ffb4ab';
             ctx.fillText(e.label, e.x + e.w/2, e.y - 6); ctx.textAlign = 'left';
         }
 
@@ -847,10 +727,10 @@ function update() {
         for(let j=bullets.length-1; j>=0; j--) {
             let b = bullets[j];
             if(isColliding(b, e)) {
-                e.hp--; bullets.splice(j,1); createExplosion(b.x + b.w/2, b.y, e.color, 6);
+                e.hp--; bullets.splice(j,1); createExplosion(b.x + b.w/2, b.y, e.color, 5);
                 if(e.hp <= 0) {
                     playSound('hit'); score += e.points; combo++; comboEl.innerText = `x${combo}`; scoreEl.innerText = formatScore(score);
-                    spawnPowerup(e.x + e.w/2, e.y + e.h/2); createExplosion(e.x + e.w/2, e.y + e.h/2, e.color, 15);
+                    spawnPowerup(e.x + e.w/2, e.y + e.h/2); createExplosion(e.x + e.w/2, e.y + e.h/2, e.color, 12);
                     enemies.splice(i,1); enemyHit = true; break;
                 }
             }
@@ -858,30 +738,26 @@ function update() {
         if(enemyHit) continue;
 
         if(isColliding(e, player)) {
-            enemies.splice(i,1); createExplosion(e.x + e.w/2, e.y + e.h/2, '#ffb4ab', 25);
-            takeDamage(cfg.hitDmg);
+            enemies.splice(i,1); createExplosion(e.x + e.w/2, e.y + e.h/2, '#ffb4ab', 20); takeDamage(cfg.hitDmg);
         } else if(e.y + e.h > canvas.height - 25) {
-            // JIKA MENYENTUH FIREWALL SAAT SHIELD AKTIF
             if(shieldActive) {
-                createExplosion(e.x + e.w/2, canvas.height - 20, '#6ddb9d', 20); // Meledak kena tembok
-                score += Math.floor(e.points / 2); scoreEl.innerText = formatScore(score);
-                enemies.splice(i,1);
+                createExplosion(e.x + e.w/2, canvas.height - 20, '#6ddb9d', 10);
+                score += Math.floor(e.points / 2); scoreEl.innerText = formatScore(score); enemies.splice(i,1);
             } else {
                 enemies.splice(i,1); combo = 0; comboEl.innerText = '';
                 if(cfg.leakDmg > 0) {
-                    shakeTimer = 18; createExplosion(e.x + e.w/2, canvas.height - 10, '#ff5449', 15);
-                    takeDamage(cfg.leakDmg);
+                    shakeTimer = 18; createExplosion(e.x + e.w/2, canvas.height - 10, '#ff5449', 15); takeDamage(cfg.leakDmg);
                 }
             }
         }
     }
 
+    // BOSS LOGIC + SPAWN MINION
     if(boss) {
         if(boss.y < boss.targetY) boss.y += 2;
         boss.x += boss.vx;
         if(boss.x < 10 || boss.x > canvas.width - boss.w - 10) boss.vx *= -1;
 
-        ctx.shadowBlur = 15; ctx.shadowColor = '#ffb4ab';
         if(imgs.boss.complete && imgs.boss.naturalWidth !== 0) ctx.drawImage(imgs.boss, boss.x, boss.y, boss.w, boss.h);
         else { ctx.fillStyle = '#ffb4ab'; ctx.fillRect(boss.x, boss.y, boss.w, boss.h); }
 
@@ -890,14 +766,24 @@ function update() {
             ctx.fillText("⚠️ CRITICAL THREAT ⚠️", boss.x + boss.w/2, boss.y - 10); ctx.textAlign = 'left';
         }
 
+        // Bos bertelur virus secara bertahap
+        if (Math.random() < 0.015) {
+            const types = [
+                { type: 'ddos', color: '#a8c7fa', hp: 1, speed: 4.5, points: 5, w: 32, h: 54, imgKey: 'ddos', label: 'DDoS' },
+                { type: 'trojan', color: '#ffb4ab', hp: 2, speed: 3.5, points: 15, w: 44, h: 44, imgKey: 'trojan', label: 'TROJAN' }
+            ];
+            let selected = types[Math.floor(Math.random() * types.length)];
+            enemies.push({ x: boss.x + boss.w/2 - selected.w/2, y: boss.y + boss.h, ...selected });
+        }
+
         for(let j=bullets.length-1; j>=0; j--) {
             let b = bullets[j];
             if(isColliding(b, boss)) {
-                boss.hp--; bullets.splice(j,1); createExplosion(b.x, b.y, '#ffb4ab', 8);
+                boss.hp--; bullets.splice(j,1); createExplosion(b.x, b.y, '#ffb4ab', 5);
                 bossBar.style.width = `${(boss.hp / boss.maxHp) * 100}%`;
                 if(boss.hp <= 0) {
                     score += 1000; scoreEl.innerText = formatScore(score);
-                    createExplosion(boss.x+boss.w/2, boss.y+boss.h/2, '#ffb4ab', 80);
+                    createExplosion(boss.x+boss.w/2, boss.y+boss.h/2, '#ffb4ab', 50);
                     boss = null; bossBarContainer.style.display = 'none'; break;
                 }
             }
@@ -906,7 +792,6 @@ function update() {
 
     for(let i=powerups.length-1; i>=0; i--) {
         let p = powerups[i]; p.y += p.vy;
-        ctx.shadowBlur = 10; ctx.shadowColor = '#f7d488';
         let pImg = imgs[p.imgKey];
         if(pImg.complete && pImg.naturalWidth !== 0) ctx.drawImage(pImg, p.x, p.y, p.w, p.h);
         else { ctx.fillStyle = '#f7d488'; ctx.fillText(`[${p.type}]`, p.x, p.y); }
@@ -915,21 +800,21 @@ function update() {
             playSound('powerup');
             if(p.type === 'SHIELD') {
                 shieldActive = true; hp = Math.min(100, hp + 35); hpEl.innerText = `${hp}%`;
-                createExplosion(player.x + player.w/2, player.y + player.h/2, '#6ddb9d', 20);
+                createExplosion(player.x + player.w/2, player.y + player.h/2, '#6ddb9d', 15);
             }
             if(p.type === 'TRIPLE') multiShotTimer = 400; // Durasi Barrage
             if(p.type === 'NUKE') {
-                ctx.fillStyle = 'rgba(255,255,255,0.8)'; ctx.fillRect(0,0,canvas.width,canvas.height); // Screen flash
-                enemies.forEach(e => createExplosion(e.x+e.w/2, e.y+e.h/2, e.color, 15)); enemies = [];
+                ctx.fillStyle = 'rgba(255,255,255,0.7)'; ctx.fillRect(0,0,canvas.width,canvas.height);
+                enemies.forEach(e => createExplosion(e.x+e.w/2, e.y+e.h/2, e.color, 10)); enemies = [];
             }
             powerups.splice(i,1);
         } else if(p.y > canvas.height) powerups.splice(i,1);
     }
 
     for(let i=particles.length-1; i>=0; i--) {
-        let pt = particles[i]; pt.x += pt.vx; pt.y += pt.vy; pt.life -= 0.025;
-        ctx.fillStyle = pt.color; ctx.shadowBlur = 6; ctx.shadowColor = pt.color;
-        ctx.fillRect(pt.x, pt.y, pt.size, pt.size);
+        let pt = particles[i]; pt.x += pt.vx; pt.y += pt.vy; pt.life -= 0.03;
+        ctx.fillStyle = pt.color; ctx.globalAlpha = Math.max(0, pt.life);
+        ctx.fillRect(pt.x, pt.y, pt.size, pt.size); ctx.globalAlpha = 1.0;
         if(pt.life <= 0) particles.splice(i,1);
     }
 
@@ -937,7 +822,6 @@ function update() {
 }
 
 function takeDamage(amt) {
-    if(isAIEnabled) return; // AI GOD MODE
     if(shieldActive) { shieldActive = false; return; }
     shakeTimer = 18; playSound('hit'); hp -= amt; hpEl.innerText = `${Math.max(0, hp)}%`;
     
