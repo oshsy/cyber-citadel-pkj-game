@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NetStrike - KNZ-V2 God Mode AI</title>
+    <title>NetStrike</title>
     <link rel="icon" type="image/png" sizes="32x32" href="icon.png">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -388,7 +388,7 @@
                 </div>
             </div>
 
-            <div id="aiIndicator" class="ai-indicator">KNZ-V2 GOD MODE ACTIVE</div>
+            <div id="aiIndicator" class="ai-indicator">KNZ-V2 OVERLOCK</div>
 
             <div id="bossBarContainer">
                 <div id="bossBar"></div>
@@ -418,7 +418,7 @@
                     </button>
 
                     <div class="icon-legend-grid">
-                        <div class="legend-item"><img src="ai_router.png" alt="R" onerror="this.style.display='none'"><span>Router</span></div>
+                        <div class="legend-item"><img src="player.png" alt="R" onerror="this.style.display='none'"><span>Router</span></div>
                         <div class="legend-item"><img src="enemy_ddos.png" alt="D" onerror="this.style.display='none'"><span>DDoS</span></div>
                         <div class="legend-item"><img src="enemy_trojan.png" alt="T" onerror="this.style.display='none'"><span>Trojan</span></div>
                         <div class="legend-item"><img src="enemy_ransom.png" alt="M" onerror="this.style.display='none'"><span>Ransom</span></div>
@@ -526,32 +526,66 @@ function toggleAI() {
 }
 
 const imgs = {
-    player: new Image(), ddos: new Image(), trojan: new Image(), ransom: new Image(),
+    manualPlayer: new Image(), aiPlayer: new Image(), ddos: new Image(), trojan: new Image(), ransom: new Image(),
     boss: new Image(), p_shield: new Image(), p_triple: new Image(), p_nuke: new Image()
 };
-imgs.player.src = 'ai_router.png'; imgs.ddos.src = 'enemy_ddos.png'; imgs.trojan.src = 'enemy_trojan.png';
-imgs.ransom.src = 'enemy_ransom.png'; imgs.boss.src = 'boss.png'; imgs.p_shield.src = 'power_shield.png';
-imgs.p_triple.src = 'power_triple.png'; imgs.p_nuke.src = 'power_nuke.png';
+imgs.manualPlayer.src = 'player.png'; 
+imgs.aiPlayer.src = 'ai_router.png'; 
+imgs.ddos.src = 'enemy_ddos.png'; 
+imgs.trojan.src = 'enemy_trojan.png';
+imgs.ransom.src = 'enemy_ransom.png'; 
+imgs.boss.src = 'boss.png'; 
+imgs.p_shield.src = 'power_shield.png';
+imgs.p_triple.src = 'power_triple.png'; 
+imgs.p_nuke.src = 'power_nuke.png';
 
 const audio = new (window.AudioContext || window.webkitAudioContext)();
 function playSound(type) {
     try {
         if(audio.state === 'suspended') audio.resume();
-        const osc = audio.createOscillator(); const gain = audio.createGain();
-        osc.connect(gain); gain.connect(audio.destination);
         const now = audio.currentTime;
+        
         if(type === 'shoot') {
-            osc.type = 'sawtooth'; osc.frequency.setValueAtTime(700, now);
-            osc.frequency.exponentialRampToValueAtTime(120, now + 0.07);
-            gain.gain.setValueAtTime(0.06, now); osc.start(now); osc.stop(now + 0.07);
-        } else if(type === 'hit') {
-            osc.type = 'square'; osc.frequency.setValueAtTime(140, now);
-            osc.frequency.linearRampToValueAtTime(40, now + 0.12);
-            gain.gain.setValueAtTime(0.12, now); osc.start(now); osc.stop(now + 0.12);
-        } else if(type === 'powerup') {
-            osc.type = 'sine'; osc.frequency.setValueAtTime(300, now);
-            osc.frequency.exponentialRampToValueAtTime(1000, now + 0.18);
-            gain.gain.setValueAtTime(0.08, now); osc.start(now); osc.stop(now + 0.18);
+            const bufferSize = audio.sampleRate * 0.18;
+            const buffer = audio.createBuffer(1, bufferSize, audio.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = Math.random() * 2 - 1;
+            }
+            const noise = audio.createBufferSource();
+            noise.buffer = buffer;
+            
+            const filter = audio.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.frequency.setValueAtTime(2500, now);
+            filter.frequency.exponentialRampToValueAtTime(400, now + 0.18);
+            filter.Q.value = 4;
+
+            const gain = audio.createGain();
+            gain.gain.setValueAtTime(0.18, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+
+            noise.connect(filter);
+            filter.connect(gain);
+            gain.connect(audio.destination);
+            
+            noise.start(now);
+            noise.stop(now + 0.18);
+        } else {
+            const osc = audio.createOscillator(); 
+            const gain = audio.createGain();
+            osc.connect(gain); 
+            gain.connect(audio.destination);
+
+            if(type === 'hit') {
+                osc.type = 'square'; osc.frequency.setValueAtTime(140, now);
+                osc.frequency.linearRampToValueAtTime(40, now + 0.12);
+                gain.gain.setValueAtTime(0.12, now); osc.start(now); osc.stop(now + 0.12);
+            } else if(type === 'powerup') {
+                osc.type = 'sine'; osc.frequency.setValueAtTime(300, now);
+                osc.frequency.exponentialRampToValueAtTime(1000, now + 0.18);
+                gain.gain.setValueAtTime(0.08, now); osc.start(now); osc.stop(now + 0.18);
+            }
         }
     } catch(e){}
 }
@@ -562,8 +596,8 @@ let shakeTimer = 0, multiShotTimer = 0, shieldActive = false, gameLoop;
 let isPlaying = false, isPaused = false;
 let teleportTimer = 0;
 let playerRot = 0; 
+let currentLockedTarget = null;
 
-// Ukuran player diset ke 64px sesuai ukuran file ai_router.png
 let player = { x: 208, y: 500, w: 64, h: 64, speed: 20 };
 
 for(let i=0; i<20; i++) {
@@ -622,13 +656,17 @@ function shoot() {
     }
 }
 
-// AI God Mode Otonom 360° Omnidirectional
+// AI OVERLOCK Otonom: Posisi peluru di-set tepat di titik tengah/core AI icon 64px
 function aiFireAutonomousBullets(target, isCritical) {
     if(!isPlaying || isPaused || !target) return;
     playSound('shoot');
 
     let bulletCount = 8;
     let bulletSpeed = 30;
+
+    // Titik asal tepat di dead center icon ai_router.png (64x64)
+    let originX = player.x + player.w / 2 - 3;
+    let originY = player.y + player.h / 2 - 8;
 
     if (isCritical || score > 10000) {
         let enemyCount = enemies.length + (boss ? 6 : 0);
@@ -637,8 +675,8 @@ function aiFireAutonomousBullets(target, isCritical) {
         for(let i = 0; i < bulletCount; i++) {
             let angle = (i / bulletCount) * Math.PI * 2 + (Math.random() * 0.08);
             bullets.push({
-                x: player.x + player.w / 2 - 3,
-                y: player.y + player.h / 2,
+                x: originX,
+                y: originY,
                 w: 6,
                 h: 16,
                 vx: Math.cos(angle) * bulletSpeed,
@@ -655,8 +693,8 @@ function aiFireAutonomousBullets(target, isCritical) {
             let offset = bulletCount > 1 ? (i / (bulletCount - 1) - 0.5) * spreadWidth : 0;
             let finalAngle = baseAngle + offset;
             bullets.push({
-                x: player.x + player.w / 2 - 3,
-                y: player.y + player.h / 2,
+                x: originX,
+                y: originY,
                 w: 6,
                 h: 16,
                 vx: Math.cos(finalAngle) * bulletSpeed,
@@ -665,15 +703,15 @@ function aiFireAutonomousBullets(target, isCritical) {
         }
     }
 
-    if (Math.random() < 0.7 && target) {
+    // RUDAL LOCK HANYA AKTIF KETIKA TARGET BERADA DI BAGIAN BAWAH (y > 260)
+    if (target && target.y > 260 && Math.random() < 0.7) {
         missiles.push({
             x: player.x + player.w / 2,
             y: player.y + player.h / 2,
             vx: 0, vy: -12,
             target: target,
             speed: 24,
-            w: 8, h: 20,
-            color: '#6ddb9d'
+            w: 8, h: 20
         });
     }
 }
@@ -730,6 +768,7 @@ function startGame() {
     score = 0; combo = 0; hp = 100;
     bullets = []; missiles = []; enemies = []; particles = []; powerups = []; boss = null;
     multiShotTimer = 0; shieldActive = false; isPlaying = true; isPaused = false;
+    currentLockedTarget = null;
     player.x = 208; player.y = 500;
     scoreEl.innerText = '0'; comboEl.innerText = ''; hpEl.innerText = '100%';
     
@@ -823,13 +862,15 @@ function update() {
 
         player.x = Math.max(0, Math.min(canvas.width - player.w, player.x));
         player.y = Math.max(300, Math.min(550, player.y));
-        
+        currentLockedTarget = target;
+
         let isCritical = hp <= 20 || score > 10000;
 
         if(target && Math.random() < 0.98) {
             aiFireAutonomousBullets(target, isCritical);
         }
     } else {
+        currentLockedTarget = null;
         player.y = 500;
         if(keys['ArrowLeft'] || keys['KeyA']) if(player.x > 0) player.x -= player.speed;
         if(keys['ArrowRight'] || keys['KeyD']) if(player.x < canvas.width - player.w) player.x += player.speed;
@@ -842,8 +883,10 @@ function update() {
         sy = Math.round((Math.random() - 0.5) * 10);
     }
 
-    ctx.save(); ctx.translate(sx, sy);
-    ctx.clearRect(-20, -20, canvas.width+40, canvas.height+40);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.save(); 
+    ctx.translate(sx, sy);
 
     ctx.fillStyle = '#12141a';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -866,12 +909,21 @@ function update() {
     }
     if(hp <= 30 && !isAIEnabled) { ctx.globalAlpha = 0.4 + 0.6 * Math.abs(Math.sin(Date.now() / 200)); }
     
-    if(imgs.player.complete && imgs.player.naturalWidth !== 0) {
-        ctx.drawImage(imgs.player, -player.w / 2, -player.h / 2, player.w, player.h);
+    let activePlayerImg = isAIEnabled ? imgs.aiPlayer : imgs.manualPlayer;
+    if(activePlayerImg.complete && activePlayerImg.naturalWidth !== 0) {
+        ctx.drawImage(activePlayerImg, -player.w / 2, -player.h / 2, player.w, player.h);
     } else {
         ctx.fillStyle = '#a8c7fa'; ctx.fillRect(-player.w / 2, -player.h / 2, player.w, player.h);
     }
     ctx.restore();
+
+    if(isAIEnabled && currentLockedTarget && currentLockedTarget.y > 260) {
+        ctx.fillStyle = '#6ddb9d';
+        ctx.font = '700 12px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText('[+]', currentLockedTarget.x + currentLockedTarget.w / 2, currentLockedTarget.y - 6);
+        ctx.textAlign = 'left';
+    }
 
     if(shieldActive) {
         ctx.strokeStyle = '#6ddb9d'; ctx.lineWidth = 2;
@@ -911,10 +963,11 @@ function update() {
         }
         m.x += m.vx; m.y += m.vy;
 
-        ctx.fillStyle = '#ffb4ab';
-        ctx.fillRect(m.x, m.y, m.w, m.h);
-        ctx.fillStyle = 'rgba(255, 84, 73, 0.9)';
-        ctx.fillRect(m.x + 1, m.y + m.h, m.w - 2, 10);
+        ctx.fillStyle = '#6ddb9d';
+        ctx.font = '700 11px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText('[+]', m.x, m.y);
+        ctx.textAlign = 'left';
 
         let missileHit = false;
         if(boss && isColliding(m, boss)) {
@@ -998,7 +1051,7 @@ function update() {
 
         if(isBlink) {
             ctx.fillStyle = '#ffb4ab'; ctx.font = '800 11px sans-serif'; ctx.textAlign = 'center';
-            ctx.fillText("⚠️ CRITICAL THREAT ⚠️", boss.x + boss.w/2, boss.y - 10); ctx.textAlign = 'left';
+            ctx.fillText("⚠️ VIRUS BOSS ⚠️", boss.x + boss.w/2, boss.y - 10); ctx.textAlign = 'left';
         }
 
         if (Math.random() < 0.003) {
