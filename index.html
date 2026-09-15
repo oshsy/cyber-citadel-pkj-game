@@ -63,15 +63,14 @@
             touch-action: none;
         }
 
-        /* HUD STABIL & TERKUNCI DALAM CANVAS */
+        /* HUD PRESISI DAN RAPI */
         .hud {
             position: absolute;
             top: 10px; 
-            left: 12px; 
-            right: 12px;
-            display: grid;
-            grid-template-columns: 1fr auto auto;
-            gap: 6px;
+            left: 10px; 
+            right: 10px;
+            display: flex;
+            justify-content: space-between;
             align-items: center;
             font-size: 0.7rem;
             font-weight: 600;
@@ -80,6 +79,12 @@
             z-index: 5;
         }
         
+        .hud-left, .hud-right {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
         .hud-chip {
             background: rgba(30, 32, 39, 0.92);
             border: 1px solid rgba(255, 255, 255, 0.12);
@@ -90,27 +95,49 @@
             align-items: center;
             gap: 4px;
             white-space: nowrap;
-            overflow: hidden;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            pointer-events: auto;
         }
 
-        .hud-chip.score-chip {
-            min-width: 0;
+        .hud-btn {
+            cursor: pointer;
+            background: rgba(30, 32, 39, 0.92);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #e2e2e9;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: auto;
+            transition: transform 0.15s ease;
         }
+        .hud-btn:active { transform: scale(0.9); }
 
         .hud-icon {
             width: 14px;
             height: 14px;
+            max-width: 64px;
+            max-height: 64px;
             object-fit: contain;
-            flex-shrink: 0;
+        }
+
+        .btn-icon-img {
+            width: 16px;
+            height: 16px;
+            max-width: 64px;
+            max-height: 64px;
+            object-fit: contain;
         }
         
+        /* BOSS BAR DITATA AGAR TIDAK MENUTUPI CANVAS TEKS */
         #bossBarContainer {
             position: absolute;
-            top: 46px; left: 50%;
+            top: 44px; left: 50%;
             transform: translateX(-50%);
-            width: 70%;
-            height: 8px;
+            width: 60%;
+            height: 7px;
             background: rgba(255, 180, 171, 0.2);
             border-radius: 100px;
             overflow: hidden;
@@ -220,8 +247,8 @@
         }
 
         .legend-item img {
-            width: 30px;
-            height: 30px;
+            width: 28px;
+            height: 28px;
             max-width: 64px;
             max-height: 64px;
             object-fit: contain;
@@ -234,24 +261,65 @@
             white-space: nowrap;
         }
 
-        .btn-start {
-            padding: 12px 36px;
+        /* GRID TOMBOL ACTION MENU (RESTART, HOME, NYERAH) */
+        .menu-action-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+            max-width: 280px;
+            margin-top: 10px;
+        }
+
+        .btn-action {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px 18px;
+            background: #1e2027;
+            color: #e2e2e9;
+            border: 1px solid #2d313a;
+            border-radius: 100px;
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-action img {
+            width: 22px;
+            height: 22px;
+            max-width: 64px;
+            max-height: 64px;
+            object-fit: contain;
+        }
+
+        .btn-action:hover {
+            background: #2b2e38;
+            transform: scale(1.02);
+        }
+
+        .btn-primary-action {
             background: #a8c7fa;
             color: #042f56;
             border: none;
-            border-radius: 100px;
-            font-family: 'Google Sans', 'Roboto', sans-serif;
-            font-size: 0.95rem;
-            font-weight: 700;
-            cursor: pointer;
             box-shadow: 0 2px 10px rgba(168, 199, 250, 0.25);
-            transition: all 0.2s ease;
         }
-        .btn-start:hover { 
+        .btn-primary-action:hover {
             background: #c3e7ff;
-            transform: scale(1.03);
-            box-shadow: 0 4px 16px rgba(168, 199, 250, 0.4);
         }
+
+        .btn-danger-action {
+            background: rgba(255, 84, 73, 0.15);
+            color: #ffb4ab;
+            border: 1px solid rgba(255, 84, 73, 0.3);
+        }
+        .btn-danger-action:hover {
+            background: rgba(255, 84, 73, 0.25);
+        }
+
         .hidden { display: none !important; }
     </style>
 </head>
@@ -263,18 +331,29 @@
     <div id="gameWrapper">
         <canvas id="canvas" width="480" height="600"></canvas>
         <div class="hud">
-            <div class="hud-chip score-chip">
-                <span>SKOR:</span> <span id="score" style="color:#a8c7fa;">0</span> 
-                <span id="combo" style="color:#f7d488; font-size:0.65rem"></span>
+            <div class="hud-left">
+                <div class="hud-chip">
+                    <span>SKOR:</span> <span id="score" style="color:#a8c7fa;">0</span> 
+                    <span id="combo" style="color:#f7d488; font-size:0.65rem"></span>
+                </div>
+                <div class="hud-chip">
+                    <span id="hudDiff" style="color:#f7d488;">MEDIUM</span>
+                </div>
             </div>
-            <div class="hud-chip">
-                MODE: <span id="hudDiff" style="color:#f7d488;">MEDIUM</span>
-            </div>
-            <div class="hud-chip">
-                <img src="power_shield.png" class="hud-icon" alt="HP" onerror="this.style.display='none'">
-                <span id="hp" style="color:#6ddb9d">100%</span>
+            <div class="hud-right">
+                <div class="hud-chip">
+                    <img src="power_shield.png" class="hud-icon" alt="HP" onerror="this.style.display='none'">
+                    <span id="hp" style="color:#6ddb9d">100%</span>
+                </div>
+                <button class="hud-btn" onclick="toggleFullscreen()" title="Full Screen">
+                    <img src="icon_fullscreen.png" class="btn-icon-img" alt="FS" onerror="this.outerHTML='⛶'">
+                </button>
+                <button class="hud-btn" onclick="pauseGame()" title="Pause Menu">
+                    <img src="icon_pause.png" class="btn-icon-img" alt="II" onerror="this.outerHTML='❚❚'">
+                </button>
             </div>
         </div>
+
         <div id="bossBarContainer">
             <div id="bossBar"></div>
         </div>
@@ -325,16 +404,49 @@
                 </div>
             </div>
 
-            <button class="btn-start" onclick="startGame()">MULAI GAME</button>
+            <button class="btn-action btn-primary-action" style="padding: 12px 40px;" onclick="startGame()">MULAI GAME</button>
+        </div>
+
+        <!-- PAUSE MENU OVERLAY -->
+        <div id="pauseScreen" class="overlay-screen hidden">
+            <h2 style="color: #d3e3fd; font-size: 1.5rem; font-weight:700; margin-bottom: 4px;">GAME DIHENTIKAN</h2>
+            <p style="color: #c4c6d0; font-size: 0.8rem; margin-bottom: 12px;">Pilih Tindakan Pertahanan</p>
+            
+            <div class="menu-action-grid">
+                <button class="btn-action btn-primary-action" onclick="resumeGame()">
+                    <span>LANJUT MAIN</span>
+                </button>
+                <button class="btn-action" onclick="startGame()">
+                    <img src="icon_restart.png" alt="Restart" onerror="this.style.display='none'">
+                    <span>RESTART</span>
+                </button>
+                <button class="btn-action" onclick="goHome()">
+                    <img src="icon_home.png" alt="Home" onerror="this.style.display='none'">
+                    <span>MENU UTAMA</span>
+                </button>
+                <button class="btn-action btn-danger-action" onclick="giveUp()">
+                    <span>AKU NYERAH 🗿</span>
+                </button>
+            </div>
         </div>
 
         <!-- GAME OVER SCREEN -->
         <div id="gameOverScreen" class="overlay-screen hidden">
-            <h2 id="ovTitle" style="color: #ff5449; font-size: 1.7rem; font-weight:700; margin-bottom: 6px;">KAMU KALAH!</h2>
+            <h2 id="ovTitle" style="color: #ff5449; font-size: 1.6rem; font-weight:700; margin-bottom: 4px;">KAMU KALAH!</h2>
             <p style="color: #c4c6d0; font-size: 0.85rem; margin-bottom: 4px;">Sistem Router Jebol Ditembus Virus</p>
-            <p style="color: #e2e2e9; font-size: 0.95rem; margin-top: 6px;">Skor Akhir: <span id="ovScore" style="color:#a8c7fa; font-weight:bold;">0</span></p>
-            <p style="color: #f7d488; font-size: 0.85rem; margin-top:4px; margin-bottom: 20px;">Skor Tertinggi: <span id="ovHigh">0</span></p>
-            <button class="btn-start" onclick="startGame()">MAIN LAGI</button>
+            <p style="color: #e2e2e9; font-size: 0.95rem; margin-top: 4px;">Skor Akhir: <span id="ovScore" style="color:#a8c7fa; font-weight:bold;">0</span></p>
+            <p style="color: #f7d488; font-size: 0.85rem; margin-top:2px; margin-bottom: 14px;">Skor Tertinggi: <span id="ovHigh">0</span></p>
+            
+            <div class="menu-action-grid">
+                <button class="btn-action btn-primary-action" onclick="startGame()">
+                    <img src="icon_restart.png" alt="Restart" onerror="this.style.display='none'">
+                    <span>MAIN LAGI</span>
+                </button>
+                <button class="btn-action" onclick="goHome()">
+                    <img src="icon_home.png" alt="Home" onerror="this.style.display='none'">
+                    <span>MENU UTAMA</span>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -346,11 +458,11 @@ const comboEl = document.getElementById('combo');
 const hpEl = document.getElementById('hp');
 const hudDiffEl = document.getElementById('hudDiff');
 const startScreen = document.getElementById('startScreen');
+const pauseScreen = document.getElementById('pauseScreen');
 const gameOverScreen = document.getElementById('gameOverScreen');
 const bossBarContainer = document.getElementById('bossBarContainer');
 const bossBar = document.getElementById('bossBar');
 
-// FORMAT SKOR RINGKAS (K, M, B)
 function formatScore(n) {
     if (n >= 1e9) return (n / 1e9).toFixed(1).replace(/\.0$/, '') + 'B';
     if (n >= 1e6) return (n / 1e6).toFixed(1).replace(/\.0$/, '') + 'M';
@@ -422,18 +534,31 @@ function playSound(type) {
 let keys = {}, bullets = [], enemies = [], particles = [], powerups = [], boss = null;
 let score = 0, combo = 0, hp = 100, highScore = parseInt(localStorage.getItem('pkj_high')) || 0;
 let shakeTimer = 0, tripleShotTimer = 0, shieldActive = false, gameLoop;
-let isPlaying = false;
+let isPlaying = false, isPaused = false;
 
 let player = { x: 214, y: 510, w: 52, h: 52, speed: 7 };
 
 document.addEventListener('keydown', e => { 
     keys[e.code] = true; 
     if(e.code==='Space') shoot(); 
+    if(e.code==='KeyP' || e.code==='Escape') {
+        if(isPlaying) isPaused ? resumeGame() : pauseGame();
+    }
 });
 document.addEventListener('keyup', e => keys[e.code] = false);
 
+function toggleFullscreen() {
+    const elem = document.getElementById('gameWrapper');
+    if (!document.fullscreenElement) {
+        if (elem.requestFullscreen) elem.requestFullscreen();
+        else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
+    } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+    }
+}
+
 function handleTouch(e) {
-    if(!isPlaying) return;
+    if(!isPlaying || isPaused) return;
     let r = canvas.getBoundingClientRect();
     let scaleX = canvas.width / r.width;
     let touchX = (e.touches[0].clientX - r.left) * scaleX;
@@ -445,7 +570,7 @@ canvas.addEventListener('touchstart', handleTouch, {passive:false});
 canvas.addEventListener('touchmove', handleTouch, {passive:false});
 
 function shoot() {
-    if(!isPlaying) return;
+    if(!isPlaying || isPaused) return;
     playSound('shoot');
     if(tripleShotTimer > 0) {
         bullets.push({x: player.x + 4, y: player.y, w: 6, h: 14, vx: -2, vy: -10});
@@ -500,7 +625,8 @@ function spawnEnemy() {
     });
 
     if(score >= 400 && !boss && Math.random() < 0.08) {
-        boss = { x: 192, y: -100, w: 96, h: 96, hp: 60, maxHp: 60, vx: 3 * finalSpeedMult, imgKey: 'boss' };
+        // Boss ditargetkan turun ke Y = 85 agar tidak menutupi HUD
+        boss = { x: 192, y: -100, targetY: 85, w: 96, h: 96, hp: 60, maxHp: 60, vx: 3 * finalSpeedMult, imgKey: 'boss' };
         bossBarContainer.style.display = 'block';
     }
 }
@@ -520,7 +646,7 @@ function spawnPowerup(x, y) {
 function startGame() {
     score = 0; combo = 0; hp = 100;
     bullets = []; enemies = []; particles = []; powerups = []; boss = null;
-    tripleShotTimer = 0; shieldActive = false; isPlaying = true;
+    tripleShotTimer = 0; shieldActive = false; isPlaying = true; isPaused = false;
     player.x = 214;
     scoreEl.innerText = '0'; comboEl.innerText = ''; hpEl.innerText = '100%';
     
@@ -530,9 +656,36 @@ function startGame() {
 
     bossBarContainer.style.display = 'none';
     startScreen.classList.add('hidden');
+    pauseScreen.classList.add('hidden');
     gameOverScreen.classList.add('hidden');
     clearInterval(gameLoop);
     gameLoop = setInterval(update, 1000/60);
+}
+
+function pauseGame() {
+    if(!isPlaying || isPaused) return;
+    isPaused = true;
+    pauseScreen.classList.remove('hidden');
+}
+
+function resumeGame() {
+    isPaused = false;
+    pauseScreen.classList.add('hidden');
+}
+
+function goHome() {
+    isPlaying = false;
+    isPaused = false;
+    clearInterval(gameLoop);
+    bossBarContainer.style.display = 'none';
+    pauseScreen.classList.add('hidden');
+    gameOverScreen.classList.add('hidden');
+    startScreen.classList.remove('hidden');
+}
+
+function giveUp() {
+    pauseScreen.classList.add('hidden');
+    takeDamage(999);
 }
 
 function isColliding(a, b) {
@@ -543,6 +696,8 @@ function isColliding(a, b) {
 }
 
 function update() {
+    if(isPaused) return;
+
     let sx = 0, sy = 0;
     if(shakeTimer > 0) {
         shakeTimer--;
@@ -660,8 +815,9 @@ function update() {
         }
     }
 
+    // BOS MALWARE - POSISI TURUN DISESUAIKAN SULIT KETUTUP HUD
     if(boss) {
-        if(boss.y < 50) boss.y += 2;
+        if(boss.y < boss.targetY) boss.y += 2;
         boss.x += boss.vx;
         if(boss.x < 10 || boss.x > canvas.width - boss.w - 10) boss.vx *= -1;
 
@@ -720,7 +876,7 @@ function update() {
             playSound('powerup');
             if(p.type === 'SHIELD') {
                 shieldActive = true;
-                hp = Math.min(100, hp + 25); // REGEN 25% HP UP TO 100%
+                hp = Math.min(100, hp + 25);
                 hpEl.innerText = `${hp}%`;
                 createExplosion(player.x + player.w/2, player.y + player.h/2, '#6ddb9d', 10);
             }
@@ -752,6 +908,7 @@ function takeDamage(amt) {
     hpEl.innerText = `${Math.max(0, hp)}%`;
     if(hp <= 0) {
         isPlaying = false;
+        isPaused = false;
         clearInterval(gameLoop);
         if(score > highScore) { highScore = score; localStorage.setItem('pkj_high', highScore); }
         document.getElementById('ovScore').innerText = formatScore(score);
