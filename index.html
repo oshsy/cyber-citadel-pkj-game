@@ -68,7 +68,6 @@
             background: #12141a;
             border: 1px solid #333845;
             flex-shrink: 0;
-            /* Shadow Blur yang bikin lag parah pada Canvas dihilangkan, sisa box-shadow ringan di kontainer saja */
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
         }
 
@@ -107,16 +106,12 @@
             align-items: center;
             font-size: 0.65rem;
             font-weight: 700;
-            pointer-events: none;
+            pointer-events: none; /* Cegah HUD memblokir sentuhan */
             color: #e2e2e9;
             z-index: 5;
         }
         
-        .hud-left, .hud-right {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
+        .hud-left, .hud-right { display: flex; align-items: center; gap: 5px; }
 
         .hud-chip {
             background: rgba(18, 20, 26, 0.85);
@@ -128,7 +123,6 @@
             align-items: center;
             gap: 5px;
             white-space: nowrap;
-            pointer-events: auto;
         }
 
         .hud-btn {
@@ -142,17 +136,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            pointer-events: auto;
+            pointer-events: auto; /* Tombol ini baru boleh disentuh */
             transition: all 0.2s ease;
         }
         .hud-btn:active { transform: scale(0.85); }
         .hud-btn:hover { background: rgba(40, 44, 56, 0.9); border-color: #a8c7fa; }
 
-        .hud-icon, .btn-icon-img {
-            width: 14px;
-            height: 14px;
-            object-fit: contain;
-        }
+        .hud-icon, .btn-icon-img { width: 14px; height: 14px; object-fit: contain; }
 
         .ai-indicator {
             position: absolute;
@@ -166,6 +156,7 @@
             border-radius: 4px;
             letter-spacing: 1px;
             display: none;
+            pointer-events: none;
         }
         
         #bossBarContainer {
@@ -180,6 +171,7 @@
             display: none;
             z-index: 5;
             border: 1px solid rgba(255, 180, 171, 0.3);
+            pointer-events: none;
         }
         #bossBar { width: 100%; height: 100%; background: #ffb4ab; transition: width 0.1s; }
         
@@ -197,54 +189,26 @@
             backdrop-filter: blur(10px);
         }
 
-        .start-main-layout {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            max-width: 340px;
-            gap: 6px;
-        }
+        .start-main-layout { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 340px; gap: 6px; }
 
         .author-box {
-            background: #1a1c23;
-            border: 1px solid #333845;
-            border-radius: 12px;
-            padding: 8px 12px;
-            margin: 2px 0;
-            width: 100%;
+            background: #1a1c23; border: 1px solid #333845;
+            border-radius: 12px; padding: 8px 12px; margin: 2px 0; width: 100%;
         }
 
-        .author-name {
-            color: #a8c7fa; 
-            font-weight: 800; 
-            font-size: 0.85rem;
-            letter-spacing: 0.5px;
-        }
-
+        .author-name { color: #a8c7fa; font-weight: 800; font-size: 0.85rem; letter-spacing: 0.5px; }
         .author-sub { font-size: 0.6rem; color: #9aa0a6; }
-
-        .diff-title {
-            font-size: 0.62rem; color: #c4c6d0;
-            letter-spacing: 0.8px; font-weight: 700; margin-bottom: 2px;
-        }
-
-        .diff-container {
-            display: flex; gap: 6px; width: 100%; margin-bottom: 6px;
-        }
-
+        .diff-title { font-size: 0.62rem; color: #c4c6d0; letter-spacing: 0.8px; font-weight: 700; margin-bottom: 2px; }
+        .diff-container { display: flex; gap: 6px; width: 100%; margin-bottom: 6px; }
+        
         .diff-btn {
             flex: 1; padding: 6px 0; background: #1a1c23; color: #9aa0a6;
             border: 1px solid #333845; border-radius: 8px; font-size: 0.62rem;
             font-weight: 800; cursor: pointer; transition: all 0.2s ease;
         }
         .diff-btn:hover { background: #2b2e38; color: #e2e2e9; }
-        .diff-btn.active {
-            background: rgba(168, 199, 250, 0.15); color: #a8c7fa; border-color: #a8c7fa;
-        }
-        .diff-btn.hardcore-btn.active {
-            background: rgba(255, 84, 73, 0.15); color: #ffb4ab; border-color: #ff5449;
-        }
+        .diff-btn.active { background: rgba(168, 199, 250, 0.15); color: #a8c7fa; border-color: #a8c7fa; }
+        .diff-btn.hardcore-btn.active { background: rgba(255, 84, 73, 0.15); color: #ffb4ab; border-color: #ff5449; }
 
         .icon-legend-grid {
             display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
@@ -261,13 +225,9 @@
             border: 1px solid #333845; border-radius: 8px; font-size: 0.7rem;
             font-weight: 800; cursor: pointer; margin-bottom: 4px; transition: all 0.2s;
         }
-        .btn-ai-toggle.active {
-            background: rgba(109, 219, 157, 0.15); color: #6ddb9d; border-color: #6ddb9d;
-        }
+        .btn-ai-toggle.active { background: rgba(109, 219, 157, 0.15); color: #6ddb9d; border-color: #6ddb9d; }
 
-        .menu-action-grid {
-            display: flex; flex-direction: column; gap: 8px; width: 100%; max-width: 260px; margin-top: 6px;
-        }
+        .menu-action-grid { display: flex; flex-direction: column; gap: 8px; width: 100%; max-width: 260px; margin-top: 6px; }
 
         .btn-action {
             display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 16px;
@@ -276,10 +236,8 @@
         }
         .btn-action img { width: 18px; height: 18px; object-fit: contain; }
         .btn-action:hover { background: #2b2e38; transform: scale(1.02); }
-
         .btn-primary-action { background: #a8c7fa; color: #042f56; border: none; }
         .btn-primary-action:hover { background: #c3e7ff; }
-
         .btn-danger-action { background: rgba(255, 84, 73, 0.15); color: #ffb4ab; border: 1px solid rgba(255, 84, 73, 0.4); }
         .btn-danger-action:hover { background: rgba(255, 84, 73, 0.25); }
 
@@ -321,7 +279,7 @@
                 </div>
             </div>
 
-            <div id="aiIndicator" class="ai-indicator">KNZ-V2 ACTIVE</div>
+            <div id="aiIndicator" class="ai-indicator">🤖 KNZ-V2 ACTIVE</div>
 
             <div id="bossBarContainer">
                 <div id="bossBar"></div>
@@ -347,7 +305,7 @@
                     </div>
 
                     <button id="btnAiToggle" class="btn-ai-toggle" onclick="toggleAI()">
-                        KNZ-V2 MODE: OFF
+                        🤖 KNZ-V2 MODE: OFF
                     </button>
 
                     <div class="icon-legend-grid">
@@ -380,14 +338,13 @@
                         <img src="icon_home.png" alt="H" onerror="this.style.display='none'">
                         <span>MENU UTAMA</span>
                     </button>
-                    <!-- BUG FIX: Memberi penekanan aksi agar GiveUp tidak macet/bug -->
                     <button class="btn-action btn-danger-action" onclick="giveUp()">
-                        <span>MENYERAH</span>
+                        <span>MENYERAH 🗿</span>
                     </button>
                 </div>
             </div>
 
-            <!-- GAME OVER SCREEN (KAMU KALAH!) -->
+            <!-- GAME OVER SCREEN -->
             <div id="gameOverScreen" class="overlay-screen hidden">
                 <h2 id="ovTitle" style="color: #ff5449; font-size: 1.5rem; font-weight:800; margin-bottom: 2px;">KAMU KALAH!</h2>
                 <p style="color: #c4c6d0; font-size: 0.75rem; margin-bottom: 6px;">Pertahanan Router Jebol Ditembus Virus</p>
@@ -409,11 +366,8 @@
     </div>
 
 <script>
-// --- ANTI LAG FIX: NO SHADOW BLUR ANYWHERE ---
-// Penggunaan ctx.shadowBlur membuat rendering sangat berat di HP. Semua shadow diganti render polos / opacity ganda.
-
 const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d', { alpha: false }); // Render lebih cepat tanpa transparansi ke background layer
+const ctx = canvas.getContext('2d'); // Transparansi default agar tidak konflik warna
 const scoreEl = document.getElementById('score');
 const comboEl = document.getElementById('combo');
 const hpEl = document.getElementById('hp');
@@ -455,10 +409,10 @@ function toggleAI() {
     isAIEnabled = !isAIEnabled;
     if(isAIEnabled) {
         btnAiToggle.classList.add('active');
-        btnAiToggle.innerText = 'KNZ-V2 MODE: ON';
+        btnAiToggle.innerText = '🤖 KNZ-V2 MODE: ON';
     } else {
         btnAiToggle.classList.remove('active');
-        btnAiToggle.innerText = 'KNZ-V2 MODE: OFF';
+        btnAiToggle.innerText = '🤖 KNZ-V2 MODE: OFF';
     }
 }
 
@@ -502,10 +456,7 @@ let player = { x: 214, y: 510, w: 52, h: 52, speed: 7 };
 
 // Matrix BG Lighter (Anti-lag)
 for(let i=0; i<20; i++) {
-    bgStreams.push({
-        x: Math.random() * 480, y: Math.random() * 600,
-        s: 1.5 + Math.random() * 2, c: Math.random() > 0.5 ? '#171a21' : '#1d2330'
-    });
+    bgStreams.push({ x: Math.random() * 480, y: Math.random() * 600, s: 1.5 + Math.random() * 2, c: Math.random() > 0.5 ? '#171a21' : '#1d2330' });
 }
 
 document.addEventListener('keydown', e => { 
@@ -518,11 +469,9 @@ document.addEventListener('keyup', e => keys[e.code] = false);
 function toggleFullscreen() {
     const elem = document.getElementById('gameWrapper');
     if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-        if (elem.requestFullscreen) elem.requestFullscreen();
-        else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
+        if (elem.requestFullscreen) elem.requestFullscreen(); else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
     } else {
-        if (document.exitFullscreen) document.exitFullscreen();
-        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+        if (document.exitFullscreen) document.exitFullscreen(); else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
     }
 }
 
@@ -542,11 +491,9 @@ function shoot() {
     if(!isPlaying || isPaused) return;
     playSound('shoot');
     if(multiShotTimer > 0) {
-        // BARRAGE - 7 PELURU
-        const spread = [-3, -2, -1, 0, 1, 2, 3];
-        spread.forEach(a => {
-            bullets.push({x: player.x + player.w/2 - 3, y: player.y, w: 6, h: 14, vx: a * 1.2, vy: -11});
-        });
+        // BARRAGE - Cukup 5 peluru menyebar biar mantap (7 bisa ngebom frame)
+        const spread = [-2.5, -1.2, 0, 1.2, 2.5];
+        spread.forEach(a => { bullets.push({x: player.x + player.w/2 - 3, y: player.y, w: 6, h: 14, vx: a * 1.2, vy: -11}); });
     } else {
         bullets.push({x: player.x + player.w/2 - 3, y: player.y - 5, w: 6, h: 14, vx: 0, vy: -10});
     }
@@ -582,10 +529,12 @@ function spawnEnemy() {
     let r = Math.random();
     let selected = types[0]; if(r > 0.5) selected = types[1]; if(r > 0.8) selected = types[2];
 
-    enemies.push({ x: Math.random() * (canvas.width - selected.w), y: -60, ...selected });
+    enemies.push({ x: Math.random() * (canvas.width - selected.w), y: -60, hitTimer: 0, ...selected });
 
+    // Spawn Boss Baru
     if(score >= 400 && !boss && Math.random() < 0.08) {
-        boss = { x: 192, y: -100, targetY: 70, w: 96, h: 96, hp: 80, maxHp: 80, vx: 2 * finalSpeedMult, imgKey: 'boss' };
+        // HP Bos dikurangi ke 40 supaya lebih adil 
+        boss = { x: 192, y: -100, targetY: 70, w: 96, h: 96, hp: 40, maxHp: 40, vx: 2 * finalSpeedMult, hitTimer: 0, imgKey: 'boss' };
         bossBarContainer.style.display = 'block';
     }
 }
@@ -622,10 +571,9 @@ function goHome() {
 }
 
 function giveUp() {
-    // FIX BUG MENYERAH MACET (KARENA TERTAHAN SHIELD)
     pauseScreen.classList.add('hidden'); 
-    shieldActive = false; // Matikan shield paksa
-    takeDamage(999); // Langsung mati!
+    shieldActive = false; // Memastikan Shield di-Bypass kalau mencet menyerah
+    takeDamage(999); 
 }
 
 function isColliding(a, b) {
@@ -635,7 +583,7 @@ function isColliding(a, b) {
 function update() {
     if(isPaused) return;
 
-    // AI KNZ-V2 TRACKING LOGIC
+    // AI KNZ-V2 TRACKING LOGIC (Berlaku manual jika AI mati)
     if(isAIEnabled) {
         let target = null;
         let lowestY = -999;
@@ -648,23 +596,21 @@ function update() {
 
         if(target) {
             let tx = target.x + target.w/2 - player.w/2;
-            player.x += (tx - player.x) * 0.35; // Kecepatan Track
+            player.x += (tx - player.x) * 0.35; // Gerak cepat ala bot
         }
-        if(Math.random() < 0.25) shoot();
+        if(Math.random() < 0.25) shoot(); // Tembak otomatis
     } else {
         if(keys['ArrowLeft'] || keys['KeyA']) if(player.x > 0) player.x -= player.speed;
         if(keys['ArrowRight'] || keys['KeyD']) if(player.x < canvas.width - player.w) player.x += player.speed;
     }
 
     let sx = 0, sy = 0;
-    if(shakeTimer > 0) {
-        shakeTimer--; sx = (Math.random()-0.5) * 12; sy = (Math.random()-0.5) * 12;
-    }
+    if(shakeTimer > 0) { shakeTimer--; sx = (Math.random()-0.5) * 12; sy = (Math.random()-0.5) * 12; }
 
     ctx.save(); ctx.translate(sx, sy);
-    // Fill Background Fast 
-    ctx.fillStyle = '#12141a';
-    ctx.fillRect(-20, -20, canvas.width+40, canvas.height+40);
+    
+    // Clear & Background Rendering (Lebih ringan tanpa render tumpuk)
+    ctx.clearRect(-20, -20, canvas.width+40, canvas.height+40);
 
     // Matrix Dinamis Fast Render
     for(let i=0; i<bgStreams.length; i++) {
@@ -685,7 +631,7 @@ function update() {
     }
     ctx.restore();
 
-    // RENDER FIREWALL (SHIELD)
+    // RENDER FIREWALL (SHIELD AKTIF)
     if(shieldActive) {
         ctx.strokeStyle = '#6ddb9d'; ctx.lineWidth = 2;
         ctx.beginPath(); ctx.arc(player.x+player.w/2, player.y+player.h/2, 34, 0, Math.PI*2); ctx.stroke();
@@ -697,11 +643,11 @@ function update() {
         ctx.fillText("=== FIREWALL ACTIVE ===", canvas.width/2, canvas.height - 12); ctx.textAlign = 'left';
     }
 
-    // Bullets - No blur for max performance
+    // Bullets Rendering
     for(let i=bullets.length-1; i>=0; i--) {
         let b = bullets[i]; b.x += b.vx; b.y += b.vy;
         ctx.fillStyle = '#ffffff'; ctx.fillRect(b.x, b.y, b.w, b.h);
-        ctx.fillStyle = 'rgba(109, 219, 157, 0.5)'; ctx.fillRect(b.x+1, b.y+b.h, b.w-2, 6); // Trail
+        ctx.fillStyle = 'rgba(109, 219, 157, 0.5)'; ctx.fillRect(b.x+1, b.y+b.h, b.w-2, 6);
         if(b.y < -20 || b.x < -10 || b.x > canvas.width + 10) bullets.splice(i,1);
     }
 
@@ -711,12 +657,19 @@ function update() {
 
     const isBlink = Math.floor(Date.now() / 250) % 2 === 0;
 
+    // Musuh & Cek Benturan
     for(let i=enemies.length-1; i>=0; i--) {
         let e = enemies[i]; e.y += e.speed;
         
-        let img = imgs[e.imgKey];
-        if(img.complete && img.naturalWidth !== 0) ctx.drawImage(img, e.x, e.y, e.w, e.h);
-        else { ctx.fillStyle = e.color; ctx.fillRect(e.x, e.y, e.w, e.h); }
+        // Visual Damage: Musuh ngedip putih kalau lagi kena tembak
+        if (e.hitTimer > 0) {
+            e.hitTimer--;
+            ctx.fillStyle = '#ffffff'; ctx.fillRect(e.x, e.y, e.w, e.h);
+        } else {
+            let img = imgs[e.imgKey];
+            if(img.complete && img.naturalWidth !== 0) ctx.drawImage(img, e.x, e.y, e.w, e.h);
+            else { ctx.fillStyle = e.color; ctx.fillRect(e.x, e.y, e.w, e.h); }
+        }
 
         if(isBlink) {
             ctx.fillStyle = '#ffb4ab'; ctx.font = '700 9px sans-serif'; ctx.textAlign = 'center';
@@ -727,7 +680,8 @@ function update() {
         for(let j=bullets.length-1; j>=0; j--) {
             let b = bullets[j];
             if(isColliding(b, e)) {
-                e.hp--; bullets.splice(j,1); createExplosion(b.x + b.w/2, b.y, e.color, 5);
+                e.hp--; e.hitTimer = 4; // Tanda kena damage
+                bullets.splice(j,1); createExplosion(b.x + b.w/2, b.y, e.color, 4);
                 if(e.hp <= 0) {
                     playSound('hit'); score += e.points; combo++; comboEl.innerText = `x${combo}`; scoreEl.innerText = formatScore(score);
                     spawnPowerup(e.x + e.w/2, e.y + e.h/2); createExplosion(e.x + e.w/2, e.y + e.h/2, e.color, 12);
@@ -752,34 +706,40 @@ function update() {
         }
     }
 
-    // BOSS LOGIC + SPAWN MINION
+    // BOSS LOGIC + SPAWN MINION LEBIH FAIR
     if(boss) {
         if(boss.y < boss.targetY) boss.y += 2;
         boss.x += boss.vx;
         if(boss.x < 10 || boss.x > canvas.width - boss.w - 10) boss.vx *= -1;
 
-        if(imgs.boss.complete && imgs.boss.naturalWidth !== 0) ctx.drawImage(imgs.boss, boss.x, boss.y, boss.w, boss.h);
-        else { ctx.fillStyle = '#ffb4ab'; ctx.fillRect(boss.x, boss.y, boss.w, boss.h); }
+        if (boss.hitTimer > 0) {
+            boss.hitTimer--;
+            ctx.fillStyle = '#ffffff'; ctx.fillRect(boss.x, boss.y, boss.w, boss.h);
+        } else {
+            if(imgs.boss.complete && imgs.boss.naturalWidth !== 0) ctx.drawImage(imgs.boss, boss.x, boss.y, boss.w, boss.h);
+            else { ctx.fillStyle = '#ffb4ab'; ctx.fillRect(boss.x, boss.y, boss.w, boss.h); }
+        }
 
         if(isBlink) {
             ctx.fillStyle = '#ffb4ab'; ctx.font = '800 11px sans-serif'; ctx.textAlign = 'center';
             ctx.fillText("⚠️ CRITICAL THREAT ⚠️", boss.x + boss.w/2, boss.y - 10); ctx.textAlign = 'left';
         }
 
-        // Bos bertelur virus secara bertahap
-        if (Math.random() < 0.015) {
+        // Bos ngeluarin virus minion pelan-pelan (Ngga brutal biar adil)
+        if (Math.random() < 0.008) {
             const types = [
-                { type: 'ddos', color: '#a8c7fa', hp: 1, speed: 4.5, points: 5, w: 32, h: 54, imgKey: 'ddos', label: 'DDoS' },
-                { type: 'trojan', color: '#ffb4ab', hp: 2, speed: 3.5, points: 15, w: 44, h: 44, imgKey: 'trojan', label: 'TROJAN' }
+                { type: 'ddos', color: '#a8c7fa', hp: 1, speed: 4.0, points: 5, w: 32, h: 54, imgKey: 'ddos', label: 'DDoS' },
+                { type: 'trojan', color: '#ffb4ab', hp: 2, speed: 3.0, points: 15, w: 44, h: 44, imgKey: 'trojan', label: 'TROJAN' }
             ];
             let selected = types[Math.floor(Math.random() * types.length)];
-            enemies.push({ x: boss.x + boss.w/2 - selected.w/2, y: boss.y + boss.h, ...selected });
+            enemies.push({ x: boss.x + boss.w/2 - selected.w/2, y: boss.y + boss.h, hitTimer: 0, ...selected });
         }
 
         for(let j=bullets.length-1; j>=0; j--) {
             let b = bullets[j];
             if(isColliding(b, boss)) {
-                boss.hp--; bullets.splice(j,1); createExplosion(b.x, b.y, '#ffb4ab', 5);
+                boss.hp--; boss.hitTimer = 3;
+                bullets.splice(j,1); createExplosion(b.x, b.y, '#ffb4ab', 4);
                 bossBar.style.width = `${(boss.hp / boss.maxHp) * 100}%`;
                 if(boss.hp <= 0) {
                     score += 1000; scoreEl.innerText = formatScore(score);
@@ -790,6 +750,7 @@ function update() {
         }
     }
 
+    // Powerups Rendering
     for(let i=powerups.length-1; i>=0; i--) {
         let p = powerups[i]; p.y += p.vy;
         let pImg = imgs[p.imgKey];
@@ -802,7 +763,7 @@ function update() {
                 shieldActive = true; hp = Math.min(100, hp + 35); hpEl.innerText = `${hp}%`;
                 createExplosion(player.x + player.w/2, player.y + player.h/2, '#6ddb9d', 15);
             }
-            if(p.type === 'TRIPLE') multiShotTimer = 400; // Durasi Barrage
+            if(p.type === 'TRIPLE') multiShotTimer = 400; // Barrage diaktifkan
             if(p.type === 'NUKE') {
                 ctx.fillStyle = 'rgba(255,255,255,0.7)'; ctx.fillRect(0,0,canvas.width,canvas.height);
                 enemies.forEach(e => createExplosion(e.x+e.w/2, e.y+e.h/2, e.color, 10)); enemies = [];
@@ -811,6 +772,7 @@ function update() {
         } else if(p.y > canvas.height) powerups.splice(i,1);
     }
 
+    // Efek Partikel
     for(let i=particles.length-1; i>=0; i--) {
         let pt = particles[i]; pt.x += pt.vx; pt.y += pt.vy; pt.life -= 0.03;
         ctx.fillStyle = pt.color; ctx.globalAlpha = Math.max(0, pt.life);
@@ -822,7 +784,7 @@ function update() {
 }
 
 function takeDamage(amt) {
-    if(shieldActive) { shieldActive = false; return; }
+    if(shieldActive && amt !== 999) { shieldActive = false; return; } // Firewall hancur
     shakeTimer = 18; playSound('hit'); hp -= amt; hpEl.innerText = `${Math.max(0, hp)}%`;
     
     if(hp <= 0) {
